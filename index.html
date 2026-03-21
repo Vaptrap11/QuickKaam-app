@@ -1334,4 +1334,43 @@ setTimeout(function() {
         }
     </script>
 </body>
+    <script>
+// EMERGENCY FIX - Force splash screen to disappear immediately
+(function() {
+    // Function to hide splash and show welcome
+    function showWelcomeScreen() {
+        var splash = document.getElementById('splashScreen');
+        var welcome = document.getElementById('welcomeScreen');
+        
+        if (splash) {
+            splash.style.display = 'none';
+        }
+        
+        if (welcome) {
+            welcome.classList.add('active');
+        }
+        
+        console.log('Splash hidden, welcome shown');
+    }
+    
+    // Try to hide splash immediately
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(showWelcomeScreen, 100);
+        });
+    } else {
+        setTimeout(showWelcomeScreen, 100);
+    }
+    
+    // Backup: Force hide after 2 seconds no matter what
+    setTimeout(function() {
+        var splash = document.getElementById('splashScreen');
+        var welcome = document.getElementById('welcomeScreen');
+        if (splash && splash.style.display !== 'none') {
+            splash.style.display = 'none';
+            if (welcome) welcome.classList.add('active');
+        }
+    }, 2000);
+})();
+</script>
 </html>
