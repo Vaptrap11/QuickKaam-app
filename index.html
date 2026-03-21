@@ -1373,4 +1373,271 @@ setTimeout(function() {
     }, 2000);
 })();
 </script>
+    <script>
+// ============================================
+// EMERGENCY BUTTON FIX - Makes all buttons work
+// ============================================
+
+// Make sure all screens exist and are accessible
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Emergency fix loaded - fixing buttons');
+    
+    // Fix Find Work button
+    var findWorkBtn = document.querySelector('.btn-primary');
+    if (findWorkBtn) {
+        findWorkBtn.onclick = function(e) {
+            e.preventDefault();
+            console.log('Find Work clicked');
+            document.getElementById('welcomeScreen').classList.remove('active');
+            document.getElementById('jobSeekerAuthScreen').classList.add('active');
+        };
+    }
+    
+    // Fix Hire Talent button
+    var hireBtn = document.querySelector('.btn-secondary');
+    if (hireBtn) {
+        hireBtn.onclick = function(e) {
+            e.preventDefault();
+            console.log('Hire Talent clicked');
+            document.getElementById('welcomeScreen').classList.remove('active');
+            document.getElementById('employerAuthScreen').classList.add('active');
+        };
+    }
+});
+
+// ============================================
+// JOB SEEKER FUNCTIONS
+// ============================================
+
+function showJobSeekerAuth() {
+    console.log('showJobSeekerAuth called');
+    var welcome = document.getElementById('welcomeScreen');
+    var auth = document.getElementById('jobSeekerAuthScreen');
+    if (welcome && auth) {
+        welcome.classList.remove('active');
+        auth.classList.add('active');
+    } else {
+        alert('Error: Screens not found. Please refresh.');
+    }
+}
+
+function sendJobSeekerOTP() {
+    var phone = document.getElementById('jsPhone').value;
+    if (!phone || phone.length < 10) {
+        alert('Please enter a valid 10-digit phone number');
+        return;
+    }
+    
+    // Generate random 6-digit OTP
+    var otp = Math.floor(100000 + Math.random() * 900000);
+    window.jobSeekerOTP = otp;
+    
+    alert('OTP sent to ' + phone + '\n\nYour OTP is: ' + otp + '\n\n(For testing, use this code)');
+    
+    document.getElementById('jsOtpSection').style.display = 'block';
+    document.getElementById('jsSendOtpBtn').style.display = 'none';
+    document.getElementById('jsVerifyBtn').style.display = 'block';
+}
+
+function verifyJobSeekerOTP() {
+    var enteredOtp = document.getElementById('jsOtp').value;
+    
+    if (enteredOtp == window.jobSeekerOTP) {
+        alert('Phone verified successfully!');
+        
+        // Go to profile setup
+        document.getElementById('jobSeekerAuthScreen').classList.remove('active');
+        document.getElementById('jobSeekerProfileScreen').classList.add('active');
+    } else {
+        alert('Invalid OTP. Please try again.');
+    }
+}
+
+function completeJobSeekerProfile() {
+    var name = document.getElementById('jsFullName').value;
+    var profession = document.getElementById('jsProfession').value;
+    
+    if (!name || !profession) {
+        alert('Please fill your name and profession');
+        return;
+    }
+    
+    alert('Profile created successfully! Welcome to QuickKaam!');
+    
+    // Go to dashboard
+    document.getElementById('jobSeekerProfileScreen').classList.remove('active');
+    document.getElementById('jobSeekerDashboardScreen').classList.add('active');
+    
+    // Load jobs
+    if (typeof loadJobSeekerJobs === 'function') {
+        loadJobSeekerJobs();
+    }
+}
+
+// ============================================
+// EMPLOYER FUNCTIONS
+// ============================================
+
+function showEmployerAuth() {
+    console.log('showEmployerAuth called');
+    var welcome = document.getElementById('welcomeScreen');
+    var auth = document.getElementById('employerAuthScreen');
+    if (welcome && auth) {
+        welcome.classList.remove('active');
+        auth.classList.add('active');
+    } else {
+        alert('Error: Screens not found. Please refresh.');
+    }
+}
+
+function sendEmployerOTP() {
+    var company = document.getElementById('empCompany').value;
+    var phone = document.getElementById('empPhone').value;
+    
+    if (!company) {
+        alert('Please enter company name');
+        return;
+    }
+    if (!phone || phone.length < 10) {
+        alert('Please enter a valid 10-digit phone number');
+        return;
+    }
+    
+    var otp = Math.floor(100000 + Math.random() * 900000);
+    window.employerOTP = otp;
+    
+    alert('OTP sent to ' + phone + '\n\nYour OTP is: ' + otp + '\n\n(For testing, use this code)');
+    
+    document.getElementById('empOtpSection').style.display = 'block';
+    document.getElementById('empSendOtpBtn').style.display = 'none';
+    document.getElementById('empVerifyBtn').style.display = 'block';
+}
+
+function verifyEmployerOTP() {
+    var enteredOtp = document.getElementById('empOtp').value;
+    
+    if (enteredOtp == window.employerOTP) {
+        alert('Phone verified successfully!');
+        
+        document.getElementById('employerAuthScreen').classList.remove('active');
+        document.getElementById('employerProfileScreen').classList.add('active');
+    } else {
+        alert('Invalid OTP. Please try again.');
+    }
+}
+
+function completeEmployerProfile() {
+    var companyName = document.getElementById('empCompanyName').value;
+    
+    if (!companyName) {
+        alert('Please enter company name');
+        return;
+    }
+    
+    alert('Company profile created successfully! Start hiring now!');
+    
+    document.getElementById('employerProfileScreen').classList.remove('active');
+    document.getElementById('employerDashboardScreen').classList.add('active');
+    
+    if (typeof loadFullJobList === 'function') {
+        loadFullJobList();
+    }
+}
+
+// ============================================
+// DASHBOARD FUNCTIONS
+// ============================================
+
+function loadJobSeekerJobs() {
+    var container = document.getElementById('jsJobList');
+    if (!container) return;
+    
+    var jobs = [
+        'Private Chef', 'Home Cook', 'House Maid', 'Driver', 'Private Tutor',
+        'Babysitter', 'Electrician', 'Plumber', 'Gardener'
+    ];
+    
+    container.innerHTML = jobs.map(function(job) {
+        return '<div class="job-master-card" onclick="applyForJob(\'' + job + '\')" style="cursor:pointer; padding:16px; margin:8px; background:white; border-radius:16px;">' +
+               '<div style="font-size:32px;">' + getJobEmoji(job) + '</div>' +
+               '<h4>' + job + '</h4>' +
+               '<p>💰 Salary: ₹25,000 - ₹40,000/month</p>' +
+               '<button class="btn-premium btn-primary" style="margin-top:10px; padding:8px 20px;">Apply Now</button>' +
+               '</div>';
+    }).join('');
+}
+
+function loadFullJobList() {
+    var container = document.getElementById('fullJobList');
+    if (!container) return;
+    
+    var jobs = [
+        'Private Chef', 'Home Cook', 'House Maid', 'Driver', 'Private Tutor',
+        'Babysitter', 'Electrician', 'Plumber', 'Gardener', 'Security Guard',
+        'Personal Assistant', 'Delivery Driver', 'Cleaner', 'Painter', 'Carpenter'
+    ];
+    
+    container.innerHTML = jobs.map(function(job) {
+        return '<div class="job-master-card" onclick="showWorkersForJob(\'' + job + '\')" style="cursor:pointer; padding:16px; margin:8px; background:white; border-radius:16px; display:flex; align-items:center; gap:16px;">' +
+               '<div style="font-size:40px;">' + getJobEmoji(job) + '</div>' +
+               '<div><h4>' + job + '</h4><p style="color:#666;">Click to see available workers</p></div>' +
+               '<div style="margin-left:auto; background:#f0f0f0; padding:4px 12px; border-radius:20px;">2</div>' +
+               '</div>';
+    }).join('');
+}
+
+function showWorkersForJob(jobTitle) {
+    alert('Workers for: ' + jobTitle + '\n\nAvailable workers will appear here.\n\nYou can hire them permanently!');
+}
+
+function applyForJob(jobTitle) {
+    alert('✅ Applied for ' + jobTitle + '!\n\nThe employer will be notified.');
+}
+
+function getJobEmoji(job) {
+    var emojis = {
+        'Private Chef': '👨‍🍳', 'Home Cook': '🍳', 'House Maid': '🧹', 'Driver': '🚗',
+        'Private Tutor': '📚', 'Babysitter': '👶', 'Electrician': '⚡', 'Plumber': '🔧',
+        'Gardener': '🌿', 'Security Guard': '🛡️', 'Personal Assistant': '📅',
+        'Delivery Driver': '📦', 'Cleaner': '🧽', 'Painter': '🎨', 'Carpenter':🔨'
+    };
+    return emojis[job] || '💼';
+}
+
+// Make sure screens are properly set up
+function ensureScreens() {
+    var screens = ['welcomeScreen', 'jobSeekerAuthScreen', 'employerAuthScreen', 
+                   'jobSeekerProfileScreen', 'employerProfileScreen', 
+                   'jobSeekerDashboardScreen', 'employerDashboardScreen'];
+    
+    for (var i = 0; i < screens.length; i++) {
+        var screen = document.getElementById(screens[i]);
+        if (screen && screens[i] !== 'welcomeScreen') {
+            screen.classList.remove('active');
+        }
+    }
+    
+    var welcome = document.getElementById('welcomeScreen');
+    if (welcome) welcome.classList.add('active');
+}
+
+// Run when page loads
+window.addEventListener('load', function() {
+    ensureScreens();
+    console.log('Emergency fix loaded - all buttons should work now');
+});
+
+// Also fix any inline onclick issues
+document.body.addEventListener('click', function(e) {
+    var target = e.target;
+    while (target && target !== document.body) {
+        if (target.onclick && typeof target.onclick === 'function') {
+            // Already has onclick, let it work
+            break;
+        }
+        target = target.parentElement;
+    }
+});
+
+</script>
 </html>
