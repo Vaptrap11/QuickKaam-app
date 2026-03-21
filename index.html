@@ -875,14 +875,24 @@ const analytics = getAnalytics(app);
         populateProfessions();
 
         // Splash transition
-        setTimeout(() => {
-            const splash = document.getElementById('splashScreen');
-            splash.classList.add('fade-out');
-            setTimeout(() => {
-                splash.style.display = 'none';
-                document.getElementById('welcomeScreen').classList.add('active');
-            }, 600);
-        }, 2800);
+// Splash screen transition - FIXED
+setTimeout(function() {
+    var splash = document.getElementById('splashScreen');
+    var welcome = document.getElementById('welcomeScreen');
+    
+    if (splash && welcome) {
+        splash.style.opacity = '0';
+        splash.style.transition = 'opacity 0.5s ease';
+        
+        setTimeout(function() {
+            splash.style.display = 'none';
+            welcome.classList.add('active');
+        }, 500);
+    } else {
+        if (welcome) welcome.classList.add('active');
+        if (splash) splash.style.display = 'none';
+    }
+}, 2800);
 
         // ==================== FIREBASE OTP FUNCTIONS ====================
         
