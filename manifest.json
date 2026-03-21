@@ -1,0 +1,256 @@
+{
+"name": "QuickKaam - Find Work Fast or Hire Trusted Help",
+"short_name": "QuickKaam",
+"description": "Connect with verified workers and employers for private jobs like chef, driver,
+tutor, maid, electrician, and more. Find work or hire trusted help instantly.",
+"start_url": "/",
+"display": "standalone",
+"theme_color": "#1E3A5F",
+"background_color": "#FFFFFF",
+"orientation": "portrait-primary",
+"scope": "/",
+"lang": "en",
+"dir": "ltr",
+"categories": ["lifestyle", "productivity", "business", "jobs", "services"],
+"icons": [
+{
+"src": "/icons/icon-72x72.png",
+"sizes": "72x72",
+"type": "image/png",
+"purpose": "any maskable"
+},
+{
+"src": "/icons/icon-96x96.png",
+"sizes": "96x96",
+"type": "image/png",
+"purpose": "any maskable"
+},
+{
+"src": "/icons/icon-128x128.png",
+"sizes": "128x128",
+"type": "image/png",
+"purpose": "any maskable"
+},
+{
+"src": "/icons/icon-144x144.png",
+"sizes": "144x144",
+"type": "image/png",
+"purpose": "any maskable"
+},
+{
+"src": "/icons/icon-152x152.png",
+"sizes": "152x152",
+"type": "image/png",
+"purpose": "any maskable"
+},
+{
+"src": "/icons/icon-192x192.png",
+"sizes": "192x192",
+"type": "image/png",
+"purpose": "any maskable"
+},
+{
+"src": "/icons/icon-384x384.png",
+"sizes": "384x384",
+"type": "image/png",
+"purpose": "any maskable"
+},
+{
+"src": "/icons/icon-512x512.png",
+"sizes": "512x512",
+"type": "image/png",
+"purpose": "any maskable"
+}
+],
+"screenshots": [
+{
+"src": "/screenshots/home-screen.png",
+"sizes": "1080x1920",
+"type": "image/png",
+"form_factor": "wide",
+"label": "QuickKaam home screen with job categories"
+},
+{
+"src": "/screenshots/job-detail.png",
+"sizes": "1080x1920",
+"type": "image/png",
+"form_factor": "wide",
+"label": "View detailed job information and apply"
+},
+{
+"src": "/screenshots/chat-screen.png",
+"sizes": "1080x1920",
+"type": "image/png",
+"form_factor": "wide",
+"label": "Direct messaging with employers and workers"
+},
+{
+"src": "/screenshots/subscription-screen.png",
+"sizes": "1080x1920",
+"type": "image/png",
+"form_factor": "wide",
+"label": "Subscription plans for premium features"
+}
+],
+"shortcuts": [
+{
+"name": "Find Jobs",
+"short_name": "Jobs",
+"description": "Browse available private jobs near you",
+"url": "/jobs",
+"icons": [
+{
+"src": "/icons/shortcut-jobs.png",
+"sizes": "96x96",
+"type": "image/png"
+}
+]
+},
+{
+"name": "Post a Job",
+"short_name": "Post",
+"description": "Create a new job listing",
+"url": "/post-job",
+"icons": [
+{
+"src": "/icons/shortcut-post.png",
+"sizes": "96x96",
+"type": "image/png"
+}
+]
+},
+{
+"name": "My Profile",
+"short_name": "Profile",
+"description": "View and edit your profile",
+"url": "/profile",
+"icons": [
+{
+"src": "/icons/shortcut-profile.png",
+"sizes": "96x96",
+"type": "image/png"
+}
+]
+},
+{
+"name": "Messages",
+"short_name": "Chat",
+"description": "Check your messages",
+"url": "/messages",
+"icons": [
+{
+"src": "/icons/shortcut-messages.png",
+"sizes": "96x96",
+"type": "image/png"
+}
+]
+},
+{
+"name": "Notifications",
+"short_name": "Alerts",
+"description": "View job matches and updates",
+"url": "/notifications",
+"icons": [
+{
+"src": "/icons/shortcut-notifications.png",
+"sizes": "96x96",
+"type": "image/png"
+}
+]
+},
+{
+"name": "Subscription",
+"short_name": "Premium",
+"description": "Upgrade to premium for better matches",
+"url": "/subscription",
+"icons": [
+{
+"src": "/icons/shortcut-subscription.png",
+"sizes": "96x96",
+"type": "image/png"
+}
+]
+}
+],
+"related_applications": [],
+"prefer_related_applications": false,
+"display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+"launch_handler": {
+"client_mode": ["focus-existing", "auto"]
+},
+"edge_side_panel": {
+"preferred_width": 400
+},
+"note_taking": {
+"new_note_url": "/quick-note"
+},
+"share_target": {
+"action": "/share-target",
+"method": "POST",
+"enctype": "multipart/form-data",
+"params": {
+"title": "title",
+"text": "text",
+"url": "url",
+"files": [
+{
+"name": "file",
+"accept": ["image/*", "application/pdf"]
+}
+]
+}
+},
+"file_handlers": [
+{
+"action": "/open-file",
+"accept": {
+"image/*": [".jpg", ".jpeg", ".png", ".gif"],
+"application/pdf": [".pdf"],
+"text/plain": [".txt"]
+}
+],
+}
+{
+"protocol_handlers": [
+"protocol": "web+quickkaam",
+"url": "/protocol/%s"
+}
+],
+"url_handlers": [
+{
+"origin": "https://quickkaam.app",
+"paths": ["/jobs/*", "/profile/*", "/chat/*"]
+}
+],
+{
+"scope_extensions": [
+"origin": "https://api.quickkaam.app"
+}
+],
+"background_color_dark": "#121212",
+"theme_color_dark": "#1E3A5F",
+"icons_dark": [
+{
+"src": "/icons/icon-dark-192x192.png",
+"sizes": "192x192",
+"type": "image/png"
+},
+{
+"src": "/icons/icon-dark-512x512.png",
+"sizes": "512x512",
+"type": "image/png"
+}
+],
+"serviceworker": {
+"src": "/sw.js",
+"scope": "/",
+"update_via_cache": "all"
+},
+"features": [
+"Cross-platform",
+"Oﬄine support",
+"Push notifications",
+"Background sync",
+"Installable"
+]
+}
