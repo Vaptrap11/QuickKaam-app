@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>QuickKaam - India's Trusted Private Job Marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --secondary: #7c3aed;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #0f172a;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --hired-black: #000000;
+        }
+
+        /* Screen Management */
+        .screen {
+            display: none;
+            min-height: 100vh;
+        }
+        .screen.active {
+            display: block;
+        }
+
+        /* Splash Screen */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #1e40af 0%, #7c3aed 50%, #db2777 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.6s ease;
+        }
+        .splash-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .splash-content {
+            text-align: center;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .splash-logo {
+            width: 130px;
+            height: 130px;
+            background: white;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+        .splash-logo i {
+            font-size: 65px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .splash-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        .splash-tagline {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Welcome Page */
+        .welcome-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .welcome-card {
+            max-width: 480px;
+            width: 100%;
+            padding: 48px 40px;
+            text-align: center;
+        }
+        .welcome-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+        .welcome-icon i {
+            font-size: 50px;
+            color: white;
+        }
+        .welcome-title {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 12px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+        }
+        .btn-premium {
+            flex: 1;
+            padding: 16px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 10px 20px -8px rgba(37,99,235,0.4);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), #6d28d9);
+            color: white;
+        }
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.3);
+        }
+
+        /* Auth Pages */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .auth-container {
+            max-width: 450px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 40px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-field {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--gray-200);
+            border-radius: 60px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            min-height: 100vh;
+            background: var(--gray-50);
+            padding-bottom: 80px;
+        }
+        .dashboard-header {
+            background: white;
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-premium {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            background: var(--gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .icon-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Job List Grid - The complete job list */
+        .jobs-master-grid {
+            max-width: 1400px;
+            margin: 24px auto;
+            padding: 0 24px;
+        }
+        .jobs-grid-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .jobs-grid-title i {
+            color: var(--primary);
+        }
+        .jobs-master-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 8px 4px;
+        }
+        .job-master-card {
+            background: white;
+            border-radius: 20px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border: 1px solid var(--gray-200);
+        }
+        .job-master-card:hover {
+            transform: translateX(5px);
+            border-color: var(--primary);
+            box-shadow: 0 5px 20px rgba(37,99,235,0.1);
+        }
+        .job-emoji {
+            font-size: 40px;
+        }
+        .job-master-info h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+        .job-master-info p {
+            font-size: 0.8rem;
+            color: var(--gray-600);
+        }
+        .worker-count {
+            margin-left: auto;
+            background: var(--gray-100);
+            padding: 4px 10px;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Workers List for Selected Job */
+        .workers-section {
+            background: white;
+            border-radius: 28px;
+            margin: 20px 24px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .workers-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--gray-200);
+        }
+        .back-btn {
+            background: var(--gray-100);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .back-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .workers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .worker-card {
+            background: var(--gray-50);
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.3s;
+            position: relative;
+            border: 1px solid var(--gray-200);
+        }
+        .worker-card.hired-card {
+            background: #f5f5f5;
+            border-left: 4px solid #000000;
+            opacity: 0.9;
+        }
+        .hired-stamp {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #000000;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 60px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .worker-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        .worker-info h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .worker-details {
+            margin-top: 16px;
+        }
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+        .detail-item i {
+            width: 20px;
+            color: var(--primary);
+        }
+        .hire-btn {
+            width: 100%;
+            margin-top: 16px;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .hire-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37,99,235,0.3);
+        }
+        .hire-btn.disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 24px 24px;
+            z-index: 100;
+            border-top: 1px solid var(--gray-200);
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-item i {
+            font-size: 22px;
+        }
+        .nav-item span {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        .nav-item.active {
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-container {
+            background: white;
+            border-radius: 32px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body {
+            padding: 24px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gray-900);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 60px;
+            z-index: 2000;
+            animation: slideUp 0.3s;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 5px 20px rgba(37,99,235,0.4);
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        @media (max-width: 768px) {
+            .btn-group { flex-direction: column; }
+            .jobs-master-list { grid-template-columns: 1fr; }
+            .workers-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splashScreen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <h1 class="splash-title">QuickKaam</h1>
+            <p class="splash-tagline">India's Most Trusted Private Job Marketplace</p>
+            <p style="color: rgba(255,255,255,0.7); margin-top: 16px;">10,000+ Jobs | 50,000+ Workers | 100% Verified</p>
+        </div>
+    </div>
+
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen" class="screen">
+        <div class="welcome-page">
+            <div class="welcome-card glass-card">
+                <div class="welcome-icon"><i class="fas fa-handshake"></i></div>
+                <h2 class="welcome-title">Welcome to QuickKaam</h2>
+                <p style="color: var(--gray-600); margin: 12px 0;">India's fastest growing platform connecting employers with verified professionals</p>
+                <div class="btn-group">
+                    <button class="btn-premium btn-primary" onclick="showJobSeekerAuth()"><i class="fas fa-search"></i> Find Work</button>
+                    <button class="btn-premium btn-secondary" onclick="showEmployerAuth()"><i class="fas fa-building"></i> Hire Talent</button>
+                </div>
+                <p style="font-size: 0.75rem; color: var(--gray-500); margin-top: 24px;">✅ Verified Profiles | 🔒 Safe & Secure | ⚡ Instant Matching</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Seeker Auth -->
+    <div id="jobSeekerAuthScreen" class="screen">
+        <div class="auth-page">
+            <div class="auth-container glass-card">
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <i class="fas fa-user-circle" style="font-size: 55px; color: var(--primary);"></i>
+                    <h2 style="margin-top: 16px;">Join as Worker</h2>
+                    <p style="color: var(--gray-600);">Get hired for private jobs</p>
+                </div>
+                <div id="jsRecaptchaContainer"></div>
+                <div class="input-group">
+                    <input type="tel" id="jsPhone" class="input-field" placeholder="+91 98765 43210">
+                </div>
+                <div id="jsOtpSection" style="display: none;">
+                    <div class="input-group">
+                        <input type="text" id="jsOtp" class="input-field" placeholder="Enter 6-digit OTP">
+                    </div>
+                </div>
+                <button class="btn-premium btn-primary" id="jsSendOtpBtn" style="width: 100%;" onclick="sendJobSeekerOTP()">Send OTP</button>
+                <button class="btn-premium btn-primary" id="jsVerifyBtn" style="width: 100%; display: none;" onclick="verifyJobSeekerOTP()">Verify & Continue</button>
+                <p style="text-align: center; margin-top: 20px; font-size: 0.75rem; color: var(--gray-500);">We'll send a verification code via SMS</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employer Auth -->
+    <div id="employerAuthScreen" class="screen">
+        <div class="auth-page">
+            <div class="auth-container glass-card">
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <i class="fas fa-building" style="font-size: 55px; color: var(--secondary);"></i>
+                    <h2 style="margin-top: 16px;">Join as Employer</h2>
+                    <p style="color: var(--gray-600);">Hire the best talent</p>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="empCompany" class="input-field" placeholder="Company / Business Name">
+                </div>
+                <div class="input-group">
+                    <input type="tel" id="empPhone" class="input-field" placeholder="+91 98765 43210">
+                </div>
+                <div id="empOtpSection" style="display: none;">
+                    <div class="input-group">
+                        <input type="text" id="empOtp" class="input-field" placeholder="Enter 6-digit OTP">
+                    </div>
+                </div>
+                <button class="btn-premium btn-secondary" id="empSendOtpBtn" style="width: 100%;" onclick="sendEmployerOTP()">Send OTP</button>
+                <button class="btn-premium btn-secondary" id="empVerifyBtn" style="width: 100%; display: none;" onclick="verifyEmployerOTP()">Verify & Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Seeker Profile -->
+    <div id="jobSeekerProfileScreen" class="screen">
+        <div style="min-height: 100vh; background: var(--gray-50); padding: 40px 20px;">
+            <div style="max-width: 550px; margin: 0 auto;">
+                <div class="glass-card" style="padding: 36px;">
+                    <h2 style="margin-bottom: 8px;">Create Your Profile</h2>
+                    <p style="color: var(--gray-600); margin-bottom: 28px;">Tell employers about yourself</p>
+                    <div class="input-group"><input type="text" id="jsFullName" class="input-field" placeholder="Full Name"></div>
+                    <div class="input-group"><select id="jsProfession" class="input-field"></select></div>
+                    <div class="input-group"><input type="text" id="jsLocation" class="input-field" placeholder="City / Area"></div>
+                    <div class="input-group"><input type="text" id="jsLanguages" class="input-field" placeholder="Languages (Hindi, English, Punjabi)"></div>
+                    <div class="input-group"><input type="text" id="jsSalary" class="input-field" placeholder="Expected Salary (₹25,000/month)"></div>
+                    <div class="input-group"><input type="text" id="jsSkills" class="input-field" placeholder="Skills (Cooking, Cleaning, Driving)"></div>
+                    <div class="input-group"><input type="number" id="jsExperience" class="input-field" placeholder="Years of Experience"></div>
+                    <button class="btn-premium btn-primary" style="width: 100%;" onclick="completeJobSeekerProfile()">Complete Profile →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employer Profile -->
+    <div id="employerProfileScreen" class="screen">
+        <div style="min-height: 100vh; background: var(--gray-50); padding: 40px 20px;">
+            <div style="max-width: 550px; margin: 0 auto;">
+                <div class="glass-card" style="padding: 36px;">
+                    <h2 style="margin-bottom: 8px;">Company Profile</h2>
+                    <p style="color: var(--gray-600); margin-bottom: 28px;">Set up your hiring account</p>
+                    <div class="input-group"><input type="text" id="empCompanyName" class="input-field" placeholder="Company Name"></div>
+                    <div class="input-group"><select id="empIndustry" class="input-field"><option>Restaurant/Food Service</option><option>Corporate Office</option><option>Retail/Store</option><option>Education</option><option>Healthcare</option><option>Manufacturing</option><option>IT/Technology</option><option>Hospitality</option></select></div>
+                    <div class="input-group"><input type="text" id="empLocation" class="input-field" placeholder="Location (City)"></div>
+                    <button class="btn-premium btn-secondary" style="width: 100%;" onclick="completeEmployerProfile()">Complete Profile →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EMPLOYER DASHBOARD - Shows full job list -->
+    <div id="employerDashboardScreen" class="screen">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <div class="header-content">
+                    <div class="logo-premium"><i class="fas fa-building"></i> QuickKaam Business</div>
+                    <div class="icon-btn" onclick="showEmployerInfo()"><i class="fas fa-user-circle"></i></div>
+                </div>
+            </div>
+
+            <!-- Main Job List Section - ALL JOBS -->
+            <div class="jobs-master-grid" id="mainJobListView">
+                <div class="jobs-grid-title">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Browse All Jobs Categories</span>
+                    <span style="font-size: 0.8rem; background: var(--gray-100); padding: 4px 12px; border-radius: 60px;">{{jobCount}}+ Positions</span>
+                </div>
+                <div class="jobs-master-list" id="fullJobList"></div>
+            </div>
+
+            <!-- Workers Section (Shows when job is clicked) -->
+            <div id="workersView" style="display: none;">
+                <div class="workers-section">
+                    <div class="workers-header">
+                        <div class="back-btn" onclick="backToJobList()"><i class="fas fa-arrow-left"></i></div>
+                        <div><span style="font-size: 1.5rem;" id="selectedJobEmoji">👨‍🍳</span></div>
+                        <div>
+                            <h3 id="selectedJobTitle">Private Chef</h3>
+                            <p style="color: var(--gray-600);" id="selectedJobSubtitle">Available Workers</p>
+                        </div>
+                    </div>
+                    <div class="workers-grid" id="workersListGrid"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="switchEmpTab('jobs')"><i class="fas fa-briefcase"></i><span>All Jobs</span></div>
+            <div class="nav-item" onclick="switchEmpTab('post')"><i class="fas fa-plus-circle"></i><span>Post Job</span></div>
+        </div>
+    </div>
+
+    <!-- JOB SEEKER DASHBOARD -->
+    <div id="jobSeekerDashboardScreen" class="screen">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <div class="header-content">
+                    <div class="logo-premium"><i class="fas fa-briefcase"></i> QuickKaam</div>
+                    <div class="icon-btn" onclick="showJobSeekerInfo()"><i class="fas fa-user"></i></div>
+                </div>
+            </div>
+            <div class="jobs-master-grid">
+                <div class="jobs-grid-title"><i class="fas fa-fire"></i><span>Recommended Jobs For You</span></div>
+                <div class="jobs-master-list" id="jsJobList"></div>
+            </div>
+        </div>
+        <div class="bottom-nav">
+            <div class="nav-item active"><i class="fas fa-home"></i><span>Home</span></div>
+            <div class="nav-item" onclick="showJobSeekerInfo()"><i class="fas fa-user"></i><span>Profile</span></div>
+        </div>
+    </div>
+
+    <!-- Post Job Modal -->
+    <div id="postJobModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header"><h3>Post a New Job</h3><div class="icon-btn" onclick="closeModal('postJobModal')"><i class="fas fa-times"></i></div></div>
+            <div class="modal-body">
+                <div class="input-group"><input type="text" id="newJobTitle" class="input-field" placeholder="Job Title (e.g., Private Chef)"></div>
+                <div class="input-group"><input type="text" id="newJobSalary" class="input-field" placeholder="Salary (₹30,000/month)"></div>
+                <div class="input-group"><input type="text" id="newJobHours" class="input-field" placeholder="Working Hours (8 hours/day)"></div>
+                <div class="input-group"><input type="text" id="newJobLanguages" class="input-field" placeholder="Languages Required"></div>
+                <div class="input-group"><input type="text" id="newJobLocation" class="input-field" placeholder="Location"></div>
+                <button class="btn-premium btn-primary" style="width: 100%;" onclick="postNewJob()">Post Job</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== COMPLETE JOB LIST (150+ Jobs) ====================
+        const ALL_JOBS = [
+            "Private Chef", "Home Cook", "House Maid", "House Cleaner", "Housekeeper", "Butler", "Laundry Worker", "Ironing Worker", "Dish Washer", "Home Helper", "Personal Maid", "Kitchen Assistant", "Household Manager", "Domestic Worker", "Apartment Caretaker",
+            "Babysitter", "Nanny", "Child Caretaker", "Infant Care Specialist", "Daycare Helper", "Private Child Tutor", "Child Activity Supervisor",
+            "Elder Caretaker", "Senior Companion", "Home Nurse Assistant", "Personal Elder Helper", "Medical Attendant", "Disabled Care Assistant",
+            "Private Tutor", "Home Tutor", "Math Tutor", "Science Tutor", "English Tutor", "Music Teacher", "Dance Teacher", "Drawing Teacher", "Yoga Instructor", "Language Teacher", "Coding Tutor", "Homework Helper", "Exam Preparation Tutor",
+            "Personal Driver", "Family Driver", "Private Chauffeur", "School Pickup Driver", "Delivery Driver", "Temporary Driver",
+            "Professional Chef", "Tandoor Chef", "Bakery Chef", "Pastry Chef", "Party Chef", "Catering Assistant", "Kitchen Helper",
+            "Electrician", "Plumber", "AC Technician", "Refrigerator Technician", "Washing Machine Technician", "TV Repair Technician", "Mobile Repair Technician", "Computer Repair Technician", "Laptop Technician", "CCTV Installer", "Internet Technician",
+            "Office Cleaner", "Window Cleaner", "Carpet Cleaner", "Sofa Cleaner", "Bathroom Cleaner", "Building Cleaner", "Deep Cleaning Specialist",
+            "Gardener", "Landscape Worker", "Tree Trimmer", "Farm Worker", "Security Guard", "Watchman", "Gatekeeper",
+            "Dog Walker", "Pet Sitter", "Pet Groomer", "Pet Trainer", "Animal Caretaker",
+            "Event Helper", "Wedding Assistant", "Party Decorator", "Photographer", "Videographer", "DJ", "Makeup Artist", "Hairstylist",
+            "Personal Assistant", "Home Manager", "Errand Runner", "Shopping Assistant", "Travel Assistant",
+            "Package Delivery Worker", "Grocery Delivery Worker", "Medicine Delivery Worker", "Courier Assistant",
+            "Personal Trainer", "Yoga Trainer", "Meditation Instructor", "Diet Consultant", "Fitness Coach",
+            "Translator", "Content Writer", "Data Entry Worker", "Home Office Assistant", "Call Assistant", "Online Support Assistant"
+        ];
+
+        // Unique emojis for each job
+        const JOB_EMOJIS = {
+            "Private Chef": "👨‍🍳", "Home Cook": "🍳", "House Maid": "🧹", "House Cleaner": "🧽", "Housekeeper": "🏠", "Butler": "🧔‍♂️", "Laundry Worker": "👕", "Ironing Worker": "👔", "Dish Washer": "🍽️", "Home Helper": "🤝", "Personal Maid": "👩", "Kitchen Assistant": "🔪", "Household Manager": "📋", "Domestic Worker": "🏡", "Apartment Caretaker": "🏢",
+            "Babysitter": "👶", "Nanny": "👧", "Child Caretaker": "🧒", "Infant Care Specialist": "🍼", "Daycare Helper": "🏫", "Private Child Tutor": "📖", "Child Activity Supervisor": "🎨",
+            "Elder Caretaker": "👴", "Senior Companion": "👵", "Home Nurse Assistant": "💊", "Personal Elder Helper": "🩺", "Medical Attendant": "🏥", "Disabled Care Assistant": "♿",
+            "Private Tutor": "📚", "Home Tutor": "🏠📚", "Math Tutor": "📐", "Science Tutor": "🔬", "English Tutor": "📖", "Music Teacher": "🎵", "Dance Teacher": "💃", "Drawing Teacher": "🎨", "Yoga Instructor": "🧘", "Language Teacher": "🗣️", "Coding Tutor": "💻", "Homework Helper": "📝", "Exam Preparation Tutor": "📋",
+            "Personal Driver": "🚗", "Family Driver": "🚙", "Private Chauffeur": "🚘", "School Pickup Driver": "🚌", "Delivery Driver": "📦", "Temporary Driver": "⏰",
+            "Professional Chef": "👨‍🍳⭐", "Tandoor Chef": "🔥", "Bakery Chef": "🥖", "Pastry Chef": "🍰", "Party Chef": "🎉", "Catering Assistant": "🍱", "Kitchen Helper": "🥘",
+            "Electrician": "⚡", "Plumber": "🔧", "AC Technician": "❄️", "Refrigerator Technician": "🧊", "Washing Machine Technician": "🧺", "TV Repair Technician": "📺", "Mobile Repair Technician": "📱", "Computer Repair Technician": "💻", "Laptop Technician": "🖥️", "CCTV Installer": "📹", "Internet Technician": "🌐",
+            "Office Cleaner": "🏢🧹", "Window Cleaner": "🪟", "Carpet Cleaner": "🧵", "Sofa Cleaner": "🛋️", "Bathroom Cleaner": "🚽", "Building Cleaner": "🏢", "Deep Cleaning Specialist": "✨",
+            "Gardener": "🌿", "Landscape Worker": "🌳", "Tree Trimmer": "✂️🌳", "Farm Worker": "🌾", "Security Guard": "🛡️", "Watchman": "👮", "Gatekeeper": "🚪",
+            "Dog Walker": "🐕", "Pet Sitter": "🐱", "Pet Groomer": "✂️🐕", "Pet Trainer": "🐕‍🦺", "Animal Caretaker": "🐾",
+            "Event Helper": "🎪", "Wedding Assistant": "💒", "Party Decorator": "🎈", "Photographer": "📸", "Videographer": "🎥", "DJ": "🎧", "Makeup Artist": "💄", "Hairstylist": "💇",
+            "Personal Assistant": "📅", "Home Manager": "🏠", "Errand Runner": "🏃", "Shopping Assistant": "🛒", "Travel Assistant": "✈️",
+            "Package Delivery Worker": "📦", "Grocery Delivery Worker": "🥬", "Medicine Delivery Worker": "💊", "Courier Assistant": "📬",
+            "Personal Trainer": "💪", "Yoga Trainer": "🧘", "Meditation Instructor": "🧠", "Diet Consultant": "🥗", "Fitness Coach": "🏋️",
+            "Translator": "🌍", "Content Writer": "✍️", "Data Entry Worker": "⌨️", "Home Office Assistant": "🏠💻", "Call Assistant": "📞", "Online Support Assistant": "💬"
+        };
+
+        function getJobEmoji(job) { return JOB_EMOJIS[job] || "💼"; }
+
+        // Firebase Config - REPLACE WITH YOUR FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",           // Get from Firebase Console
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase (Uncomment when you have Firebase config)
+        // const app = firebase.initializeApp(firebaseConfig);
+        // const auth = firebase.auth();
+
+        // Global variables
+        let jobSeekers = JSON.parse(localStorage.getItem('quickkaam_workers') || '[]');
+        let employers = JSON.parse(localStorage.getItem('quickkaam_employers') || '[]');
+        let jobs = JSON.parse(localStorage.getItem('quickkaam_jobs') || '[]');
+        let currentUser = null;
+        let currentEmployer = null;
+        let selectedJobForHiring = null;
+
+        // Initialize with sample workers if empty
+        if (jobSeekers.length === 0) {
+            jobSeekers = [
+                { id: 1, name: "Rajesh Kumar", profession: "Private Chef", location: "Delhi", languages: "Hindi, English", salary: "₹35,000/month", skills: "North Indian, Chinese", experience: 5, hired: false },
+                { id: 2, name: "Priya Sharma", profession: "House Maid", location: "Gurgaon", languages: "Hindi", salary: "₹15,000/month", skills: "Cleaning, Cooking", experience: 3, hired: false },
+                { id: 3, name: "Amit Singh", profession: "Driver", location: "Noida", languages: "Hindi, English", salary: "₹25,000/month", skills: "Driving, Route Planning", experience: 8, hired: false },
+                { id: 4, name: "Sunita Verma", profession: "Babysitter", location: "Delhi", languages: "Hindi", salary: "₹12,000/month", skills: "Child Care, First Aid", experience: 4, hired: false }
+            ];
+            localStorage.setItem('quickkaam_workers', JSON.stringify(jobSeekers));
+        }
+
+        // Populate profession dropdown
+        function populateProfessions() {
+            const select = document.getElementById('jsProfession');
+            if (select) {
+                select.innerHTML = '<option value="">Select Profession</option>' + 
+                    ALL_JOBS.map(job => `<option value="${job}">${getJobEmoji(job)} ${job}</option>`).join('');
+            }
+        }
+        populateProfessions();
+
+        // Splash transition
+        setTimeout(() => {
+            const splash = document.getElementById('splashScreen');
+            splash.classList.add('fade-out');
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.getElementById('welcomeScreen').classList.add('active');
+            }, 600);
+        }, 2800);
+
+        // OTP Functions (Using Firebase Phone Auth)
+        let confirmationResult = null;
+
+        async function sendJobSeekerOTP() {
+            const phone = document.getElementById('jsPhone').value;
+            if (!phone || phone.length < 10) { showToast("Enter valid phone number"); return; }
+            
+            // For demo without Firebase, show OTP in alert
+            const demoOTP = Math.floor(100000 + Math.random() * 900000);
+            localStorage.setItem(`otp_${phone}`, demoOTP);
+            showToast(`OTP sent to ${phone}: ${demoOTP} (Demo)`);
+            
+            document.getElementById('jsOtpSection').style.display = 'block';
+            document.getElementById('jsSendOtpBtn').style.display = 'none';
+            document.getElementById('jsVerifyBtn').style.display = 'block';
+        }
+
+        function verifyJobSeekerOTP() {
+            const phone = document.getElementById('jsPhone').value;
+            const entered = document.getElementById('jsOtp').value;
+            const saved = localStorage.getItem(`otp_${phone}`);
+            if (entered === saved) {
+                localStorage.removeItem(`otp_${phone}`);
+                document.getElementById('jobSeekerAuthScreen').classList.remove('active');
+                document.getElementById('jobSeekerProfileScreen').classList.add('active');
+            } else {
+                showToast("Invalid OTP");
+            }
+        }
+
+        async function sendEmployerOTP() {
+            const company = document.getElementById('empCompany').value;
+            const phone = document.getElementById('empPhone').value;
+            if (!company || !phone || phone.length < 10) { showToast("Enter company name and valid phone"); return; }
+            
+            const demoOTP = Math.floor(100000 + Math.random() * 900000);
+            localStorage.setItem(`otp_${phone}`, demoOTP);
+            showToast(`OTP sent to ${phone}: ${demoOTP} (Demo)`);
+            
+            document.getElementById('empOtpSection').style.display = 'block';
+            document.getElementById('empSendOtpBtn').style.display = 'none';
+            document.getElementById('empVerifyBtn').style.display = 'block';
+        }
+
+        function verifyEmployerOTP() {
+            const phone = document.getElementById('empPhone').value;
+            const entered = document.getElementById('empOtp').value;
+            const saved = localStorage.getItem(`otp_${phone}`);
+            if (entered === saved) {
+                localStorage.removeItem(`otp_${phone}`);
+                document.getElementById('employerAuthScreen').classList.remove('active');
+                document.getElementById('employerProfileScreen').classList.add('active');
+            } else {
+                showToast("Invalid OTP");
+            }
+        }
+
+        // Complete Profiles
+        function completeJobSeekerProfile() {
+            const profile = {
+                id: Date.now(),
+                name: document.getElementById('jsFullName').value,
+                profession: document.getElementById('jsProfession').value,
+                location: document.getElementById('jsLocation').value,
+                languages: document.getElementById('jsLanguages').value,
+                salary: document.getElementById('jsSalary').value,
+                skills: document.getElementById('jsSkills').value,
+                experience: document.getElementById('jsExperience').value,
+                hired: false,
+                phone: document.getElementById('jsPhone').value
+            };
+            if (!profile.name || !profile.profession) { showToast("Please fill all fields"); return; }
+            currentUser = profile;
+            jobSeekers.push(profile);
+            localStorage.setItem('quickkaam_workers', JSON.stringify(jobSeekers));
+            document.getElementById('jobSeekerProfileScreen').classList.remove('active');
+            document.getElementById('jobSeekerDashboardScreen').classList.add('active');
+            loadJobSeekerJobs();
+        }
+
+        function completeEmployerProfile() {
+            const profile = {
+                id: Date.now(),
+                companyName: document.getElementById('empCompanyName').value || document.getElementById('empCompany').value,
+                industry: document.getElementById('empIndustry').value,
+                location: document.getElementById('empLocation').value,
+                phone: document.getElementById('empPhone').value
+            };
+            currentEmployer = profile;
+            employers.push(profile);
+            localStorage.setItem('quickkaam_employers', JSON.stringify(employers));
+            document.getElementById('employerProfileScreen').classList.remove('active');
+            document.getElementById('employerDashboardScreen').classList.add('active');
+            loadFullJobList();
+        }
+
+        // EMPLOYER: Load full job list
+        function loadFullJobList() {
+            const container = document.getElementById('fullJobList');
+            document.getElementById('mainJobListView').style.display = 'block';
+            document.getElementById('workersView').style.display = 'none';
+            
+            container.innerHTML = ALL_JOBS.map(job => {
+                const workersCount = jobSeekers.filter(w => w.profession === job && !w.hired).length;
+                return `
+                    <div class="job-master-card" onclick="showWorkersForJob('${job}')">
+                        <div class="job-emoji">${getJobEmoji(job)}</div>
+                        <div class="job-master-info">
+                            <h4>${job}</h4>
+                            <p>${workersCount} available workers</p>
+                        </div>
+                        <div class="worker-count">${workersCount}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // EMPLOYER: Show workers for selected job
+        function showWorkersForJob(jobTitle) {
+            selectedJobForHiring = jobTitle;
+            const workers = jobSeekers.filter(w => w.profession === jobTitle && !w.hired);
+            
+            document.getElementById('selectedJobEmoji').innerHTML = getJobEmoji(jobTitle);
+            document.getElementById('selectedJobTitle').innerHTML = jobTitle;
+            document.getElementById('selectedJobSubtitle').innerHTML = `${workers.length} professionals available`;
+            
+            const workersContainer = document.getElementById('workersListGrid');
+            
+            if (workers.length === 0) {
+                workersContainer.innerHTML = `<div style="text-align: center; padding: 60px; background: var(--gray-50); border-radius: 20px;">
+                    <i class="fas fa-user-slash" style="font-size: 48px; color: var(--gray-400);"></i>
+                    <p style="margin-top: 16px; color: var(--gray-600);">No workers available for this position yet.<br>Post a job to attract talent!</p>
+                    <button class="btn-premium btn-primary" style="margin-top: 20px;" onclick="showPostJobModal()">Post a Job</button>
+                </div>`;
+            } else {
+                workersContainer.innerHTML = workers.map(worker => `
+                    <div class="worker-card">
+                        <div class="worker-avatar">${getJobEmoji(worker.profession)}</div>
+                        <div class="worker-info">
+                            <h4>${worker.name}</h4>
+                            <p>${worker.experience} years experience</p>
+                        </div>
+                        <div class="worker-details">
+                            <div class="detail-item"><i class="fas fa-map-marker-alt"></i><span>${worker.location}</span></div>
+                            <div class="detail-item"><i class="fas fa-language"></i><span>${worker.languages}</span></div>
+                            <div class="detail-item"><i class="fas fa-rupee-sign"></i><span>${worker.salary}</span></div>
+                            <div class="detail-item"><i class="fas fa-tools"></i><span>${worker.skills}</span></div>
+                        </div>
+                        <button class="hire-btn" onclick="hireWorkerPermanently(${worker.id}, '${worker.name}')">
+                            <i class="fas fa-handshake"></i> Hire Permanently
+                        </button>
+                    </div>
+                `).join('');
+            }
+            
+            document.getElementById('mainJobListView').style.display = 'none';
+            document.getElementById('workersView').style.display = 'block';
+        }
+
+        // EMPLOYER: Hire worker permanently (Black badge)
+        function hireWorkerPermanently(workerId, workerName) {
+            if (confirm(`Are you sure you want to hire ${workerName} permanently? This will mark them as hired and they will show a black badge.`)) {
+                const worker = jobSeekers.find(w => w.id === workerId);
+                if (worker && !worker.hired) {
+                    worker.hired = true;
+                    worker.hiredBy = currentEmployer?.companyName || "Company";
+                    worker.hiredDate = new Date().toLocaleDateString();
+                    localStorage.setItem('quickkaam_workers', JSON.stringify(jobSeekers));
+                    showToast(`✅ ${workerName} has been permanently hired! Black badge added.`);
+                    showWorkersForJob(selectedJobForHiring);
+                }
+            }
+        }
+
+        function backToJobList() {
+            document.getElementById('mainJobListView').style.display = 'block';
+            document.getElementById('workersView').style.display = 'none';
+            loadFullJobList();
+        }
+
+        // JOB SEEKER: Load recommended jobs
+        function loadJobSeekerJobs() {
+            const container = document.getElementById('jsJobList');
+            if (!container) return;
+            
+            const recommendedJobs = ALL_JOBS.filter(job => 
+                currentUser && job.toLowerCase().includes(currentUser.profession?.toLowerCase() || '')
+            );
+            const jobsToShow = recommendedJobs.length > 0 ? recommendedJobs : ALL_JOBS.slice(0, 30);
+            
+            container.innerHTML = jobsToShow.map(job => `
+                <div class="job-master-card" onclick="applyForJob('${job}')">
+                    <div class="job-emoji">${getJobEmoji(job)}</div>
+                    <div class="job-master-info">
+                        <h4>${job}</h4>
+                        <p>Salary: ₹25,000 - ₹40,000/month</p>
+                    </div>
+                    <button class="btn-premium btn-primary" style="padding: 8px 20px; width: auto;" onclick="event.stopPropagation();applyForJob('${job}')">Apply</button>
+                </div>
+            `).join('');
+        }
+
+        function applyForJob(jobTitle) {
+            showToast(`✅ Applied for ${jobTitle}! Employer will be notified.`);
+        }
+
+        // Post new job
+        function showPostJobModal() {
+            document.getElementById('postJobModal').classList.add('active');
+        }
+
+        function postNewJob() {
+            const newJob = {
+                title: document.getElementById('newJobTitle').value,
+                salary: document.getElementById('newJobSalary').value,
+                hours: document.getElementById('newJobHours').value,
+                languages: document.getElementById('newJobLanguages').value,
+                location: document.getElementById('newJobLocation').value
+            };
+            if (newJob.title) {
+                jobs.push(newJob);
+                localStorage.setItem('quickkaam_jobs', JSON.stringify(jobs));
+                closeModal('postJobModal');
+                showToast(`🎉 Job posted: ${newJob.title}`);
+                document.getElementById('newJobTitle').value = '';
+                document.getElementById('newJobSalary').value = '';
+                document.getElementById('newJobHours').value = '';
+                document.getElementById('newJobLanguages').value = '';
+                document.getElementById('newJobLocation').value = '';
+            } else {
+                showToast("Please enter job title");
+            }
+        }
+
+        // Profile functions
+        function showJobSeekerInfo() {
+            if (currentUser) {
+                let statusText = currentUser.hired ? "🔒 PERMANENTLY HIRED" : "🟢 AVAILABLE";
+                let statusColor = currentUser.hired ? "black" : "green";
+                alert(`👤 MY PROFILE\n\nName: ${currentUser.name}\nProfession: ${currentUser.profession}\nLocation: ${currentUser.location}\nLanguages: ${currentUser.languages}\nExperience: ${currentUser.experience} years\nSkills: ${currentUser.skills}\nExpected Salary: ${currentUser.salary}\nStatus: ${statusText}\n\n${currentUser.hired ? '✅ You have been permanently hired! Black badge added to your profile.' : '📢 Complete your profile to get more job matches!'}`);
+                
+                if (!currentUser.hired && confirm("Found a permanent job? Click OK to mark yourself as permanently hired (Black badge will appear).")) {
+                    currentUser.hired = true;
+                    const index = jobSeekers.findIndex(w => w.id === currentUser.id);
+                    if (index !== -1) jobSeekers[index].hired = true;
+                    localStorage.setItem('quickkaam_workers', JSON.stringify(jobSeekers));
+                    showToast("✅ Congratulations! You are now marked as permanently hired.");
+                }
+            }
+        }
+
+        function showEmployerInfo() {
+            if (currentEmployer) {
+                alert(`🏢 COMPANY PROFILE\n\nCompany: ${currentEmployer.companyName}\nIndustry: ${currentEmployer.industry}\nLocation: ${currentEmployer.location}\n\n📊 Stats:\n• Posted Jobs: ${jobs.length}\n• Available Workers: ${jobSeekers.filter(w => !w.hired).length}\n\nClick on any job category to see available workers!`);
+            }
+        }
+
+        // Navigation
+        function switchEmpTab(tab) {
+            if (tab === 'jobs') {
+                loadFullJobList();
+            } else if (tab === 'post') {
+                showPostJobModal();
+            }
+        }
+
+        function showJobSeekerAuth() {
+            document.getElementById('welcomeScreen').classList.remove('active');
+            document.getElementById('jobSeekerAuthScreen').classList.add('active');
+        }
+
+        function showEmployerAuth() {
+            document.getElementById('welcomeScreen').classList.remove('active');
+            document.getElementById('employerAuthScreen').classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
