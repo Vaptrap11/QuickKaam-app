@@ -773,14 +773,27 @@
     <script>
         // ==================== FIREBASE CONFIGURATION ====================
         // 🔴 IMPORTANT: REPLACE THIS WITH YOUR FIREBASE CONFIG FROM FIREBASE CONSOLE 🔴
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",           // Replace with your actual API Key
-            authDomain: "YOUR_AUTH_DOMAIN",   // Replace with your actual Auth Domain
-            projectId: "YOUR_PROJECT_ID",     // Replace with your actual Project ID
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+        // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCE4M1QoGcV-tMm5rsY0UfRxvEMHbPTgR4",
+  authDomain: "quickkaam-app.firebaseapp.com",
+  projectId: "quickkaam-app",
+  storageBucket: "quickkaam-app.firebasestorage.app",
+  messagingSenderId: "228497916448",
+  appId: "1:228497916448:web:996ac18fc852829206f245",
+  measurementId: "G-JCZD40R5HJ"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
         // Initialize Firebase
         const app = firebase.initializeApp(firebaseConfig);
