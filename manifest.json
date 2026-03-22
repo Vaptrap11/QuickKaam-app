@@ -1,12 +1,13 @@
 {
   "name": "QuickKaam",
   "short_name": "QuickKaam",
-  "description": "QuickKaam helps users find trusted workers and jobs instantly.",
-  "start_url": "./index.html",
+  "description": "QuickKaam helps people find and offer private jobs quickly.",
+  "start_url": "/QuickKaam-app/",
+  "scope": "/QuickKaam-app/",
   "display": "standalone",
   "background_color": "#000000",
-  "theme_color": "#d4af37",
-  "orientation": "portrait",
+  "theme_color": "#C9A227",
+  "orientation": "portrait"
   "icons": [
     {
       "src": "icon-192.jpg",
