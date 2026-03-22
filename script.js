@@ -1,3 +1,7 @@
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/QuickKaam-app/service-worker.js')
+    .then(() => console.log("Service Worker Registered"));
+}
 // QuickKaam Application - Main JavaScript File
 // Complete implementation of all features described in the requirements
 // ==================== DATA STRUCTURES & STORAGE ====================
