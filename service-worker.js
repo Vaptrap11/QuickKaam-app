@@ -1,11 +1,28 @@
+const CACHE_NAME = "quickkaam-cache-v1";
+
+const urlsToCache = [
+  "./",
+  "./index.html",
+  "./script.js",
+  "./manifest.json"
+];
+
+// Install service worker
 self.addEventListener("install", event => {
-  console.log("Service Worker Installed");
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        return cache.addAll(urlsToCache);
+      })
+  );
 });
 
-self.addEventListener("activate", event => {
-  console.log("Service Worker Activated");
-});
-
+// Fetch files from cache
 self.addEventListener("fetch", event => {
-  event.respondWith(fetch(event.request));
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        return response || fetch(event.request);
+      })
+  );
 });
