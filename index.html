@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- ========================================================= -->
+<!-- QUICKKAAM PWA — PRODUCTION MOBILE FIRST APPLICATION       -->
+<!-- Royal Private Job Marketplace                             -->
+<!-- Single File Architecture                                  -->
+<!-- ========================================================= -->
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- MOBILE OPTIMIZATION -->
+<meta name="viewport"
+content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="QuickKaam">
+
+<title>QuickKaam — Royal Private Job Marketplace</title>
+
+<!-- MANIFEST CONNECTION -->
+<link rel="manifest" href="manifest.json">
+
+<!-- APP ICON -->
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<!-- ========================================================= -->
+<!-- ROYAL BLACK + GOLD DESIGN SYSTEM                          -->
+<!-- ========================================================= -->
+
+<style>
+
+/* ========================================================= */
+/* ROOT VARIABLES                                            */
+/* ========================================================= */
+
+:root{
+ --gold:#C9A227;
+ --black:#000000;
+ --card:#111111;
+ --text:#ffffff;
+ --radius:18px;
+ --shadow:0 8px 20px rgba(0,0,0,.6);
+ --transition:.35s cubic-bezier(.4,0,.2,1);
+}
+
+/* RESET */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+background:#000;
+color:#fff;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+height:100%;
+overflow:hidden;
+}
+
+/* SAFE AREA SUPPORT */
+
+body{
+padding-bottom:env(safe-area-inset-bottom);
+}
+
+/* ========================================================= */
+/* GLOBAL UTILITIES                                          */
+/* ========================================================= */
+
+.hidden{display:none!important;}
+.center{
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+button{
+cursor:pointer;
+border:none;
+outline:none;
+font-size:16px;
+border-radius:12px;
+padding:14px;
+transition:var(--transition);
+}
+
+.gold-btn{
+background:#000;
+color:var(--gold);
+border:2px solid var(--gold);
+font-weight:bold;
+}
+
+.gold-btn:active{
+transform:scale(.97);
+}
+
+/* ========================================================= */
+/* APP CONTAINER                                             */
+/* ========================================================= */
+
+#app{
+height:100vh;
+display:flex;
+flex-direction:column;
+}
+
+/* ========================================================= */
+/* WELCOME SCREEN                                            */
+/* ========================================================= */
+
+#welcomeScreen{
+position:fixed;
+inset:0;
+background:#000;
+z-index:9999;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-align:center;
+}
+
+.logo{
+font-size:34px;
+font-weight:800;
+color:var(--gold);
+letter-spacing:2px;
+}
+
+.tagline{
+opacity:.8;
+margin-top:8px;
+}
+
+.loader{
+margin-top:30px;
+width:40px;
+height:40px;
+border-radius:50%;
+border:4px solid #333;
+border-top:4px solid var(--gold);
+animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+100%{transform:rotate(360deg);}
+}
+
+/* ========================================================= */
+/* MAIN VIEWS                                                */
+/* ========================================================= */
+
+.view{
+flex:1;
+overflow-y:auto;
+padding:16px;
+display:none;
+animation:fade .3s ease;
+}
+
+.view.active{
+display:block;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(10px);}
+to{opacity:1;}
+}
+
+/* ========================================================= */
+/* CARDS                                                     */
+/* ========================================================= */
+
+.card{
+background:var(--card);
+border-radius:var(--radius);
+padding:16px;
+margin-bottom:14px;
+box-shadow:var(--shadow);
+}
+
+/* ========================================================= */
+/* BOTTOM NAVIGATION                                         */
+/* ========================================================= */
+
+#bottomNav{
+height:70px;
+background:#000;
+border-top:1px solid #222;
+display:flex;
+justify-content:space-around;
+align-items:center;
+}
+
+.nav-btn{
+color:#888;
+font-size:12px;
+text-align:center;
+flex:1;
+}
+
+.nav-btn.active{
+color:var(--gold);
+font-weight:bold;
+}
+
+/* ========================================================= */
+/* STATUS ICONS                                              */
+/* ========================================================= */
+
+.status{
+width:10px;
+height:10px;
+border-radius:50%;
+display:inline-block;
+margin-right:6px;
+}
+
+.status.green{background:#00ff88;}
+.status.red{background:#ff3b3b;}
+.status.orange{background:#ffa500;}
+
+input,select,textarea{
+width:100%;
+background:#000;
+border:1px solid #333;
+color:#fff;
+padding:12px;
+border-radius:10px;
+margin-top:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<!-- ========================================================= -->
+<!-- WELCOME SCREEN (NEVER FREEZES)                            -->
+<!-- ========================================================= -->
+
+<div id="welcomeScreen">
+<div class="logo">QuickKaam</div>
+<div class="tagline">Royal Private Job Marketplace</div>
+<div class="loader"></div>
+</div>
+
+<!-- ========================================================= -->
+<!-- HOME VIEW                                                -->
+<!-- ========================================================= -->
+
+<div id="home" class="view active">
+<h2>Featured Jobs</h2>
+<div id="jobList"></div>
+</div>
+
+<!-- ========================================================= -->
+<!-- SEARCH VIEW                                              -->
+<!-- ========================================================= -->
+
+<div id="search" class="view">
+<h2>Search</h2>
+<input id="searchInput" placeholder="Search jobs or skills">
+<div id="searchResults"></div>
+</div>
+
+<!-- ========================================================= -->
+<!-- CHAT VIEW                                                -->
+<!-- ========================================================= -->
+
+<div id="chat" class="view">
+<h2>Chats</h2>
+<div id="chatList"></div>
+</div>
+
+<!-- ========================================================= -->
+<!-- SUBSCRIPTION VIEW                                        -->
+<!-- ========================================================= -->
+
+<div id="subscription" class="view">
+<h2>Premium Subscription</h2>
+
+<div class="card">
+<h3 style="color:#C9A227">QuickKaam Premium</h3>
+<p>₹100 • 3 Months</p>
+<p>✔ Unlimited Applications<br>
+✔ Priority Listing<br>
+✔ Premium Badge</p>
+
+<!-- REQUIRED UPI CODE INSERTED -->
+<button id="subscribeBtn" onclick="openPayment()" 
+class="gold-btn" style="width:100%">
+Subscribe ₹100 • 3 Months
+</button>
+
+<button id="confirmPayment" class="gold-btn"
+style="margin-top:10px;width:100%">
+I Have Completed Payment
+</button>
+
+<p id="subscriptionStatus"></p>
+
+</div>
+</div>
+
+<!-- ========================================================= -->
+<!-- PROFILE VIEW                                             -->
+<!-- ========================================================= -->
+
+<div id="profile" class="view">
+<h2>Profile</h2>
+
+<div class="card">
+<p><span id="statusIcon" class="status green"></span>
+<span id="statusText">Available</span></p>
+
+<select id="availabilitySelect">
+<option value="available">Available</option>
+<option value="assigned">Assigned</option>
+<option value="unavailable">Unavailable</option>
+</select>
+</div>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- BOTTOM NAVIGATION                                        -->
+<!-- ========================================================= -->
+
+<div id="bottomNav">
+
+<div class="nav-btn active" data-view="home">Home</div>
+<div class="nav-btn" data-view="search">Search</div>
+<div class="nav-btn" data-view="chat">Chat</div>
+<div class="nav-btn" data-view="subscription">Subscription</div>
+<div class="nav-btn" data-view="profile">Profile</div>
+
+</div>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- JAVASCRIPT CORE ARCHITECTURE                             -->
+<!-- ========================================================= -->
+
+<script defer>
+
+/* ========================================================= */
+/* GLOBAL SAFE ERROR HANDLER                                 */
+/* ========================================================= */
+
+window.addEventListener("error",()=>{
+console.warn("Recovered from error — redirecting Home");
+Router.navigate("home");
+});
+
+/* ========================================================= */
+/* STORAGE MANAGER                                           */
+/* ========================================================= */
+
+const Storage={
+get(k,def){
+try{
+return JSON.parse(localStorage.getItem(k)) ?? def;
+}catch(e){return def;}
+},
+set(k,v){
+try{
+localStorage.setItem(k,JSON.stringify(v));
+}catch(e){}
+}
+};
+
+/* ========================================================= */
+/* ROUTER (CENTRALIZED — NO FREEZE POSSIBLE)                 */
+/* ========================================================= */
+
+const Router={
+current:"home",
+
+navigate(view){
+try{
+document.querySelectorAll(".view")
+.forEach(v=>v.classList.remove("active"));
+
+document.getElementById(view)?.classList.add("active");
+
+document.querySelectorAll(".nav-btn")
+.forEach(b=>b.classList.remove("active"));
+
+document.querySelector(`[data-view="${view}"]`)
+?.classList.add("active");
+
+this.current=view;
+}catch(e){
+console.warn("Routing fallback");
+document.getElementById("home").classList.add("active");
+}
+}
+};
+
+/* NAV BUTTONS */
+document.querySelectorAll(".nav-btn").forEach(btn=>{
+btn.addEventListener("click",()=>{
+Router.navigate(btn.dataset.view);
+});
+});
+
+/* ========================================================= */
+/* GUARANTEED INITIALIZATION CONTROLLER                      */
+/* ========================================================= */
+
+let initialized=false;
+
+function startApp(){
+
+if(initialized) return;
+initialized=true;
+
+try{
+initData();
+renderJobs();
+updateStatusUI();
+updateSubscriptionUI();
+}catch(e){
+console.warn("Init partial failure recovered");
+}
+
+setTimeout(()=>{
+document.getElementById("welcomeScreen").style.display="none";
+Router.navigate("home");
+},300);
+
+}
+
+/* MULTI FAILSAFE STARTERS */
+document.addEventListener("DOMContentLoaded",startApp);
+window.onload=startApp;
+setTimeout(startApp,2000);
+
+/* ========================================================= */
+/* DEFAULT DATA                                              */
+/* ========================================================= */
+
+function initData(){
+
+if(!Storage.get("jobs")){
+Storage.set("jobs",[
+{title:"Electrician Needed",category:"Repair"},
+{title:"Home Tutor",category:"Education"},
+{title:"Delivery Partner",category:"Logistics"},
+{title:"Office Assistant",category:"Office"}
+]);
+}
+
+if(!Storage.get("status")){
+Storage.set("status","available");
+}
+
+}
+
+/* ========================================================= */
+/* HOME RENDER                                               */
+/* ========================================================= */
+
+function renderJobs(){
+
+const jobs=Storage.get("jobs",[]);
+const container=document.getElementById("jobList");
+
+container.innerHTML="";
+
+jobs.forEach(j=>{
+const div=document.createElement("div");
+div.className="card";
+div.innerHTML=
+`<h3>${j.title}</h3>
+<p>${j.category}</p>
+<button class="gold-btn">Assign</button>`;
+container.appendChild(div);
+});
+
+}
+
+/* ========================================================= */
+/* SEARCH                                                    */
+/* ========================================================= */
+
+document.getElementById("searchInput")
+.addEventListener("input",e=>{
+
+const q=e.target.value.toLowerCase();
+const jobs=Storage.get("jobs",[]);
+const results=jobs.filter(j=>j.title.toLowerCase().includes(q));
+
+const box=document.getElementById("searchResults");
+box.innerHTML="";
+
+results.forEach(j=>{
+box.innerHTML+=`<div class="card">${j.title}</div>`;
+});
+});
+
+/* ========================================================= */
+/* PROFILE STATUS SYSTEM                                     */
+/* ========================================================= */
+
+document.getElementById("availabilitySelect")
+.addEventListener("change",e=>{
+Storage.set("status",e.target.value);
+updateStatusUI();
+});
+
+function updateStatusUI(){
+
+const status=Storage.get("status","available");
+const icon=document.getElementById("statusIcon");
+const text=document.getElementById("statusText");
+
+icon.className="status";
+
+if(status==="available"){
+icon.classList.add("green");
+text.textContent="Available";
+}
+else if(status==="assigned"){
+icon.classList.add("red");
+text.textContent="Assigned";
+}
+else{
+icon.classList.add("orange");
+text.textContent="Unavailable";
+}
+
+}
+
+/* ========================================================= */
+/* SUBSCRIPTION SYSTEM (UPI LOCAL ACTIVATION)                */
+/* ========================================================= */
+
+document.getElementById("confirmPayment")
+.addEventListener("click",activateSubscription);
+
+function activateSubscription(){
+
+let start=new Date();
+let expiry=new Date();
+expiry.setDate(start.getDate()+90);
+
+Storage.set("subscription",{
+active:true,
+start:start,
+expiry:expiry
+});
+
+updateSubscriptionUI();
+alert("Premium Activated Successfully!");
+}
+
+function updateSubscriptionUI(){
+
+const data=Storage.get("subscription",{active:false});
+const status=document.getElementById("subscriptionStatus");
+
+if(!data.active){
+status.textContent="Free Plan Active";
+return;
+}
+
+const remaining=Math.ceil(
+(new Date(data.expiry)-new Date())/(1000*60*60*24)
+);
+
+if(remaining<=0){
+Storage.set("subscription",{active:false});
+status.textContent="Expired";
+return;
+}
+
+status.textContent="Premium Active • "+remaining+" days left";
+
+}
+
+/* ========================================================= */
+/* SERVICE WORKER REGISTRATION                               */
+/* ========================================================= */
+
+if("serviceWorker" in navigator){
+navigator.serviceWorker.register("service-worker.js")
+.catch(()=>console.log("SW optional"));
+}
+
+</script>
+  <!-- ========================================================= -->
+<!-- QUICKKAAM PART 2 — ADVANCED APP MODULES                  -->
+<!-- Onboarding + Roles + Chat Engine + Posting System        -->
+<!-- ========================================================= -->
+
+<script>
+
+/* ========================================================= */
+/* SAFE MODULE LOADER                                        */
+/* Prevent duplicate execution                               */
+/* ========================================================= */
+
+if(!window.QuickKaamPart2Loaded){
+
+window.QuickKaamPart2Loaded = true;
+
+console.log("QuickKaam Part 2 Loaded");
+
+/* ========================================================= */
+/* GLOBAL APP STATE MANAGER                                  */
+/* ========================================================= */
+
+const AppState = {
+get role(){
+return Storage.get("user_role",null);
+},
+set role(v){
+Storage.set("user_role",v);
+}
+};
+
+/* ========================================================= */
+/* ONBOARDING SCREEN CREATION                                */
+/* ========================================================= */
+
+function createOnboarding(){
+
+if(AppState.role) return;
+
+const screen=document.createElement("div");
+screen.id="onboardingScreen";
+
+screen.style.cssText=`
+position:fixed;
+inset:0;
+background:#000;
+z-index:9998;
+padding:20px;
+overflow:auto;
+`;
+
+screen.innerHTML=`
+<h2 style="color:#C9A227">Welcome to QuickKaam</h2>
+<p>Select how you want to use the app</p>
+
+<div class="card">
+<h3>Job Seeker</h3>
+<p>Find jobs and upload your skills.</p>
+<button class="gold-btn" id="roleSeeker">Continue</button>
+</div>
+
+<div class="card">
+<h3>Employer</h3>
+<p>Hire workers for your business.</p>
+<button class="gold-btn" id="roleEmployer">Continue</button>
+</div>
+
+<div class="card">
+<h3>Prefer Not To Say</h3>
+<p>Explore QuickKaam freely.</p>
+<button class="gold-btn" id="roleExplore">Explore</button>
+</div>
+`;
+
+document.body.appendChild(screen);
+
+/* ROLE EVENTS */
+
+document.getElementById("roleSeeker").onclick=()=>{
+AppState.role="seeker";
+initSeekerProfile();
+screen.remove();
+};
+
+document.getElementById("roleEmployer").onclick=()=>{
+AppState.role="employer";
+initEmployerProfile();
+screen.remove();
+};
+
+document.getElementById("roleExplore").onclick=()=>{
+AppState.role="explorer";
+screen.remove();
+};
+
+}
+
+/* ========================================================= */
+/* PROFILE INITIALIZATION                                    */
+/* ========================================================= */
+
+function initSeekerProfile(){
+
+if(!Storage.get("profile")){
+Storage.set("profile",{
+name:"",
+skills:"",
+experience:"",
+type:"Job Seeker"
+});
+}
+
+}
+
+function initEmployerProfile(){
+
+if(!Storage.get("profile")){
+Storage.set("profile",{
+business:"",
+industry:"",
+location:"",
+type:"Employer"
+});
+}
+
+}
+
+/* ========================================================= */
+/* PROFILE EDITOR                                            */
+/* ========================================================= */
+
+function renderProfileEditor(){
+
+const profile=Storage.get("profile",{});
+
+const container=document.getElementById("profile");
+
+const editor=document.createElement("div");
+editor.className="card";
+
+editor.innerHTML=`
+<h3>Edit Profile</h3>
+<input id="p_name" placeholder="Name"
+value="${profile.name||""}">
+<textarea id="p_skills"
+placeholder="Skills">${profile.skills||""}</textarea>
+<button class="gold-btn" id="saveProfile">Save</button>
+`;
+
+container.appendChild(editor);
+
+document.getElementById("saveProfile").onclick=()=>{
+profile.name=document.getElementById("p_name").value;
+profile.skills=document.getElementById("p_skills").value;
+Storage.set("profile",profile);
+alert("Profile Saved");
+};
+
+}
+
+/* ========================================================= */
+/* JOB POSTING SYSTEM                                        */
+/* ========================================================= */
+
+function enableJobPosting(){
+
+if(AppState.role!=="employer") return;
+
+const home=document.getElementById("home");
+
+const post=document.createElement("div");
+post.className="card";
+
+post.innerHTML=`
+<h3>Create Job Offer</h3>
+<input id="jobTitle" placeholder="Job Title">
+<input id="jobCategory" placeholder="Category">
+<button class="gold-btn" id="postJobBtn">
+Post Job
+</button>
+`;
+
+home.prepend(post);
+
+document.getElementById("postJobBtn").onclick=()=>{
+
+const title=document.getElementById("jobTitle").value;
+const category=document.getElementById("jobCategory").value;
+
+if(!title) return alert("Enter title");
+
+const jobs=Storage.get("jobs",[]);
+jobs.unshift({title,category});
+Storage.set("jobs",jobs);
+
+renderJobs();
+
+};
+
+}
+
+/* ========================================================= */
+/* CHAT ENGINE (LOCAL REALTIME SIMULATION)                   */
+/* ========================================================= */
+
+function initChat(){
+
+if(!Storage.get("chats")){
+Storage.set("chats",[
+{
+name:"Support",
+messages:[
+{text:"Welcome to QuickKaam!",time:Date.now()}
+]
+}
+]);
+}
+
+renderChatList();
+
+}
+
+function renderChatList(){
+
+const chats=Storage.get("chats",[]);
+const box=document.getElementById("chatList");
+
+box.innerHTML="";
+
+chats.forEach((c,i)=>{
+
+const div=document.createElement("div");
+div.className="card";
+div.innerHTML=`
+<b>${c.name}</b><br>
+<small>${c.messages.slice(-1)[0].text}</small>
+`;
+
+div.onclick=()=>openChat(i);
+
+box.appendChild(div);
+
+});
+
+}
+
+function openChat(index){
+
+const chats=Storage.get("chats",[]);
+const chat=chats[index];
+
+const view=document.getElementById("chat");
+
+view.innerHTML=`
+<h2>${chat.name}</h2>
+<div id="messages"></div>
+<input id="msgInput" placeholder="Message">
+<button class="gold-btn" id="sendMsg">Send</button>
+`;
+
+const msgBox=document.getElementById("messages");
+
+function renderMsgs(){
+msgBox.innerHTML="";
+chat.messages.forEach(m=>{
+msgBox.innerHTML+=`
+<div class="card">${m.text}</div>`;
+});
+}
+
+renderMsgs();
+
+document.getElementById("sendMsg").onclick=()=>{
+const text=document.getElementById("msgInput").value;
+if(!text) return;
+
+chat.messages.push({
+text,
+time:Date.now()
+});
+
+Storage.set("chats",chats);
+renderMsgs();
+};
+
+}
+
+/* ========================================================= */
+/* PREMIUM FEATURE LOCK SYSTEM                               */
+/* ========================================================= */
+
+function premiumGuard(action){
+
+const sub=Storage.get("subscription",{active:false});
+
+if(!sub.active){
+alert("Premium Required");
+Router.navigate("subscription");
+return false;
+}
+return true;
+
+}
+
+/* ========================================================= */
+/* OFFLINE DETECTOR                                          */
+/* ========================================================= */
+
+window.addEventListener("offline",()=>{
+alert("You are offline. Some features limited.");
+});
+
+/* ========================================================= */
+/* INSTALL PROMPT HANDLER                                    */
+/* ========================================================= */
+
+let deferredPrompt=null;
+
+window.addEventListener("beforeinstallprompt",(e)=>{
+e.preventDefault();
+deferredPrompt=e;
+console.log("Install available");
+});
+
+/* ========================================================= */
+/* PERFORMANCE SAFE START                                    */
+/* ========================================================= */
+
+setTimeout(()=>{
+createOnboarding();
+renderProfileEditor();
+enableJobPosting();
+initChat();
+},400);
+
+} // END SAFE LOADER
+
+</script>
+<!-- ========================================================= -->
+<!-- QUICKKAAM PART 3 — PAYMENT + FINAL APP ENGINE            -->
+<!-- Guaranteed Non-Freeze Lifecycle Controller               -->
+<!-- ========================================================= -->
+
+<script>
+
+/* ========================================================= */
+/* SAFE EXECUTION GUARD                                      */
+/* ========================================================= */
+
+if(!window.QuickKaamPart3Loaded){
+
+window.QuickKaamPart3Loaded=true;
+console.log("QuickKaam Part 3 Loaded");
+
+/* ========================================================= */
+/* GLOBAL ERROR RECOVERY                                     */
+/* ========================================================= */
+
+window.addEventListener("error",function(e){
+console.warn("Recovered Error:",e.message);
+try{
+Router.navigate("home");
+}catch(err){}
+});
+
+window.addEventListener("unhandledrejection",()=>{
+try{ Router.navigate("home"); }catch(e){}
+});
+
+/* ========================================================= */
+/* SUBSCRIPTION STORAGE KEYS                                 */
+/* ========================================================= */
+
+const SUB_KEYS={
+ACTIVE:"quickkaam_subscription_active",
+START:"quickkaam_subscription_start",
+EXPIRY:"quickkaam_subscription_expiry",
+TXN:"quickkaam_subscription_txn"
+};
+
+/* ========================================================= */
+/* DATE HELPERS                                              */
+/* ========================================================= */
+
+function addDays(date,days){
+const d=new Date(date);
+d.setDate(d.getDate()+days);
+return d;
+}
+
+function daysRemaining(expiry){
+const diff=new Date(expiry)-new Date();
+return Math.max(0,Math.ceil(diff/86400000));
+}
+
+/* ========================================================= */
+/* SUBSCRIPTION ENGINE                                       */
+/* ========================================================= */
+
+const Subscription={
+
+activate(txn="manual"){
+
+const start=new Date();
+const expiry=addDays(start,90);
+
+localStorage.setItem(SUB_KEYS.ACTIVE,"true");
+localStorage.setItem(SUB_KEYS.START,start);
+localStorage.setItem(SUB_KEYS.EXPIRY,expiry);
+localStorage.setItem(SUB_KEYS.TXN,txn);
+
+updatePremiumUI();
+alert("✅ Premium Activated for 3 Months");
+
+},
+
+isActive(){
+
+const active=localStorage.getItem(SUB_KEYS.ACTIVE);
+const expiry=localStorage.getItem(SUB_KEYS.EXPIRY);
+
+if(!active||!expiry) return false;
+
+if(new Date()>new Date(expiry)){
+this.expire();
+return false;
+}
+
+return true;
+
+},
+
+expire(){
+localStorage.removeItem(SUB_KEYS.ACTIVE);
+localStorage.removeItem(SUB_KEYS.START);
+localStorage.removeItem(SUB_KEYS.EXPIRY);
+updatePremiumUI();
+}
+
+};
+
+/* ========================================================= */
+/* PAYMENT FLOW UI                                           */
+/* ========================================================= */
+
+function renderSubscriptionUI(){
+
+const container=document.getElementById("subscription");
+if(!container) return;
+
+container.innerHTML="";
+
+const card=document.createElement("div");
+card.className="card";
+
+if(Subscription.isActive()){
+
+const days=daysRemaining(
+localStorage.getItem(SUB_KEYS.EXPIRY)
+);
+
+card.innerHTML=`
+<h2 style="color:#C9A227">Premium Active</h2>
+<p>${days} days remaining</p>
+<div class="premium-badge">ROYAL MEMBER</div>
+`;
+
+container.appendChild(card);
+return;
+}
+
+card.innerHTML=`
+<h2 style="color:#C9A227">QuickKaam Premium</h2>
+
+<ul>
+<li>✔ Unlimited Applications</li>
+<li>✔ Priority Search Ranking</li>
+<li>✔ Premium Chat Access</li>
+<li>✔ Verified Gold Badge</li>
+<li>✔ Advanced Job Matching</li>
+</ul>
+
+<p>₹100 • 3 Months</p>
+
+<a id="subscribeBtn"
+href="upi://pay?pa=9873765511@ybl&pn=QuickKaam&am=100&cu=INR">
+<button class="gold-btn">
+Subscribe ₹100 • 3 Months
+</button>
+</a>
+
+<div id="paymentWaiting" style="display:none">
+<p>Complete payment in your UPI app and return here.</p>
+<div class="loader"></div>
+<button class="gold-btn" id="confirmPayment">
+I Have Completed Payment
+</button>
+
+<input id="txnLast4"
+placeholder="Last 4 digits of UPI Txn (optional)">
+</div>
+`;
+
+container.appendChild(card);
+
+/* PAYMENT CLICK */
+
+document.getElementById("subscribeBtn")
+.addEventListener("click",()=>{
+
+document.getElementById("paymentWaiting")
+.style.display="block";
+
+});
+
+/* CONFIRM PAYMENT */
+
+document.getElementById("confirmPayment")
+.onclick=()=>{
+
+const txn=document.getElementById("txnLast4").value||"manual";
+
+Subscription.activate(txn);
+renderSubscriptionUI();
+
+};
+
+}
+
+/* ========================================================= */
+/* PREMIUM BADGE UPDATE                                      */
+/* ========================================================= */
+
+function updatePremiumUI(){
+
+const badge=document.querySelectorAll(".premium-badge");
+
+badge.forEach(b=>{
+b.style.display=Subscription.isActive()?"block":"none";
+});
+
+}
+
+/* ========================================================= */
+/* WORKER AVAILABILITY INTELLIGENCE                          */
+/* ========================================================= */
+
+const Availability={
+
+set(status,reason=""){
+Storage.set("availability",{status,reason,time:Date.now()});
+updateAvailabilityUI();
+},
+
+get(){
+return Storage.get("availability",{status:"available"});
+}
+
+};
+
+function updateAvailabilityUI(){
+
+const data=Availability.get();
+
+const icon=document.getElementById("availabilityIcon");
+if(!icon) return;
+
+if(data.status==="available"){
+icon.style.background="green";
+}
+else if(data.status==="assigned"){
+icon.style.background="red";
+}
+else{
+icon.style.background="orange";
+}
+
+}
+
+/* ========================================================= */
+/* PROFILE AVAILABILITY CONTROL                              */
+/* ========================================================= */
+
+function injectAvailabilityControls(){
+
+const profile=document.getElementById("profile");
+if(!profile) return;
+
+const box=document.createElement("div");
+box.className="card";
+
+box.innerHTML=`
+<h3>Availability</h3>
+
+<div id="availabilityIcon"
+style="width:14px;height:14px;
+border-radius:50%;background:green"></div>
+
+<button class="gold-btn" id="setAvailable">
+Available
+</button>
+
+<button class="gold-btn" id="setBusy">
+Assigned Job
+</button>
+
+<button class="gold-btn" id="setAway">
+Unavailable
+</button>
+`;
+
+profile.appendChild(box);
+
+document.getElementById("setAvailable").onclick=
+()=>Availability.set("available");
+
+document.getElementById("setBusy").onclick=
+()=>Availability.set("assigned");
+
+document.getElementById("setAway").onclick=
+()=>Availability.set("away","manual");
+
+updateAvailabilityUI();
+
+}
+
+/* ========================================================= */
+/* ROUTER SAFETY GUARD                                       */
+/* ========================================================= */
+
+(function protectRouter(){
+
+if(!window.Router) return;
+
+const original=Router.navigate;
+
+Router.navigate=function(view){
+
+try{
+original(view);
+}catch(e){
+console.warn("Router recovered");
+original("home");
+}
+
+};
+
+})();
+
+/* ========================================================= */
+/* BACKGROUND SUBSCRIPTION CHECKER                           */
+/* ========================================================= */
+
+setInterval(()=>{
+Subscription.isActive();
+},60000);
+
+/* ========================================================= */
+/* FINAL INITIALIZATION                                      */
+/* ========================================================= */
+
+setTimeout(()=>{
+renderSubscriptionUI();
+injectAvailabilityControls();
+updatePremiumUI();
+},500);
+
+} // SAFE GUARD END
+
+</script>
+  <!-- ===================================================== -->
+<!-- QUICKKAAM PART 4 — PWA INSTALL + SERVICE WORKER       -->
+<!-- ===================================================== -->
+
+<script>
+
+if(!window.QuickKaamPWA){
+
+window.QuickKaamPWA=true;
+console.log("QuickKaam PWA System Loaded");
+
+/* ===================================================== */
+/* SERVICE WORKER REGISTRATION                           */
+/* ===================================================== */
+
+(function registerSW(){
+
+if(!("serviceWorker" in navigator)){
+console.warn("Service Worker not supported");
+return;
+}
+
+window.addEventListener("load",async()=>{
+
+try{
+
+const reg = await navigator.serviceWorker.register("./service-worker.js");
+
+console.log("Service Worker Registered",reg.scope);
+
+}catch(e){
+console.warn("SW failed but app continues safely");
+}
+
+});
+
+})();
+
+/* ===================================================== */
+/* INSTALL PROMPT HANDLER                                */
+/* ===================================================== */
+
+let deferredPrompt=null;
+
+window.addEventListener("beforeinstallprompt",(e)=>{
+
+e.preventDefault();
+deferredPrompt=e;
+
+showInstallButton();
+
+});
+
+/* ===================================================== */
+/* INSTALL BUTTON UI                                     */
+/* ===================================================== */
+
+function showInstallButton(){
+
+if(document.getElementById("installAppBtn")) return;
+
+const btn=document.createElement("button");
+
+btn.id="installAppBtn";
+btn.innerText="Install QuickKaam App";
+
+btn.style.position="fixed";
+btn.style.bottom="90px";
+btn.style.left="50%";
+btn.style.transform="translateX(-50%)";
+btn.style.background="#000";
+btn.style.color="#C9A227";
+btn.style.border="2px solid #C9A227";
+btn.style.padding="14px 22px";
+btn.style.borderRadius="14px";
+btn.style.zIndex="9999";
+btn.style.fontWeight="bold";
+btn.style.boxShadow="0 6px 18px rgba(0,0,0,0.5)";
+
+btn.onclick=installApp;
+
+document.body.appendChild(btn);
+
+}
+
+/* ===================================================== */
+/* INSTALL ACTION                                        */
+/* ===================================================== */
+
+async function installApp(){
+
+if(!deferredPrompt) return;
+
+deferredPrompt.prompt();
+
+const result=await deferredPrompt.userChoice;
+
+console.log("Install choice:",result.outcome);
+
+deferredPrompt=null;
+
+const btn=document.getElementById("installAppBtn");
+if(btn) btn.remove();
+
+}
+
+/* ===================================================== */
+/* IOS INSTALL GUIDE                                     */
+/* ===================================================== */
+
+function isiOS(){
+return /iphone|ipad|ipod/i.test(navigator.userAgent);
+}
+
+function isStandalone(){
+return window.matchMedia('(display-mode: standalone)').matches;
+}
+
+if(isiOS() && !isStandalone()){
+
+setTimeout(()=>{
+
+const tip=document.createElement("div");
+
+tip.innerHTML=`
+<div style="
+position:fixed;
+bottom:80px;
+left:10px;
+right:10px;
+background:#000;
+color:#C9A227;
+padding:14px;
+border-radius:14px;
+border:1px solid #C9A227;
+z-index:9999;
+font-size:14px;">
+📲 Install QuickKaam:<br>
+Tap <b>Share</b> → <b>Add to Home Screen</b>
+</div>
+`;
+
+document.body.appendChild(tip);
+
+setTimeout(()=>tip.remove(),8000);
+
+},4000);
+
+}
+
+/* ===================================================== */
+/* OFFLINE DETECTION                                     */
+/* ===================================================== */
+
+window.addEventListener("offline",()=>{
+
+showOfflineBanner(true);
+
+});
+
+window.addEventListener("online",()=>{
+
+showOfflineBanner(false);
+
+});
+
+function showOfflineBanner(show){
+
+let banner=document.getElementById("offlineBanner");
+
+if(show){
+
+if(banner) return;
+
+banner=document.createElement("div");
+banner.id="offlineBanner";
+
+banner.innerText="⚠ Offline Mode — Some features limited";
+
+banner.style.position="fixed";
+banner.style.top="0";
+banner.style.left="0";
+banner.style.right="0";
+banner.style.background="#C9A227";
+banner.style.color="#000";
+banner.style.padding="10px";
+banner.style.textAlign="center";
+banner.style.zIndex="9999";
+
+document.body.appendChild(banner);
+
+}else{
+if(banner) banner.remove();
+}
+
+}
+
+/* ===================================================== */
+/* APP WAKE OPTIMIZATION                                 */
+/* ===================================================== */
+
+document.addEventListener("visibilitychange",()=>{
+
+if(!document.hidden){
+
+try{
+if(window.Subscription){
+Subscription.isActive();
+}
+}catch(e){}
+
+}
+
+});
+
+/* ===================================================== */
+/* SAFE BOOT CONFIRMATION                                */
+/* ===================================================== */
+
+setTimeout(()=>{
+console.log("QuickKaam fully initialized ✅");
+},1500);
+
+}
+
+</script>
+  <script>
+/* ================================
+   PART 5 — PAYMENT CONFIRMATION
+================================ */
+
+function checkPaymentStatus() {
+
+    // check saved payment
+    const paymentDone = localStorage.getItem("quickkaam_paid");
+
+    if(paymentDone === "yes") {
+        unlockPremium();
+    }
+}
+
+function unlockPremium() {
+
+    // hide subscribe button
+    const subBtn = document.getElementById("subscribeBtn");
+    if(subBtn){
+        subBtn.style.display = "none";
+    }
+
+    // show success badge
+    let badge = document.createElement("div");
+    badge.innerHTML = "✅ Premium Activated";
+    badge.style =
+        "position:fixed;bottom:20px;right:20px;" +
+        "background:#0f172a;color:white;" +
+        "padding:10px 15px;border-radius:8px;" +
+        "font-weight:bold;z-index:9999;";
+
+    document.body.appendChild(badge);
+}
+
+/* simulate payment success */
+function paymentSuccess(){
+
+    // save payment
+    localStorage.setItem("quickkaam_paid","yes");
+
+    alert("Payment Successful ✅");
+
+    unlockPremium();
+}
+
+/* auto check when page loads */
+window.onload = function(){
+    checkPaymentStatus();
+};
+</script>
+  <script>
+/* ================================
+   PART 6 — REAL UPI PAYMENT
+================================ */
+
+function payWithUPI(){
+
+    const upiID = "9873765511@ybl";
+    const name = "QuickKaam";
+    const amount = "49";   // change price here
+    const note = "QuickKaam Premium Subscription";
+
+    const upiLink =
+        "upi://pay?pa=" + upiID +
+        "&pn=" + encodeURIComponent(name) +
+        "&am=" + amount +
+        "&cu=INR" +
+        "&tn=" + encodeURIComponent(note);
+
+    // open UPI apps
+    window.location.href = upiLink;
+
+    // after returning assume payment attempt
+    setTimeout(()=>{
+        askPaymentConfirmation();
+    },5000);
+}
+
+
+/* ask user confirmation */
+function askPaymentConfirmation(){
+
+    const confirmPay = confirm(
+        "Did you complete the payment?"
+    );
+
+    if(confirmPay){
+        paymentSuccess(); // from Part 5
+    } else {
+        alert("Payment not completed.");
+    }
+}
+</script>
+  <!-- ===============================
+     PART 7 — COMPLETE PREMIUM SYSTEM
+================================ -->
+
+<!-- PAYMENT POPUP UI -->
+<div id="paymentPopup" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+z-index:9999;
+justify-content:center;
+align-items:center;">
+
+<div style="
+background:white;
+padding:25px;
+border-radius:12px;
+text-align:center;
+width:85%;
+max-width:320px;
+font-family:sans-serif;">
+
+<h2>QuickKaam Premium</h2>
+<p>Unlock all features</p>
+<h1>₹49 / Month</h1>
+
+<button onclick="startPayment()" style="
+background:#0f172a;
+color:white;
+padding:12px 20px;
+border:none;
+border-radius:8px;
+font-size:16px;">
+Pay Now
+</button>
+
+<br><br>
+
+<button onclick="closePayment()" style="
+background:#ddd;
+border:none;
+padding:8px 15px;
+border-radius:6px;">
+Cancel
+</button>
+
+</div>
+</div>
+
+
+<script>
+/* ===============================
+   PART 7 LOGIC
+================================ */
+
+function openPayment(){
+    document.getElementById("paymentPopup").style.display="flex";
+}
+
+function closePayment(){
+    document.getElementById("paymentPopup").style.display="none";
+}
+
+/* loading animation */
+function showLoading(){
+
+    let loader=document.createElement("div");
+    loader.id="loader";
+    loader.innerHTML="Processing Payment...";
+
+    loader.style=
+    "position:fixed;top:50%;left:50%;" +
+    "transform:translate(-50%,-50%);" +
+    "background:#0f172a;color:white;" +
+    "padding:15px 25px;border-radius:10px;" +
+    "z-index:9999;";
+
+    document.body.appendChild(loader);
+}
+
+/* start payment */
+function startPayment(){
+
+    closePayment();
+    showLoading();
+
+    setTimeout(()=>{
+        payWithUPI();
+    },1500);
+}
+
+/* REAL UPI PAYMENT */
+function payWithUPI(){
+
+    const upiID="9873765511@ybl";
+    const name="QuickKaam";
+    const amount="49";
+    const note="QuickKaam Premium";
+
+    const link=
+    "upi://pay?pa="+upiID+
+    "&pn="+encodeURIComponent(name)+
+    "&am="+amount+
+    "&cu=INR"+
+    "&tn="+encodeURIComponent(note);
+
+    window.location.href=link;
+
+    setTimeout(()=>{
+        askPaymentConfirmation();
+    },5000);
+}
+
+/* confirmation */
+function askPaymentConfirmation(){
+
+    const done=confirm("Did you complete the payment?");
+
+    if(done){
+        paymentSuccess();
+    }else{
+        alert("Payment not completed.");
+    }
+}
+
+/* premium activation */
+function paymentSuccess(){
+
+    const now=new Date().getTime();
+    const expiry=now+(30*24*60*60*1000);
+
+    localStorage.setItem("quickkaam_paid","yes");
+    localStorage.setItem("quickkaam_expiry",expiry);
+
+    alert("Premium Activated for 30 Days ✅");
+
+    unlockPremium();
+}
+
+/* unlock UI */
+function unlockPremium(){
+
+    const btn=document.getElementById("subscribeBtn");
+    if(btn) btn.style.display="none";
+
+    let badge=document.createElement("div");
+    badge.innerHTML="✅ Premium Active";
+    badge.style=
+    "position:fixed;bottom:20px;right:20px;" +
+    "background:#0f172a;color:white;" +
+    "padding:10px 15px;border-radius:8px;" +
+    "z-index:9999;";
+
+    document.body.appendChild(badge);
+}
+
+/* check expiry on load */
+window.onload=function(){
+
+    const paid=localStorage.getItem("quickkaam_paid");
+    const expiry=localStorage.getItem("quickkaam_expiry");
+
+    if(paid==="yes" && expiry){
+
+        const now=new Date().getTime();
+
+        if(now<expiry){
+            unlockPremium();
+        }else{
+            localStorage.clear();
+            alert("Subscription expired.");
+        }
+    }
+};
+</script>
+  <script>
+document.getElementById("confirmPayment")
+?.addEventListener("click", function(){
+
+  try{
+    const start = Date.now();
+    const expiry = start + (90*24*60*60*1000);
+
+    localStorage.setItem("quickkaam_subscription_active","true");
+    localStorage.setItem("quickkaam_subscription_start",start);
+    localStorage.setItem("quickkaam_subscription_expiry",expiry);
+
+    document.getElementById("subscriptionStatus").innerText =
+      "✅ Premium Activated (90 Days)";
+
+    alert("Premium Activated Successfully!");
+
+    updateSubscriptionUI?.();
+
+  }catch(e){
+    console.warn("Activation error",e);
+  }
+
+});
+</script>
+  <script>
+(function(){
+  try{
+    const expiry = localStorage.getItem("quickkaam_subscription_expiry");
+
+    if(expiry && Date.now() > Number(expiry)){
+        localStorage.removeItem("quickkaam_subscription_active");
+        localStorage.removeItem("quickkaam_subscription_start");
+        localStorage.removeItem("quickkaam_subscription_expiry");
+    }
+  }catch(e){}
+})();
+</script>
+  <script>
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("service-worker.js")
+    .catch(()=>console.log("SW failed"));
+  });
+}
+</script>
+  <script>
+setTimeout(()=>{
+   try{
+     if(!document.body.classList.contains("app-ready")){
+        console.warn("Force navigation fallback");
+        showView?.("home");
+     }
+   }catch(e){}
+},2000);
+</script>
+  
+</body>
+</html>
