@@ -1,0 +1,1752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="QuickKaam">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="Royal Private Job Marketplace - Find Work Fast or Hire Trusted Help">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/192x192/C9A227/000000?text=QK">
+    <title>QuickKaam - Royal Private Job Marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ============================================ */
+        /* QUICKKAAM - ROYAL BLACK & GOLD THEME */
+        /* Mobile-First PWA Design */
+        /* ============================================ */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --royal-black: #000000;
+            --royal-dark: #0a0a0a;
+            --royal-darker: #050505;
+            --royal-gold: #C9A227;
+            --royal-gold-dark: #b38f1f;
+            --royal-gold-light: #e5c158;
+            --royal-gold-glow: rgba(201, 162, 39, 0.3);
+            --royal-white: #ffffff;
+            --royal-gray: #1a1a1a;
+            --royal-light-gray: #2a2a2a;
+            --royal-text: #e0e0e0;
+            --royal-text-dim: #888888;
+            --status-available: #10b981;
+            --status-busy: #ef4444;
+            --status-unavailable: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--royal-black);
+            color: var(--royal-text);
+            overflow-x: hidden;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ============================================ */
+        /* SCREEN MANAGEMENT */
+        /* ============================================ */
+        
+        .screen {
+            display: none;
+            min-height: 100vh;
+            animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding-bottom: 80px;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* ============================================ */
+        /* SPLASH / WELCOME SCREEN */
+        /* ============================================ */
+        
+        #welcomeScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--royal-black);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        
+        #welcomeScreen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .welcome-container {
+            text-align: center;
+            padding: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .welcome-logo {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--royal-gold), var(--royal-gold-dark));
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 0 30px var(--royal-gold-glow);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px var(--royal-gold-glow); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px var(--royal-gold-glow); }
+        }
+        
+        .welcome-logo i {
+            font-size: 60px;
+            color: var(--royal-black);
+        }
+        
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--royal-gold), var(--royal-gold-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+        
+        .welcome-tagline {
+            font-size: 1rem;
+            color: var(--royal-gold-light);
+            margin-bottom: 20px;
+        }
+        
+        .welcome-stats {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+            color: var(--royal-text-dim);
+            font-size: 0.75rem;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--royal-gray);
+            border-top-color: var(--royal-gold);
+            border-radius: 50%;
+            margin: 20px auto 0;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* ============================================ */
+        /* BOTTOM NAVIGATION */
+        /* ============================================ */
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 20px 25px;
+            z-index: 100;
+            border-top: 1px solid rgba(201, 162, 39, 0.3);
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--royal-text-dim);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 5px 10px;
+            border-radius: 30px;
+        }
+        
+        .nav-item i {
+            font-size: 22px;
+        }
+        
+        .nav-item span {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .nav-item.active {
+            color: var(--royal-gold);
+            transform: translateY(-3px);
+        }
+        
+        .nav-item:hover {
+            color: var(--royal-gold-light);
+        }
+        
+        /* ============================================ */
+        /* HEADER */
+        /* ============================================ */
+        
+        .app-header {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            border-bottom: 1px solid rgba(201, 162, 39, 0.3);
+        }
+        
+        .header-content {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--royal-gold), var(--royal-gold-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--royal-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--royal-gold);
+        }
+        
+        .icon-btn:hover {
+            background: var(--royal-gold);
+            color: var(--royal-black);
+        }
+        
+        /* ============================================ */
+        /* CARDS & CONTAINERS */
+        /* ============================================ */
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .royal-card {
+            background: var(--royal-dark);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(201, 162, 39, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .royal-card:hover {
+            border-color: var(--royal-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .gold-text {
+            color: var(--royal-gold);
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--royal-gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* ============================================ */
+        /* STATS GRID */
+        /* ============================================ */
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: var(--royal-gray);
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(201, 162, 39, 0.2);
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--royal-gold);
+        }
+        
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--royal-text-dim);
+        }
+        
+        /* ============================================ */
+        /* JOB CARDS */
+        /* ============================================ */
+        
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        
+        .job-card {
+            background: var(--royal-gray);
+            border-radius: 20px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(201, 162, 39, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .job-card:hover {
+            border-color: var(--royal-gold);
+            transform: translateX(5px);
+        }
+        
+        .job-emoji {
+            font-size: 45px;
+        }
+        
+        .job-info {
+            flex: 1;
+        }
+        
+        .job-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--royal-white);
+        }
+        
+        .job-salary {
+            font-size: 0.8rem;
+            color: var(--royal-gold);
+            margin-top: 4px;
+        }
+        
+        .job-location {
+            font-size: 0.7rem;
+            color: var(--royal-text-dim);
+            margin-top: 4px;
+        }
+        
+        .apply-btn {
+            background: transparent;
+            border: 1px solid var(--royal-gold);
+            color: var(--royal-gold);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .apply-btn:hover {
+            background: var(--royal-gold);
+            color: var(--royal-black);
+        }
+        
+        /* ============================================ */
+        /* SEARCH */
+        /* ============================================ */
+        
+        .search-bar {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--royal-gray);
+            border: 1px solid rgba(201, 162, 39, 0.3);
+            border-radius: 50px;
+            color: var(--royal-white);
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--royal-gold);
+        }
+        
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .chip {
+            background: var(--royal-gray);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(201, 162, 39, 0.3);
+        }
+        
+        .chip.active {
+            background: var(--royal-gold);
+            color: var(--royal-black);
+        }
+        
+        /* ============================================ */
+        /* CHAT */
+        /* ============================================ */
+        
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .chat-item {
+            background: var(--royal-gray);
+            border-radius: 20px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            border: 1px solid rgba(201, 162, 39, 0.2);
+        }
+        
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--royal-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--royal-black);
+        }
+        
+        .chat-info {
+            flex: 1;
+        }
+        
+        .chat-name {
+            font-weight: 600;
+            color: var(--royal-white);
+        }
+        
+        .chat-preview {
+            font-size: 0.75rem;
+            color: var(--royal-text-dim);
+        }
+        
+        .chat-time {
+            font-size: 0.7rem;
+            color: var(--royal-gold);
+        }
+        
+        .chat-detail {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 150px);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .message.sent {
+            background: var(--royal-gold);
+            color: var(--royal-black);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .message.received {
+            background: var(--royal-gray);
+            color: var(--royal-white);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background: var(--royal-dark);
+            border-top: 1px solid rgba(201, 162, 39, 0.3);
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--royal-gray);
+            border: none;
+            border-radius: 30px;
+            color: var(--royal-white);
+        }
+        
+        .send-btn {
+            background: var(--royal-gold);
+            color: var(--royal-black);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        /* ============================================ */
+        /* SUBSCRIPTION */
+        /* ============================================ */
+        
+        .subscription-card {
+            background: linear-gradient(135deg, var(--royal-gold-dark), var(--royal-gold));
+            border-radius: 28px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .subscription-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--royal-black);
+        }
+        
+        .subscription-duration {
+            font-size: 0.9rem;
+            color: rgba(0, 0, 0, 0.7);
+        }
+        
+        .benefits-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .benefits-list li {
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+        }
+        
+        .benefits-list li i {
+            color: var(--royal-gold);
+            width: 25px;
+        }
+        
+        .subscribe-btn {
+            background: var(--royal-black);
+            color: var(--royal-gold);
+            padding: 16px;
+            font-size: 1.1rem;
+            border-radius: 60px;
+            border: 2px solid var(--royal-gold);
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            display: block;
+            text-decoration: none;
+        }
+        
+        .subscribe-btn:hover {
+            background: var(--royal-gold);
+            color: var(--royal-black);
+        }
+        
+        .subscription-active {
+            background: var(--royal-gray);
+            text-align: center;
+            padding: 20px;
+            border-radius: 24px;
+            border: 1px solid var(--royal-gold);
+        }
+        
+        .days-left {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--royal-gold);
+        }
+        
+        /* ============================================ */
+        /* PROFILE */
+        /* ============================================ */
+        
+        .profile-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--royal-gold), var(--royal-gold-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 48px;
+            color: var(--royal-black);
+        }
+        
+        .verification-badge {
+            display: inline-block;
+            background: var(--royal-gold);
+            color: var(--royal-black);
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        
+        .status-selector {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .status-option {
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            background: var(--royal-gray);
+            transition: all 0.2s;
+        }
+        
+        .status-option.available { border-left: 3px solid var(--status-available); }
+        .status-option.busy { border-left: 3px solid var(--status-busy); }
+        .status-option.unavailable { border-left: 3px solid var(--status-unavailable); }
+        .status-option.active { background: var(--royal-gold); color: var(--royal-black); }
+        
+        .edit-profile-btn {
+            background: var(--royal-gray);
+            color: var(--royal-gold);
+            border: 1px solid var(--royal-gold);
+            padding: 12px;
+            border-radius: 30px;
+            width: 100%;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        
+        /* ============================================ */
+        /* MODAL */
+        /* ============================================ */
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: var(--royal-dark);
+            border-radius: 32px;
+            max-width: 350px;
+            width: 90%;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid var(--royal-gold);
+        }
+        
+        /* ============================================ */
+        /* TOAST */
+        /* ============================================ */
+        
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--royal-gold);
+            color: var(--royal-black);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            z-index: 2100;
+            animation: slideUp 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        /* ============================================ */
+        /* UTILITIES */
+        /* ============================================ */
+        
+        .text-center { text-align: center; }
+        .mt-4 { margin-top: 20px; }
+        .mb-4 { margin-bottom: 20px; }
+        .w-100 { width: 100%; }
+        
+        /* iOS Safe Area */
+        @supports (padding: max(0px)) {
+            .bottom-nav {
+                padding-bottom: max(25px, env(safe-area-inset-bottom));
+            }
+            .app-header {
+                padding-top: max(15px, env(safe-area-inset-top));
+            }
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--royal-gray);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--royal-gold);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- WELCOME / SPLASH SCREEN -->
+<!-- ============================================ -->
+<div id="welcomeScreen">
+    <div class="welcome-container">
+        <div class="welcome-logo">
+            <i class="fas fa-crown"></i>
+        </div>
+        <h1 class="welcome-title">QUICKKAAM</h1>
+        <p class="welcome-tagline">Royal Private Job Marketplace</p>
+        <div class="welcome-stats">
+            <span>👑 10,000+ Jobs</span>
+            <span>⭐ 50,000+ Workers</span>
+            <span>✅ 100% Verified</span>
+        </div>
+        <div class="loading-spinner"></div>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- MAIN APP CONTAINER -->
+<!-- ============================================ -->
+<div id="appContainer" style="display: none;">
+    
+    <!-- HOME SCREEN -->
+    <div id="homeScreen" class="screen">
+        <div class="app-header">
+            <div class="header-content">
+                <div class="logo"><i class="fas fa-crown"></i> QuickKaam</div>
+                <div class="icon-btn" id="profileIconBtn"><i class="fas fa-user"></i></div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Active Jobs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">50K+</div>
+                    <div class="stat-label">Workers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Verified</div>
+                </div>
+            </div>
+            
+            <div class="section-title">
+                <i class="fas fa-fire"></i>
+                <span>Featured Jobs</span>
+            </div>
+            <div id="featuredJobs" class="jobs-grid"></div>
+            
+            <div class="section-title mt-4">
+                <i class="fas fa-users"></i>
+                <span>Top Verified Workers</span>
+            </div>
+            <div id="topWorkers" class="jobs-grid"></div>
+        </div>
+    </div>
+    
+    <!-- SEARCH SCREEN -->
+    <div id="searchScreen" class="screen">
+        <div class="app-header">
+            <div class="header-content">
+                <div class="logo"><i class="fas fa-search"></i> Search</div>
+                <div class="icon-btn" id="searchProfileBtn"><i class="fas fa-user"></i></div>
+            </div>
+        </div>
+        <div class="container">
+            <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Search jobs, skills, or workers...">
+            <div class="filter-chips" id="filterChips"></div>
+            <div id="searchResults" class="jobs-grid"></div>
+        </div>
+    </div>
+    
+    <!-- CHAT SCREEN -->
+    <div id="chatScreen" class="screen">
+        <div class="app-header">
+            <div class="header-content">
+                <div class="logo"><i class="fas fa-comment"></i> Messages</div>
+                <div class="icon-btn" id="chatProfileBtn"><i class="fas fa-user"></i></div>
+            </div>
+        </div>
+        <div class="container">
+            <div id="chatListView" class="chat-list"></div>
+            <div id="chatDetailView" class="chat-detail" style="display: none;">
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="messageInput" class="chat-input" placeholder="Type a message...">
+                    <button class="send-btn" id="sendMessageBtn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+                <button id="backToChatList" class="edit-profile-btn" style="margin: 10px;">← Back to Chats</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- SUBSCRIPTION SCREEN -->
+    <div id="subscriptionScreen" class="screen">
+        <div class="app-header">
+            <div class="header-content">
+                <div class="logo"><i class="fas fa-crown"></i> Premium</div>
+                <div class="icon-btn" id="subProfileBtn"><i class="fas fa-user"></i></div>
+            </div>
+        </div>
+        <div class="container">
+            <div id="subscriptionContent"></div>
+        </div>
+    </div>
+    
+    <!-- PROFILE SCREEN -->
+    <div id="profileScreen" class="screen">
+        <div class="app-header">
+            <div class="header-content">
+                <div class="logo"><i class="fas fa-user"></i> My Profile</div>
+                <div class="icon-btn" id="profileEditBtn"><i class="fas fa-edit"></i></div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">👤</div>
+                <h2 id="profileName">Guest User</h2>
+                <div id="verificationBadge" class="verification-badge">🔒 Not Verified</div>
+                <div class="status-selector" id="statusSelector">
+                    <div class="status-option available" data-status="available">🟢 Available</div>
+                    <div class="status-option busy" data-status="busy">🔴 Busy</div>
+                    <div class="status-option unavailable" data-status="unavailable">🟡 Unavailable</div>
+                </div>
+                <div id="statusReason" style="font-size: 0.8rem; color: var(--royal-text-dim);"></div>
+            </div>
+            <div class="royal-card">
+                <h3 class="gold-text">Professional Details</h3>
+                <p><strong>Profession:</strong> <span id="profileProfession">Not set</span></p>
+                <p><strong>Location:</strong> <span id="profileLocation">Not set</span></p>
+                <p><strong>Experience:</strong> <span id="profileExperience">0 years</span></p>
+                <p><strong>Skills:</strong> <span id="profileSkills">Not set</span></p>
+            </div>
+            <button class="edit-profile-btn" id="editProfileBtn">✏️ Edit Profile</button>
+            <button class="edit-profile-btn" id="logoutBtn" style="margin-top: 10px; border-color: var(--danger); color: var(--danger);">🚪 Logout</button>
+        </div>
+    </div>
+    
+    <!-- BOTTOM NAVIGATION -->
+    <div class="bottom-nav">
+        <div class="nav-item" data-tab="home">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" data-tab="search">
+            <i class="fas fa-search"></i>
+            <span>Search</span>
+        </div>
+        <div class="nav-item" data-tab="chat">
+            <i class="fas fa-comment"></i>
+            <span>Chat</span>
+        </div>
+        <div class="nav-item" data-tab="subscription">
+            <i class="fas fa-crown"></i>
+            <span>Premium</span>
+        </div>
+        <div class="nav-item" data-tab="profile">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div id="editProfileModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3 class="gold-text">Edit Profile</h3>
+        <input type="text" id="editName" class="search-bar" placeholder="Full Name" style="margin-top: 15px;">
+        <input type="text" id="editProfession" class="search-bar" placeholder="Profession">
+        <input type="text" id="editLocation" class="search-bar" placeholder="Location">
+        <input type="number" id="editExperience" class="search-bar" placeholder="Years of Experience">
+        <input type="text" id="editSkills" class="search-bar" placeholder="Skills (comma separated)">
+        <button id="saveProfileBtn" class="subscribe-btn" style="margin-top: 15px;">Save Changes</button>
+        <button id="closeModalBtn" class="edit-profile-btn" style="margin-top: 10px;">Cancel</button>
+    </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div id="paymentModal" class="modal-overlay">
+    <div class="modal-content">
+        <i class="fas fa-credit-card" style="font-size: 48px; color: var(--royal-gold);"></i>
+        <h3 class="gold-text">Complete Payment</h3>
+        <p>Pay ₹100 for 3 Months Premium</p>
+        <a id="upiPaymentLink" href="upi://pay?pa=9873765511@ybl&pn=QuickKaam&am=100&cu=INR" style="text-decoration: none; display: block;">
+            <button class="subscribe-btn" style="margin: 15px 0;">Pay with UPI</button>
+        </a>
+        <p style="font-size: 0.7rem; color: var(--royal-text-dim);">Pay to: 9873765511@ybl</p>
+        <button id="confirmPaymentBtn" class="edit-profile-btn">I Have Completed Payment</button>
+        <button id="cancelPaymentBtn" class="edit-profile-btn" style="margin-top: 10px;">Cancel</button>
+    </div>
+</div>
+
+<script>
+// ============================================ */
+// QUICKKAAM - COMPLETE PWA APPLICATION
+// Enterprise-Grade | Royal Black & Gold Theme
+// ============================================ */
+
+// ============================================ */
+// STORAGE MANAGER
+// ============================================ */
+const StorageManager = {
+    get(key, defaultValue = null) {
+        try {
+            const value = localStorage.getItem(key);
+            return value ? JSON.parse(value) : defaultValue;
+        } catch (e) {
+            console.warn(`Storage get error for ${key}:`, e);
+            return defaultValue;
+        }
+    },
+    set(key, value) {
+        try {
+            localStorage.setItem(key, JSON.stringify(value));
+            return true;
+        } catch (e) {
+            console.warn(`Storage set error for ${key}:`, e);
+            return false;
+        }
+    },
+    remove(key) {
+        try {
+            localStorage.removeItem(key);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+};
+
+// ============================================ */
+// SUBSCRIPTION MANAGER
+// ============================================ */
+const SubscriptionManager = {
+    ACTIVATE: 'quickkaam_subscription_active',
+    START: 'quickkaam_subscription_start',
+    EXPIRY: 'quickkaam_subscription_expiry',
+    
+    isActive() {
+        const expiry = StorageManager.get(this.EXPIRY);
+        if (!expiry) return false;
+        const now = new Date().getTime();
+        const isActive = now < expiry;
+        if (!isActive) {
+            this.deactivate();
+        }
+        return isActive;
+    },
+    
+    activate() {
+        const now = new Date().getTime();
+        const expiry = now + (90 * 24 * 60 * 60 * 1000);
+        StorageManager.set(this.ACTIVATE, true);
+        StorageManager.set(this.START, now);
+        StorageManager.set(this.EXPIRY, expiry);
+        this.updateUI();
+        return true;
+    },
+    
+    deactivate() {
+        StorageManager.set(this.ACTIVATE, false);
+        StorageManager.remove(this.START);
+        StorageManager.remove(this.EXPIRY);
+        this.updateUI();
+    },
+    
+    getDaysRemaining() {
+        const expiry = StorageManager.get(this.EXPIRY);
+        if (!expiry) return 0;
+        const now = new Date().getTime();
+        const diff = expiry - now;
+        return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+    },
+    
+    updateUI() {
+        const event = new CustomEvent('subscriptionChanged');
+        window.dispatchEvent(event);
+    }
+};
+
+// ============================================ */
+// USER MANAGER
+// ============================================ */
+const UserManager = {
+    CURRENT_USER: 'quickkaam_current_user',
+    
+    getCurrentUser() {
+        return StorageManager.get(this.CURRENT_USER, {
+            id: 'guest_' + Date.now(),
+            name: 'Guest User',
+            profession: 'Not set',
+            location: 'Not set',
+            experience: 0,
+            skills: [],
+            status: 'available',
+            statusReason: '',
+            statusExpiry: null,
+            avatar: '👤',
+            isVerified: false,
+            createdAt: new Date().toISOString()
+        });
+    },
+    
+    saveUser(user) {
+        StorageManager.set(this.CURRENT_USER, user);
+        this.updateUI();
+        return user;
+    },
+    
+    updateStatus(status, reason = '', durationHours = 0) {
+        const user = this.getCurrentUser();
+        user.status = status;
+        user.statusReason = reason;
+        if (durationHours > 0) {
+            user.statusExpiry = new Date().getTime() + (durationHours * 60 * 60 * 1000);
+        } else {
+            user.statusExpiry = null;
+        }
+        this.saveUser(user);
+        this.updateUI();
+    },
+    
+    getStatusIcon() {
+        const user = this.getCurrentUser();
+        const status = user.status;
+        if (status === 'available') return { icon: '🟢', text: 'Available' };
+        if (status === 'busy') return { icon: '🔴', text: 'Assigned to Job' };
+        return { icon: '🟡', text: 'Temporarily Unavailable' };
+    },
+    
+    updateUI() {
+        const event = new CustomEvent('userChanged');
+        window.dispatchEvent(event);
+    }
+};
+
+// ============================================ */
+// JOB MANAGER
+// ============================================ */
+const JobManager = {
+    JOBS_KEY: 'quickkaam_jobs',
+    
+    getAllJobs() {
+        return StorageManager.get(this.JOBS_KEY, [
+            { id: 1, title: 'Private Chef', salary: '₹35,000/month', location: 'Delhi', emoji: '👨‍🍳', employer: 'Taj Hotel' },
+            { id: 2, title: 'House Maid', salary: '₹15,000/month', location: 'Gurgaon', emoji: '🧹', employer: 'DLF Ltd' },
+            { id: 3, title: 'Driver', salary: '₹25,000/month', location: 'Noida', emoji: '🚗', employer: 'ABC Corp' },
+            { id: 4, title: 'Private Tutor', salary: '₹500/hour', location: 'Delhi', emoji: '📚', employer: 'Sunita M.' },
+            { id: 5, title: 'Babysitter', salary: '₹12,000/month', location: 'Gurgaon', emoji: '👶', employer: 'Priya S.' },
+            { id: 6, title: 'Electrician', salary: '₹20,000/month', location: 'Noida', emoji: '⚡', employer: 'Ramesh E.' }
+        ]);
+    },
+    
+    searchJobs(query) {
+        const jobs = this.getAllJobs();
+        if (!query) return jobs;
+        const lowerQuery = query.toLowerCase();
+        return jobs.filter(job => 
+            job.title.toLowerCase().includes(lowerQuery) ||
+            job.location.toLowerCase().includes(lowerQuery) ||
+            (job.salary && job.salary.toLowerCase().includes(lowerQuery))
+        );
+    },
+    
+    applyForJob(jobId) {
+        const user = UserManager.getCurrentUser();
+        const applications = StorageManager.get('quickkaam_applications', []);
+        applications.push({
+            jobId,
+            userId: user.id,
+            appliedAt: new Date().toISOString()
+        });
+        StorageManager.set('quickkaam_applications', applications);
+        return true;
+    }
+};
+
+// ============================================ */
+// CHAT MANAGER
+// ============================================ */
+const ChatManager = {
+    CHATS_KEY: 'quickkaam_chats',
+    MESSAGES_KEY: 'quickkaam_messages_',
+    
+    getChats() {
+        return StorageManager.get(this.CHATS_KEY, [
+            { id: 1, name: 'Rajesh Kumar', avatar: '👨‍🍳', lastMessage: 'Interested in the Chef position', time: '2 min ago', unread: 1 },
+            { id: 2, name: 'Priya Sharma', avatar: '🧹', lastMessage: 'When can we schedule an interview?', time: '1 hour ago', unread: 0 },
+            { id: 3, name: 'Amit Singh', avatar: '🚗', lastMessage: 'Available for full-time driving', time: 'Yesterday', unread: 0 }
+        ]);
+    },
+    
+    getMessages(chatId) {
+        const key = this.MESSAGES_KEY + chatId;
+        return StorageManager.get(key, [
+            { id: 1, text: 'Hello! I am interested in the job.', sender: 'other', time: '10:00 AM' },
+            { id: 2, text: 'Great! Can you share your experience?', sender: 'me', time: '10:05 AM' },
+            { id: 3, text: 'I have 5 years of experience in this field.', sender: 'other', time: '10:10 AM' }
+        ]);
+    },
+    
+    sendMessage(chatId, text) {
+        const key = this.MESSAGES_KEY + chatId;
+        const messages = this.getMessages(chatId);
+        const newMessage = {
+            id: Date.now(),
+            text: text,
+            sender: 'me',
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        messages.push(newMessage);
+        StorageManager.set(key, messages);
+        
+        // Update last message in chats
+        const chats = this.getChats();
+        const chat = chats.find(c => c.id === chatId);
+        if (chat) {
+            chat.lastMessage = text;
+            chat.time = 'Just now';
+            StorageManager.set(this.CHATS_KEY, chats);
+        }
+        return newMessage;
+    }
+};
+
+// ============================================ */
+// ROUTER (SPA Navigation)
+// ============================================ */
+const Router = {
+    currentTab: 'home',
+    screens: {},
+    
+    init() {
+        this.screens = {
+            home: document.getElementById('homeScreen'),
+            search: document.getElementById('searchScreen'),
+            chat: document.getElementById('chatScreen'),
+            subscription: document.getElementById('subscriptionScreen'),
+            profile: document.getElementById('profileScreen')
+        };
+        
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const tab = item.dataset.tab;
+                if (tab) this.navigate(tab);
+            });
+        });
+        
+        // Profile icon navigation
+        document.getElementById('profileIconBtn')?.addEventListener('click', () => this.navigate('profile'));
+        document.getElementById('searchProfileBtn')?.addEventListener('click', () => this.navigate('profile'));
+        document.getElementById('chatProfileBtn')?.addEventListener('click', () => this.navigate('profile'));
+        document.getElementById('subProfileBtn')?.addEventListener('click', () => this.navigate('profile'));
+    },
+    
+    navigate(tab) {
+        if (!this.screens[tab]) return;
+        
+        Object.keys(this.screens).forEach(key => {
+            if (this.screens[key]) this.screens[key].classList.remove('active');
+        });
+        
+        this.screens[tab].classList.add('active');
+        this.currentTab = tab;
+        
+        document.querySelectorAll('.nav-item').forEach(item => {
+            if (item.dataset.tab === tab) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+        
+        // Trigger tab-specific load
+        if (tab === 'home') this.loadHome();
+        if (tab === 'search') this.loadSearch();
+        if (tab === 'chat') this.loadChat();
+        if (tab === 'subscription') this.loadSubscription();
+        if (tab === 'profile') this.loadProfile();
+    },
+    
+    loadHome() {
+        const featuredContainer = document.getElementById('featuredJobs');
+        const workersContainer = document.getElementById('topWorkers');
+        
+        const jobs = JobManager.getAllJobs().slice(0, 4);
+        featuredContainer.innerHTML = jobs.map(job => `
+            <div class="job-card" onclick="Router.applyForJob(${job.id})">
+                <div class="job-emoji">${job.emoji}</div>
+                <div class="job-info">
+                    <div class="job-title">${job.title}</div>
+                    <div class="job-salary">${job.salary}</div>
+                    <div class="job-location">📍 ${job.location}</div>
+                </div>
+                <button class="apply-btn">Apply</button>
+            </div>
+        `).join('');
+        
+        const workers = [
+            { name: 'Rajesh Kumar', profession: 'Private Chef', rating: 4.9, emoji: '👨‍🍳' },
+            { name: 'Priya Sharma', profession: 'House Maid', rating: 4.8, emoji: '🧹' },
+            { name: 'Amit Singh', profession: 'Driver', rating: 4.7, emoji: '🚗' }
+        ];
+        workersContainer.innerHTML = workers.map(w => `
+            <div class="job-card">
+                <div class="job-emoji">${w.emoji}</div>
+                <div class="job-info">
+                    <div class="job-title">${w.name}</div>
+                    <div class="job-salary">⭐ ${w.rating} • ${w.profession}</div>
+                </div>
+                <button class="apply-btn">Hire</button>
+            </div>
+        `).join('');
+    },
+    
+    loadSearch() {
+        const chips = ['All', 'Chef', 'Driver', 'Maid', 'Tutor', 'Electrician'];
+        const chipsContainer = document.getElementById('filterChips');
+        chipsContainer.innerHTML = chips.map(chip => `
+            <div class="chip" data-chip="${chip}">${chip}</div>
+        `).join('');
+        
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                this.filterSearch();
+            });
+        });
+        
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', () => this.filterSearch());
+        this.filterSearch();
+    },
+    
+    filterSearch() {
+        const query = document.getElementById('searchInput').value;
+        const activeChip = document.querySelector('.chip.active');
+        const category = activeChip ? activeChip.dataset.chip : 'All';
+        
+        let jobs = JobManager.getAllJobs();
+        if (category !== 'All') {
+            jobs = jobs.filter(job => job.title.toLowerCase().includes(category.toLowerCase()));
+        }
+        if (query) {
+            jobs = jobs.filter(job => job.title.toLowerCase().includes(query.toLowerCase()));
+        }
+        
+        const resultsContainer = document.getElementById('searchResults');
+        resultsContainer.innerHTML = jobs.map(job => `
+            <div class="job-card" onclick="Router.applyForJob(${job.id})">
+                <div class="job-emoji">${job.emoji}</div>
+                <div class="job-info">
+                    <div class="job-title">${job.title}</div>
+                    <div class="job-salary">${job.salary}</div>
+                    <div class="job-location">📍 ${job.location}</div>
+                </div>
+                <button class="apply-btn">Apply</button>
+            </div>
+        `).join('');
+    },
+    
+    loadChat() {
+        const chatListView = document.getElementById('chatListView');
+        const chats = ChatManager.getChats();
+        
+        chatListView.innerHTML = chats.map(chat => `
+            <div class="chat-item" onclick="Router.openChat(${chat.id})">
+                <div class="chat-avatar">${chat.avatar}</div>
+                <div class="chat-info">
+                    <div class="chat-name">${chat.name}</div>
+                    <div class="chat-preview">${chat.lastMessage}</div>
+                </div>
+                <div class="chat-time">${chat.time}</div>
+            </div>
+        `).join('');
+        
+        document.getElementById('chatListView').style.display = 'block';
+        document.getElementById('chatDetailView').style.display = 'none';
+    },
+    
+    openChat(chatId) {
+        this.currentChatId = chatId;
+        const chat = ChatManager.getChats().find(c => c.id === chatId);
+        
+        document.getElementById('chatListView').style.display = 'none';
+        document.getElementById('chatDetailView').style.display = 'flex';
+        
+        this.loadMessages(chatId);
+        
+        const sendBtn = document.getElementById('sendMessageBtn');
+        const messageInput = document.getElementById('messageInput');
+        
+        const sendHandler = () => {
+            const text = messageInput.value.trim();
+            if (text) {
+                ChatManager.sendMessage(chatId, text);
+                this.loadMessages(chatId);
+                messageInput.value = '';
+            }
+        };
+        
+        sendBtn.onclick = sendHandler;
+        messageInput.onkeypress = (e) => { if (e.key === 'Enter') sendHandler(); };
+        
+        document.getElementById('backToChatList').onclick = () => this.loadChat();
+    },
+    
+    loadMessages(chatId) {
+        const messages = ChatManager.getMessages(chatId);
+        const container = document.getElementById('chatMessages');
+        container.innerHTML = messages.map(msg => `
+            <div class="message ${msg.sender === 'me' ? 'sent' : 'received'}">
+                ${msg.text}
+                <div style="font-size: 0.6rem; opacity: 0.7; margin-top: 4px;">${msg.time}</div>
+            </div>
+        `).join('');
+        container.scrollTop = container.scrollHeight;
+    },
+    
+    loadSubscription() {
+        const container = document.getElementById('subscriptionContent');
+        const isActive = SubscriptionManager.isActive();
+        const daysLeft = SubscriptionManager.getDaysRemaining();
+        
+        if (isActive) {
+            container.innerHTML = `
+                <div class="subscription-active">
+                    <i class="fas fa-crown" style="font-size: 48px; color: var(--royal-gold);"></i>
+                    <h2 class="gold-text">Premium Active</h2>
+                    <div class="days-left">${daysLeft}</div>
+                    <p>Days Remaining</p>
+                    <div class="benefits-list">
+                        <li><i class="fas fa-check-circle"></i> Unlimited Job Applications</li>
+                        <li><i class="fas fa-check-circle"></i> Priority Search Ranking</li>
+                        <li><i class="fas fa-check-circle"></i> Verified Badge</li>
+                        <li><i class="fas fa-check-circle"></i> Premium Chat Support</li>
+                    </div>
+                    <button class="edit-profile-btn" id="manageSubBtn">Manage Subscription</button>
+                </div>
+            `;
+            document.getElementById('manageSubBtn')?.addEventListener('click', () => {
+                if (confirm('Cancel your premium subscription?')) {
+                    SubscriptionManager.deactivate();
+                    this.loadSubscription();
+                }
+            });
+        } else {
+            container.innerHTML = `
+                <div class="subscription-card">
+                    <i class="fas fa-crown" style="font-size: 48px; color: var(--royal-black);"></i>
+                    <div class="subscription-price">₹100</div>
+                    <div class="subscription-duration">for 3 Months</div>
+                    <p style="margin: 15px 0; color: var(--royal-black);">Unlock Premium Features</p>
+                </div>
+                <div class="royal-card">
+                    <h3 class="gold-text">Premium Benefits</h3>
+                    <ul class="benefits-list">
+                        <li><i class="fas fa-check-circle"></i> Unlimited Job Applications</li>
+                        <li><i class="fas fa-check-circle"></i> Priority Search Ranking</li>
+                        <li><i class="fas fa-check-circle"></i> Verified Badge on Profile</li>
+                        <li><i class="fas fa-check-circle"></i> Direct Premium Chat Support</li>
+                        <li><i class="fas fa-check-circle"></i> Early Access to New Jobs</li>
+                    </ul>
+                </div>
+                <button id="subscribeNowBtn" class="subscribe-btn">👑 Subscribe Now - ₹100</button>
+            `;
+            
+            document.getElementById('subscribeNowBtn')?.addEventListener('click', () => {
+                document.getElementById('paymentModal').classList.add('active');
+            });
+        }
+    },
+    
+    loadProfile() {
+        const user = UserManager.getCurrentUser();
+        document.getElementById('profileName').innerText = user.name;
+        document.getElementById('profileProfession').innerText = user.profession;
+        document.getElementById('profileLocation').innerText = user.location;
+        document.getElementById('profileExperience').innerText = user.experience + ' years';
+        document.getElementById('profileSkills').innerText = user.skills.join(', ') || 'Not set';
+        document.getElementById('profileAvatar').innerHTML = user.avatar || '👤';
+        
+        const isSubActive = SubscriptionManager.isActive();
+        const badge = document.getElementById('verificationBadge');
+        if (isSubActive) {
+            badge.innerHTML = '👑 Premium Verified';
+            badge.style.background = 'var(--royal-gold)';
+        } else {
+            badge.innerHTML = '🔒 Not Verified';
+            badge.style.background = 'var(--royal-gray)';
+        }
+        
+        const statusInfo = UserManager.getStatusIcon();
+        document.querySelectorAll('.status-option').forEach(opt => {
+            opt.classList.remove('active');
+            if (opt.dataset.status === user.status) opt.classList.add('active');
+        });
+        
+        if (user.statusReason) {
+            document.getElementById('statusReason').innerHTML = `Reason: ${user.statusReason}`;
+        } else {
+            document.getElementById('statusReason').innerHTML = '';
+        }
+        
+        document.querySelectorAll('.status-option').forEach(opt => {
+            opt.onclick = () => {
+                const status = opt.dataset.status;
+                if (status === 'unavailable') {
+                    const reason = prompt('Reason for unavailability:', 'Personal work');
+                    const hours = prompt('Duration (hours):', '4');
+                    if (reason) UserManager.updateStatus(status, reason, parseInt(hours) || 4);
+                } else {
+                    UserManager.updateStatus(status);
+                }
+                this.loadProfile();
+            };
+        });
+    },
+    
+    applyForJob(jobId) {
+        const isSubActive = SubscriptionManager.isActive();
+        const user = UserManager.getCurrentUser();
+        
+        if (!isSubActive && user.name === 'Guest User') {
+            if (confirm('Subscribe to Premium to apply for jobs? Click OK to view subscription.')) {
+                this.navigate('subscription');
+            }
+            return;
+        }
+        
+        JobManager.applyForJob(jobId);
+        this.showToast('✅ Application submitted successfully!');
+    },
+    
+    showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+};
+
+// ============================================ */
+// INITIALIZATION CONTROLLER (Guaranteed to work)
+// ============================================ */
+let initializationCompleted = false;
+
+function initializeApp() {
+    try {
+        console.log('QuickKaam: Starting initialization...');
+        
+        // Hide welcome screen
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const appContainer = document.getElementById('appContainer');
+        
+        if (welcomeScreen && appContainer) {
+            welcomeScreen.classList.add('fade-out');
+            setTimeout(() => {
+                welcomeScreen.style.display = 'none';
+                appContainer.style.display = 'block';
+                
+                // Initialize Router and load home screen
+                Router.init();
+                Router.navigate('home');
+                
+                // Update subscription UI
+                SubscriptionManager.updateUI();
+                
+                // Load user data
+                const user = UserManager.getCurrentUser();
+                if (!user.name || user.name === 'Guest User') {
+                    // Show edit profile modal for new users
+                    setTimeout(() => {
+                        if (confirm('Welcome to QuickKaam! Would you like to complete your profile?')) {
+                            document.getElementById('editProfileModal').classList.add('active');
+                        }
+                    }, 1000);
+                }
+                
+                console.log('QuickKaam: Initialization complete!');
+                initializationCompleted = true;
+            }, 500);
+        }
+        
+        // Setup edit profile modal
+        const editProfileBtn = document.getElementById('editProfileBtn');
+        const profileEditBtn = document.getElementById('profileEditBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const saveProfileBtn = document.getElementById('saveProfileBtn');
+        const cancelPaymentBtn = document.getElementById('cancelPaymentBtn');
+        const confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
+        
+        if (editProfileBtn) {
+            editProfileBtn.onclick = () => {
+                const user = UserManager.getCurrentUser();
+                document.getElementById('editName').value = user.name;
+                document.getElementById('editProfession').value = user.profession;
+                document.getElementById('editLocation').value = user.location;
+                document.getElementById('editExperience').value = user.experience;
+                document.getElementById('editSkills').value = user.skills.join(', ');
+                document.getElementById('editProfileModal').classList.add('active');
+            };
+        }
+        
+        if (profileEditBtn) {
+            profileEditBtn.onclick = () => editProfileBtn?.click();
+        }
+        
+        if (saveProfileBtn) {
+            saveProfileBtn.onclick = () => {
+                const user = UserManager.getCurrentUser();
+                user.name = document.getElementById('editName').value || user.name;
+                user.profession = document.getElementById('editProfession').value || user.profession;
+                user.location = document.getElementById('editLocation').value || user.location;
+                user.experience = parseInt(document.getElementById('editExperience').value) || 0;
+                user.skills = document.getElementById('editSkills').value.split(',').map(s => s.trim()).filter(s => s);
+                user.avatar = user.name.charAt(0).toUpperCase();
+                UserManager.saveUser(user);
+                document.getElementById('editProfileModal').classList.remove('active');
+                Router.loadProfile();
+                Router.showToast('Profile updated successfully!');
+            };
+        }
+        
+        if (closeModalBtn) {
+            closeModalBtn.onclick = () => document.getElementById('editProfileModal').classList.remove('active');
+        }
+        
+        if (cancelPaymentBtn) {
+            cancelPaymentBtn.onclick = () => document.getElementById('paymentModal').classList.remove('active');
+        }
+        
+        if (confirmPaymentBtn) {
+            confirmPaymentBtn.onclick = () => {
+                SubscriptionManager.activate();
+                document.getElementById('paymentModal').classList.remove('active');
+                Router.loadSubscription();
+                Router.showToast('🎉 Premium Activated! Welcome to QuickKaam Royal Club!');
+                
+                // Update user verification badge
+                const user = UserManager.getCurrentUser();
+                user.isVerified = true;
+                UserManager.saveUser(user);
+                Router.loadProfile();
+            };
+        }
+        
+        // Logout button
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.onclick = () => {
+                if (confirm('Are you sure you want to logout?')) {
+                    const newUser = {
+                        id: 'guest_' + Date.now(),
+                        name: 'Guest User',
+                        profession: 'Not set',
+                        location: 'Not set',
+                        experience: 0,
+                        skills: [],
+                        status: 'available',
+                        statusReason: '',
+                        statusExpiry: null,
+                        avatar: '👤',
+                        isVerified: false,
+                        createdAt: new Date().toISOString()
+                    };
+                    UserManager.saveUser(newUser);
+                    Router.loadProfile();
+                    Router.showToast('Logged out successfully');
+                }
+            };
+        }
+        
+    } catch (error) {
+        console.error('QuickKaam: Initialization error:', error);
+        // Emergency fallback - force show app
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const appContainer = document.getElementById('appContainer');
+        if (welcomeScreen && appContainer) {
+            welcomeScreen.style.display = 'none';
+            appContainer.style.display = 'block';
+            Router.init();
+            Router.navigate('home');
+        }
+    }
+}
+
+// ============================================ */
+// GUARANTEED INITIALIZATION WITH FALLBACKS
+// ============================================ */
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+    initializeApp();
+}
+
+// Emergency fallback - force initialization after 2 seconds
+setTimeout(() => {
+    if (!initializationCompleted) {
+        console.warn('QuickKaam: Emergency fallback triggered');
+        initializeApp();
+    }
+}, 2500);
+
+// Global error handler
+window.addEventListener('error', (e) => {
+    console.warn('QuickKaam: Global error caught:', e.message);
+});
+
+// Subscription change listener
+window.addEventListener('subscriptionChanged', () => {
+    if (Router.currentTab === 'subscription') Router.loadSubscription();
+    if (Router.currentTab === 'profile') Router.loadProfile();
+});
+
+// User change listener
+window.addEventListener('userChanged', () => {
+    if (Router.currentTab === 'profile') Router.loadProfile();
+});
+
+// Export for global access
+window.Router = Router;
+window.SubscriptionManager = SubscriptionManager;
+window.UserManager = UserManager;
+window.JobManager = JobManager;
+window.ChatManager = ChatManager;
+</script>
+</body>
+</html>
