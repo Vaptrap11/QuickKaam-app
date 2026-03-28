@@ -242,7 +242,164 @@ padding:12px;
 border-radius:10px;
 margin-top:10px;
 }
+<style>
 
+/* ============================= */
+/* GLOBAL ROYAL THEME */
+/* ============================= */
+
+:root{
+  --gold:#C9A227;
+  --black:#000000;
+  --card:#0f0f0f;
+  --soft:#1a1a1a;
+}
+
+*{
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  margin:0;
+  background:linear-gradient(180deg,#000,#050505);
+  color:white;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ============================= */
+/* HEADER */
+/* ============================= */
+
+h1,h2,h3{
+  font-weight:600;
+  letter-spacing:.5px;
+}
+
+/* ============================= */
+/* ROYAL CARDS */
+/* ============================= */
+
+.card{
+  background:linear-gradient(145deg,#0d0d0d,#141414);
+  border-radius:18px;
+  padding:18px;
+  margin:12px;
+  border:1px solid rgba(201,162,39,.2);
+  box-shadow:
+    0 6px 20px rgba(0,0,0,.6),
+    inset 0 0 20px rgba(201,162,39,.05);
+  transition:.3s;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+}
+
+/* ============================= */
+/* GOLD BUTTON */
+/* ============================= */
+
+.gold-btn{
+  background:linear-gradient(135deg,#C9A227,#f4d675);
+  color:black;
+  border:none;
+  padding:15px;
+  border-radius:14px;
+  font-weight:600;
+  font-size:16px;
+  box-shadow:0 4px 14px rgba(201,162,39,.4);
+  transition:.25s;
+}
+
+.gold-btn:active{
+  transform:scale(.96);
+}
+
+/* ============================= */
+/* STATUS ICONS */
+/* ============================= */
+
+.status{
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  display:inline-block;
+  margin-right:8px;
+}
+
+.green{background:#00ff88;}
+.red{background:#ff3b3b;}
+.orange{background:#ff9900;}
+
+/* ============================= */
+/* NAVBAR */
+/* ============================= */
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#050505;
+  border-top:1px solid rgba(201,162,39,.2);
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0;
+  backdrop-filter:blur(12px);
+}
+
+.bottom-nav button{
+  background:none;
+  border:none;
+  color:#aaa;
+  font-size:13px;
+}
+
+.bottom-nav button.active{
+  color:var(--gold);
+}
+
+/* ============================= */
+/* INPUTS */
+/* ============================= */
+
+input,select,textarea{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid #333;
+  background:#0c0c0c;
+  color:white;
+  margin-top:8px;
+}
+
+/* ============================= */
+/* PREMIUM BADGE */
+/* ============================= */
+
+.premium{
+  color:#000;
+  background:linear-gradient(135deg,#C9A227,#ffd86b);
+  padding:4px 10px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:600;
+}
+
+/* ============================= */
+/* SMOOTH ANIMATION */
+/* ============================= */
+
+.view{
+  animation:fadeIn .35s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+</style>
 </style>
 </head>
 
