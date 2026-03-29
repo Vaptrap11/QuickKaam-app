@@ -35,9 +35,338 @@ content="width=device-width,initial-scale=1,viewport-fit=cover">
 <!-- ========================================================= -->
 <!-- ROYAL BLACK + GOLD DESIGN SYSTEM                          -->
 <!-- ========================================================= -->
-
 <style>
+ <style>
 
+/* ============================= */
+/* ROYAL QUICKKAAM DESIGN SYSTEM */
+/* ============================= */
+
+body{
+  margin:0;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background:#050505;
+  color:white;
+}
+
+/* GOLD COLORS */
+:root{
+  --gold:#C9A227;
+  --dark:#0b0b0b;
+  --card:#121212;
+}
+
+/* Smooth feeling */
+*{
+  box-sizing:border-box;
+  transition:0.3s ease;
+}
+
+/* APP CONTAINER */
+.app{
+  padding-bottom:80px;
+}
+
+/* ================= */
+/* ROYAL HEADER */
+/* ================= */
+
+.logo{
+  font-size:28px;
+  font-weight:700;
+  color:var(--gold);
+  text-align:center;
+  letter-spacing:2px;
+  margin-top:20px;
+}
+
+/* ================= */
+/* ROYAL CARDS */
+/* ================= */
+
+.card{
+  background:linear-gradient(145deg,#111,#1a1a1a);
+  border-radius:18px;
+  padding:18px;
+  margin:12px 16px;
+  border:1px solid rgba(201,162,39,0.25);
+  box-shadow:
+    0 0 15px rgba(201,162,39,0.08);
+}
+
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:
+    0 0 25px rgba(201,162,39,0.25);
+}
+
+/* ================= */
+/* GOLD BUTTON */
+/* ================= */
+
+.gold-btn{
+  background:linear-gradient(135deg,#C9A227,#f5d76e);
+  border:none;
+  color:black;
+  font-weight:600;
+  padding:12px;
+  border-radius:12px;
+  width:100%;
+  margin-top:10px;
+}
+
+/* ================= */
+/* JOB GRID */
+/* ================= */
+
+.job-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  padding:15px;
+}
+
+.job-card{
+  background:#141414;
+  border-radius:16px;
+  padding:18px;
+  text-align:center;
+  border:1px solid rgba(201,162,39,0.2);
+}
+
+.job-card:hover{
+  transform:scale(1.05);
+  border-color:var(--gold);
+}
+
+.job-icon{
+  font-size:26px;
+  margin-bottom:8px;
+}
+
+/* ================= */
+/* ROYAL NAVBAR */
+/* ================= */
+
+.navbar{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#0b0b0b;
+  display:flex;
+  justify-content:space-around;
+  padding:12px 0;
+  border-top:1px solid rgba(201,162,39,0.3);
+}
+
+.nav-item{
+  color:#aaa;
+  text-align:center;
+  font-size:12px;
+}
+
+.nav-item.active{
+  color:var(--gold);
+}
+
+</style>
+.section-title{
+  text-align:center;
+  font-size:22px;
+  margin-bottom:20px;
+}
+
+.category-title{
+  margin-top:30px;
+  color:#d4af37;
+}
+
+.job-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px;
+}
+
+.job-card{
+  background:white;
+  padding:15px;
+  border-radius:15px;
+  text-align:center;
+  font-weight:500;
+  box-shadow:0 4px 15px rgba(0,0,0,0.1);
+  transition:0.3s;
+}
+
+.job-card:hover{
+  transform:scale(1.05);
+  background:linear-gradient(45deg,#fff8dc,#ffffff);
+}
+/* Screen layout */
+.role-container{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+  padding:20px;
+}
+/* ================= ROYAL THEME ================= */
+
+body{
+background:#000;
+color:white;
+font-family: 'Poppins', sans-serif;
+margin:0;
+}
+
+/* Section title */
+.section-title{
+color:#C9A227;
+font-size:22px;
+margin:25px 15px 10px;
+font-weight:600;
+}
+
+/* Job Grid */
+.job-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:14px;
+padding:10px 15px 30px;
+}
+
+/* Royal Cards */
+.job-card{
+background:linear-gradient(145deg,#0c0c0c,#151515);
+border:1px solid rgba(201,162,39,0.4);
+border-radius:18px;
+padding:18px 10px;
+text-align:center;
+color:#C9A227;
+font-weight:600;
+font-size:15px;
+transition:0.3s;
+box-shadow:0 0 10px rgba(201,162,39,0.15);
+}
+
+/* Icon */
+.job-icon{
+font-size:28px;
+margin-bottom:8px;
+display:block;
+}
+
+/* Touch Animation */
+.job-card:active{
+transform:scale(0.95);
+background:#C9A227;
+color:black;
+box-shadow:0 0 18px #C9A227;
+}
+/* Royal Card */
+.role-card{
+  background:linear-gradient(145deg,#ffffff,#f3f3f3);
+  border-radius:20px;
+  padding:25px;
+  text-align:center;
+  box-shadow:0 8px 25px rgba(0,0,0,0.12);
+  transition:0.3s;
+}
+
+/* Hover effect */
+.role-card:hover{
+  transform:translateY(-5px);
+}
+
+/* Icon style */
+.role-card .icon{
+  font-size:40px;
+  margin-bottom:10px;
+}
+
+/* Gold Button */
+.gold-btn{
+  background:linear-gradient(45deg,#d4af37,#ffd700);
+  border:none;
+  padding:12px 20px;
+  border-radius:12px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:10px;
+}
+/* ============================= */
+/* ROYAL BOTTOM NAVIGATION */
+/* ============================= */
+
+#bottomNav{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+height:70px;
+background:#000;
+border-top:1px solid #C9A227;
+display:flex;
+justify-content:space-around;
+align-items:center;
+z-index:9999;
+box-shadow:0 -2px 15px rgba(201,162,39,0.3);
+}
+
+.nav-item{
+color:#888;
+text-align:center;
+font-size:12px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.nav-item span{
+font-size:22px;
+display:block;
+}
+
+.nav-item.active{
+color:#C9A227;
+transform:translateY(-3px);
+}
+
+.nav-item:hover{
+color:#C9A227;
+}
+ /* ============================= */
+/* TAB SWITCH SYSTEM */
+/* ============================= */
+
+function openTab(tabId, element){
+
+// hide all screens
+document.querySelectorAll(".app-screen")
+.forEach(screen => screen.style.display="none");
+
+// show selected screen
+document.getElementById(tabId).style.display="block";
+
+// change active button
+document.querySelectorAll(".nav-item")
+.forEach(btn => btn.classList.remove("active"));
+
+element.classList.add("active");
+}
+</style>
+<style>
+<style>
+:root{
+  --primary:#0f172a;      /* royal dark blue */
+  --secondary:#2563eb;    /* premium blue */
+  --gold:#f59e0b;         /* luxury gold */
+  --bg:#f8fafc;
+}
+
+body{
+  background:var(--bg);
+  font-family: 'Poppins', sans-serif;
+  margin:0;
+}
+</style>
 /* ========================================================= */
 /* ROOT VARIABLES                                            */
 /* ========================================================= */
@@ -818,24 +1147,258 @@ screen.innerHTML=`
 <h2 style="color:#C9A227">Welcome to QuickKaam</h2>
 <p>Select how you want to use the app</p>
 
-<div class="card">
-<h3>Job Seeker</h3>
-<p>Find jobs and upload your skills.</p>
-<button class="gold-btn" id="roleSeeker">Continue</button>
+<div class="role-container">
+
+  <div class="card role-card">
+    <div class="icon">🔎</div>
+    <h3>Job Seeker</h3>
+    <p>Find jobs and upload your skills.</p>
+    <button class="gold-btn" id="roleSeeker">Continue</button>
+  </div>
+
+  <div class="card role-card">
+    <div class="icon">🏢</div>
+    <h3>Employer</h3>
+    <p>Hire workers for your business.</p>
+    <button class="gold-btn" id="roleEmployer">Continue</button>
+  </div>
+
+  <div class="card role-card">
+    <div class="icon">✨</div>
+    <h3>Prefer Not To Say</h3>
+    <p>Explore QuickKaam freely.</p>
+    <button class="gold-btn" id="roleExplore">Explore</button>
+  </div>
+<div id="jobOptions" style="display:none; padding:20px;">
+
+<!-- ================================================= -->
+<!-- ROYAL COMPLETE JOB OPTIONS SCREEN -->
+<!-- ================================================= -->
+
+<div id="jobOptions" style="display:none;">
+
+<h2 style="text-align:center;color:#C9A227;margin-top:20px;">
+Choose Job Category
+</h2>
+
+<!-- ================= HOME SERVICES ================= -->
+<div class="section-title">🏠 Home Services</div>
+<div class="job-grid">
+
+<div class="job-card"><span class="job-icon">👨‍🍳</span>Private Chef</div>
+<div class="job-card"><span class="job-icon">🍳</span>Home Cook</div>
+<div class="job-card"><span class="job-icon">🧹</span>House Maid</div>
+<div class="job-card"><span class="job-icon">🧽</span>House Cleaner</div>
+<div class="job-card"><span class="job-icon">🏠</span>Housekeeper</div>
+<div class="job-card"><span class="job-icon">🤵</span>Butler</div>
+<div class="job-card"><span class="job-icon">🧺</span>Laundry Worker</div>
+<div class="job-card"><span class="job-icon">👕</span>Ironing Worker</div>
+<div class="job-card"><span class="job-icon">🍽️</span>Dish Washer</div>
+<div class="job-card"><span class="job-icon">🪣</span>Home Helper</div>
+<div class="job-card"><span class="job-icon">👩‍🍳</span>Personal Maid</div>
+<div class="job-card"><span class="job-icon">🔪</span>Kitchen Assistant</div>
+<div class="job-card"><span class="job-icon">📋</span>Household Manager</div>
+<div class="job-card"><span class="job-icon">🏘️</span>Domestic Worker</div>
+<div class="job-card"><span class="job-icon">🏢</span>Apartment Caretaker</div>
+
 </div>
 
-<div class="card">
-<h3>Employer</h3>
-<p>Hire workers for your business.</p>
-<button class="gold-btn" id="roleEmployer">Continue</button>
+<!-- ================= CHILD CARE ================= -->
+<div class="section-title">👶 Child Care</div>
+<div class="job-grid">
+
+<div class="job-card"><span class="job-icon">🍼</span>Babysitter</div>
+<div class="job-card"><span class="job-icon">👩‍👧</span>Nanny</div>
+<div class="job-card"><span class="job-icon">👶</span>Child Caretaker</div>
+<div class="job-card"><span class="job-icon">🧸</span>Infant Care Specialist</div>
+<div class="job-card"><span class="job-icon">🏫</span>Daycare Helper</div>
+<div class="job-card"><span class="job-icon">📖</span>Private Child Tutor</div>
+<div class="job-card"><span class="job-icon">🎨</span>Child Activity Supervisor</div>
+
 </div>
 
-<div class="card">
-<h3>Prefer Not To Say</h3>
-<p>Explore QuickKaam freely.</p>
-<button class="gold-btn" id="roleExplore">Explore</button>
+<!-- ================= ELDER CARE ================= -->
+<div class="section-title">👴 Elder Care</div>
+<div class="job-grid">
+
+<div class="job-card"><span class="job-icon">🧓</span>Elder Caretaker</div>
+<div class="job-card"><span class="job-icon">🤝</span>Senior Companion</div>
+<div class="job-card"><span class="job-icon">🏥</span>Home Nurse Assistant</div>
+<div class="job-card"><span class="job-icon">❤️</span>Personal Elder Helper</div>
+<div class="job-card"><span class="job-icon">💊</span>Medical Attendant</div>
+<div class="job-card"><span class="job-icon">♿</span>Disabled Care Assistant</div>
+
 </div>
-`;
+
+<!-- ================= EDUCATION ================= -->
+<div class="section-title">📚 Tutors & Teachers</div>
+<div class="job-grid">
+
+<div class="job-card"><span class="job-icon">📘</span>Private Tutor</div>
+<div class="job-card"><span class="job-icon">🏠</span>Home Tutor</div>
+<div class="job-card"><span class="job-icon">➗</span>Math Tutor</div>
+<div class="job-card"><span class="job-icon">🔬</span>Science Tutor</div>
+<div class="job-card"><span class="job-icon">📝</span>English Tutor</div>
+<div class="job-card"><span class="job-icon">🎵</span>Music Teacher</div>
+<div class="job-card"><span class="job-icon">💃</span>Dance Teacher</div>
+<div class="job-card"><span class="job-icon">🎨</span>Drawing Teacher</div>
+<div class="job-card"><span class="job-icon">🧘</span>Yoga Instructor</div>
+<div class="job-card"><span class="job-icon">🌐</span>Language Teacher</div>
+<div class="job-card"><span class="job-icon">💻</span>Coding Tutor</div>
+<div class="job-card"><span class="job-icon">📚</span>Homework Helper</div>
+<div class="job-card"><span class="job-icon">🎯</span>Exam Preparation Tutor</div>
+
+</div>
+
+<!-- ================= DRIVERS ================= -->
+<div class="section-title">🚗 Drivers</div>
+<div class="job-grid">
+
+<div class="job-card"><span class="job-icon">🚘</span>Personal Driver</div>
+<div class="job-card"><span class="job-icon">👨‍👩‍👧</span>Family Driver</div>
+<div class="job-card"><span class="job-icon">🤵</span>Private Chauffeur</div>
+<div class="job-card"><span class="job-icon">🏫</span>School Pickup Driver</div>
+<div class="job-card"><span class="job-icon">📦</span>Delivery Driver</div>
+<div class="job-card"><span class="job-icon">⏱️</span>Temporary Driver</div>
+
+</div>
+
+<!-- ================= CHEFS ================= -->
+<div class="section-title">🍽️ Professional Cooking</div>
+<div class="job-grid">
+
+<div class="job-card"><span class="job-icon">👨‍🍳</span>Professional Chef</div>
+<div class="job-card"><span class="job-icon">🔥</span>Tandoor Chef</div>
+<div class="job-card"><span class="job-icon">🥐</span>Bakery Chef</div>
+<div class="job-card"><span class="job-icon">🍰</span>Pastry Chef</div>
+<div class="job-card"><span class="job-icon">🎉</span>Party Chef</div>
+<div class="job-card"><span class="job-icon">🍲</span>Catering Assistant</div>
+<div class="job-card"><span class="job-icon">🔪</span>Kitchen Helper</div>
+
+</div>
+
+<!-- ================= TECHNICIANS ================= -->
+<div class="section-title">🔧 Technicians</div>
+<div class="job-grid">
+
+<div class="job-card"><span class="job-icon">⚡</span>Electrician</div>
+<div class="job-card"><span class="job-icon">🚿</span>Plumber</div>
+<div class="job-card"><span class="job-icon">❄️</span>AC Technician</div>
+<div class="job-card"><span class="job-icon">🧊</span>Refrigerator Technician</div>
+<div class="job-card"><span class="job-icon">🧺</span>Washing Machine Technician</div>
+<div class="job-card"><span class="job-icon">📺</span>TV Repair Technician</div>
+<div class="job-card"><span class="job-icon">📱</span>Mobile Repair Technician</div>
+<div class="job-card"><span class="job-icon">🖥️</span>Computer Repair Technician</div>
+<div class="job-card"><span class="job-icon">💻</span>Laptop Technician</div>
+<div class="job-card"><span class="job-icon">📹</span>CCTV Installer</div>
+<div class="job-card"><span class="job-icon">🌐</span>Internet Technician</div>
+
+</div>
+
+<!-- ================= CLEANING ================= -->
+<div class="section-title">🧼 Cleaning Services</div>
+<div class="job-grid">
+
+<div class="job-card"><span class="job-icon">🏢</span>Office Cleaner</div>
+<div class="job-card"><span class="job-icon">🪟</span>Window Cleaner</div>
+<div class="job-card"><span class="job-icon">🧽</span>Carpet Cleaner</div>
+<div class="job-card"><span class="job-icon">🛋️</span>Sofa Cleaner</div>
+<div class="job-card"><span class="job-icon">🚿</span>Bathroom Cleaner</div>
+<div class="job-card"><span class="job-icon">🏬</span>Building Cleaner</div>
+<div class="job-card"><span class="job-icon">✨</span>Deep Cleaning Specialist</div>
+
+</div>
+
+<!-- ================= SECURITY & OUTDOOR ================= -->
+<div class="section-title">🌳 Outdoor & Security</div>
+<div class="job-grid">
+
+<div class="job-card"><span class="job-icon">🌱</span>Gardener</div>
+<div class="job-card"><span class="job-icon">🌿</span>Landscape Worker</div>
+<div class="job-card"><span class="job-icon">🌳</span>Tree Trimmer</div>
+<div class="job-card"><span class="job-icon">🚜</span>Farm Worker</div>
+<div class="job-card"><span class="job-icon">🛡️</span>Security Guard</div>
+<div class="job-card"><span class="job-icon">👁️</span>Watchman</div>
+<div class="job-card"><span class="job-icon">🚪</span>Gatekeeper</div>
+
+</div>
+
+<!-- ================= PET CARE ================= -->
+<div class="section-title">🐶 Pet Care</div>
+<div class="job-grid">
+
+<div class="job-card"><span class="job-icon">🐕</span>Dog Walker</div>
+<div class="job-card"><span class="job-icon">🐾</span>Pet Sitter</div>
+<div class="job-card"><span class="job-icon">✂️</span>Pet Groomer</div>
+<div class="job-card"><span class="job-icon">🎓</span>Pet Trainer</div>
+<div class="job-card"><span class="job-icon">🐾</span>Animal Caretaker</div>
+
+</div>
+
+<!-- ================= EVENTS ================= -->
+<div class="section-title">🎉 Events</div>
+<div class="job-grid">
+
+<div class="job-card"><span class="job-icon">🎊</span>Event Helper</div>
+<div class="job-card"><span class="job-icon">💍</span>Wedding Assistant</div>
+<div class="job-card"><span class="job-icon">🎈</span>Party Decorator</div>
+<div class="job-card"><span class="job-icon">📷</span>Photographer</div>
+<div class="job-card"><span class="job-icon">🎥</span>Videographer</div>
+<div class="job-card"><span class="job-icon">🎧</span>DJ</div>
+<div class="job-card"><span class="job-icon">💄</span>Makeup Artist</div>
+<div class="job-card"><span class="job-icon">💇</span>Hairstylist</div>
+
+</div>
+
+<!-- ================= ASSISTANTS ================= -->
+<div class="section-title">🧑‍💼 Assistants</div>
+<div class="job-grid">
+
+<div class="job-card"><span class="job-icon">📋</span>Personal Assistant</div>
+<div class="job-card"><span class="job-icon">🏠</span>Home Manager</div>
+<div class="job-card"><span class="job-icon">🏃</span>Errand Runner</div>
+<div class="job-card"><span class="job-icon">🛍️</span>Shopping Assistant</div>
+<div class="job-card"><span class="job-icon">✈️</span>Travel Assistant</div>
+
+</div>
+
+<!-- ================= DELIVERY ================= -->
+<div class="section-title">📦 Delivery</div>
+<div class="job-grid">
+
+<div class="job-card"><span class="job-icon">📦</span>Package Delivery Worker</div>
+<div class="job-card"><span class="job-icon">🛒</span>Grocery Delivery Worker</div>
+<div class="job-card"><span class="job-icon">💊</span>Medicine Delivery Worker</div>
+<div class="job-card"><span class="job-icon">🚚</span>Courier Assistant</div>
+
+</div>
+
+<!-- ================= FITNESS ================= -->
+<div class="section-title">💪 Fitness</div>
+<div class="job-grid">
+
+<div class="job-card"><span class="job-icon">🏋️</span>Personal Trainer</div>
+<div class="job-card"><span class="job-icon">🧘</span>Yoga Trainer</div>
+<div class="job-card"><span class="job-icon">🧠</span>Meditation Instructor</div>
+<div class="job-card"><span class="job-icon">🥗</span>Diet Consultant</div>
+<div class="job-card"><span class="job-icon">🔥</span>Fitness Coach</div>
+
+</div>
+
+<!-- ================= ONLINE WORK ================= -->
+<div class="section-title">💻 Online Work</div>
+<div class="job-grid">
+
+<div class="job-card"><span class="job-icon">🌐</span>Translator</div>
+<div class="job-card"><span class="job-icon">✍️</span>Content Writer</div>
+<div class="job-card"><span class="job-icon">📊</span>Data Entry Worker</div>
+<div class="job-card"><span class="job-icon">🏠</span>Home Office Assistant</div>
+<div class="job-card"><span class="job-icon">📞</span>Call Assistant</div>
+<div class="job-card"><span class="job-icon">💬</span>Online Support Assistant</div>
+
+</div>
+
+</div>
 
 document.body.appendChild(screen);
 
@@ -1988,6 +2551,37 @@ setTimeout(()=>{
    }catch(e){}
 },2000);
 </script>
-  
+  <!-- ======================================= -->
+<!-- ROYAL BOTTOM NAVIGATION -->
+<!-- ======================================= -->
+
+<div id="bottomNav">
+
+  <div class="nav-item active" onclick="openTab('homeScreen', this)">
+    <span>🏠</span>
+    <p>Home</p>
+  </div>
+
+  <div class="nav-item" onclick="openTab('searchScreen', this)">
+    <span>🔎</span>
+    <p>Search</p>
+  </div>
+
+  <div class="nav-item" onclick="openTab('chatScreen', this)">
+    <span>💬</span>
+    <p>Chat</p>
+  </div>
+
+  <div class="nav-item" onclick="openTab('subscriptionScreen', this)">
+    <span>⭐</span>
+    <p>Subscription</p>
+  </div>
+
+  <div class="nav-item" onclick="openTab('profileScreen', this)">
+    <span>👤</span>
+    <p>Profile</p>
+  </div>
+
+</div>
 </body>
 </html>
