@@ -17,6 +17,75 @@
   <link rel="stylesheet" href="style.css">
   <title>QuickKaam — Royal Private Job Marketplace</title>
   <style>
+    /* ============================================ */
+/* SCREEN MANAGEMENT - ONLY ONE SCREEN VISIBLE  */
+/* ============================================ */
+
+/* All screens hidden by default */
+.screen {
+    display: none !important;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Only active screen is visible */
+.screen.active {
+    display: block !important;
+}
+
+/* Make sure dashboard screens take full height */
+#homeScreen.active,
+#searchScreen.active,
+#chatScreen.active,
+#subscriptionScreen.active,
+#profileScreen.active {
+    display: block !important;
+    min-height: 100vh;
+}
+
+/* Bottom navigation styling */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 10, 0.98);
+    backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 20px 20px;
+    border-top: 1px solid rgba(212, 175, 55, 0.3);
+    z-index: 1000;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: #6b6b6b;
+    font-size: 11px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 30px;
+}
+
+.nav-item i {
+    font-size: 22px;
+}
+
+.nav-item.active {
+    color: var(--gold);
+    transform: translateY(-2px);
+}
+
+.nav-item:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
   /* ============================================ */
 /* QUICKKAAM 2.0 - MODERN PROFESSIONAL DESIGN   */
 /* Royal Black & Gold Theme - Clean & Spacious  */
@@ -226,44 +295,125 @@ h4 { font-size: 1rem; }
     color: var(--black);
 }
 
-/* Bottom Navigation - Clear Active State */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(10,10,10,0.98);
-    backdrop-filter: blur(20px);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 12px 20px 24px;
-    border-top: 1px solid rgba(212,175,55,0.2);
-    z-index: 1000;
+// ============================================
+// COMPLETE FIX: TAB NAVIGATION (Like YouTube)
+// ============================================
+
+// List of all screens in your app
+const ALL_SCREENS = [
+    'welcomeScreen',
+    'jobSeekerSetupScreen', 
+    'employerSetupScreen',
+    'exploreScreen',
+    'homeScreen',
+    'searchScreen',
+    'chatScreen',
+    'subscriptionScreen',
+    'profileScreen',
+    'jobSeekerProfileFull',
+    'employerProfileFull'
+];
+
+// Function to show ONLY one screen and hide all others
+function showOnlyThisScreen(screenId) {
+    console.log("Switching to screen:", screenId);
+    
+    // Hide ALL screens
+    ALL_SCREENS.forEach(screen => {
+        const element = document.getElementById(screen);
+        if (element) {
+            element.classList.remove('active');
+            element.style.display = 'none';
+        }
+    });
+    
+    // Show the selected screen
+    const targetScreen = document.getElementById(screenId);
+    if (targetScreen) {
+        targetScreen.classList.add('active');
+        targetScreen.style.display = 'block';
+        console.log("Screen activated:", screenId);
+    } else {
+        console.error("Screen not found:", screenId);
+        // Fallback to home screen
+        const homeScreen = document.getElementById('homeScreen');
+        if (homeScreen) {
+            homeScreen.classList.add('active');
+            homeScreen.style.display = 'block';
+        }
+    }
 }
 
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    color: var(--gray-400);
-    font-size: 11px;
-    transition: var(--transition);
-    cursor: pointer;
-    background: none;
-    border: none;
+// Tab navigation function (called when bottom nav is clicked)
+function navigateToTab(tabName) {
+    console.log("Navigating to tab:", tabName);
+    
+    // Map tab names to screen IDs
+    const tabMap = {
+        'home': 'homeScreen',
+        'search': 'searchScreen',
+        'chat': 'chatScreen',
+        'subscription': 'subscriptionScreen',
+        'profile': 'profileScreen'
+    };
+    
+    const screenId = tabMap[tabName];
+    if (screenId) {
+        showOnlyThisScreen(screenId);
+    }
+    
+    // Update active state of bottom nav buttons
+    document.querySelectorAll('.nav-item').forEach(nav => {
+        nav.classList.remove('active');
+        if (nav.getAttribute('data-tab') === tabName) {
+            nav.classList.add('active');
+        }
+    });
 }
 
-.nav-item i {
-    font-size: 22px;
+// Fix bottom navigation buttons
+function fixBottomNavigation() {
+    const navItems = document.querySelectorAll('.nav-item');
+    
+    navItems.forEach(item => {
+        // Remove existing listeners to avoid duplicates
+        const newItem = item.cloneNode(true);
+        item.parentNode.replaceChild(newItem, item);
+        
+        const tabName = newItem.getAttribute('data-tab');
+        newItem.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            navigateToTab(tabName);
+        });
+    });
+    
+    console.log("Bottom navigation fixed!");
 }
 
-.nav-item.active {
-    color: var(--gold);
-    transform: translateY(-3px);
-}
-
+// Initialize navigation when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Initially hide all screens except welcome screen
+    ALL_SCREENS.forEach(screen => {
+        const element = document.getElementById(screen);
+        if (element) {
+            element.classList.remove('active');
+            element.style.display = 'none';
+        }
+    });
+    
+    // Show welcome screen
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    if (welcomeScreen) {
+        welcomeScreen.classList.add('active');
+        welcomeScreen.style.display = 'block';
+    }
+    
+    // Fix bottom navigation
+    fixBottomNavigation();
+    
+    console.log("Navigation system initialized!");
+});
 /* Empty State Messages */
 .empty-state {
     text-align: center;
@@ -483,6 +633,106 @@ h4 { font-size: 1rem; }
 </div>
 
 <script>
+  // ============================================
+// WELCOME SCREEN BUTTON FUNCTIONS
+// ============================================
+
+function showJobSeekerAuth() {
+    console.log("Job Seeker button clicked");
+    
+    // Hide welcome screen
+    const welcome = document.getElementById('welcomeScreen');
+    if (welcome) {
+        welcome.classList.remove('active');
+        welcome.style.display = 'none';
+    }
+    
+    // Show job seeker setup screen
+    const jobSeekerScreen = document.getElementById('jobSeekerSetupScreen');
+    if (jobSeekerScreen) {
+        jobSeekerScreen.classList.add('active');
+        jobSeekerScreen.style.display = 'block';
+    } else {
+        console.error("Job seeker screen not found");
+    }
+}
+
+function showEmployerAuth() {
+    console.log("Employer button clicked");
+    
+    // Hide welcome screen
+    const welcome = document.getElementById('welcomeScreen');
+    if (welcome) {
+        welcome.classList.remove('active');
+        welcome.style.display = 'none';
+    }
+    
+    // Show employer setup screen
+    const employerScreen = document.getElementById('employerSetupScreen');
+    if (employerScreen) {
+        employerScreen.classList.add('active');
+        employerScreen.style.display = 'block';
+    } else {
+        console.error("Employer screen not found");
+    }
+}
+
+function showExploreMode() {
+    console.log("Explore button clicked");
+    
+    // Hide welcome screen
+    const welcome = document.getElementById('welcomeScreen');
+    if (welcome) {
+        welcome.classList.remove('active');
+        welcome.style.display = 'none';
+    }
+    
+    // Show explore screen
+    const exploreScreen = document.getElementById('exploreScreen');
+    if (exploreScreen) {
+        exploreScreen.classList.add('active');
+        exploreScreen.style.display = 'block';
+    } else {
+        console.error("Explore screen not found");
+    }
+}
+
+// Connect buttons to functions when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Method 1: Using IDs
+    const jobSeekerBtn = document.getElementById('roleJobSeekerBtn');
+    if (jobSeekerBtn) {
+        jobSeekerBtn.onclick = showJobSeekerAuth;
+        console.log("Job seeker button connected");
+    }
+    
+    const employerBtn = document.getElementById('roleEmployerBtn');
+    if (employerBtn) {
+        employerBtn.onclick = showEmployerAuth;
+        console.log("Employer button connected");
+    }
+    
+    const exploreBtn = document.getElementById('roleExploreBtn');
+    if (exploreBtn) {
+        exploreBtn.onclick = showExploreMode;
+        console.log("Explore button connected");
+    }
+    
+    // Method 2: Also try to find by text if IDs don't work
+    if (!jobSeekerBtn) {
+        const allButtons = document.querySelectorAll('button');
+        allButtons.forEach(btn => {
+            const text = btn.innerText;
+            if (text.includes('Job Seeker')) {
+                btn.onclick = showJobSeekerAuth;
+            } else if (text.includes('Employer')) {
+                btn.onclick = showEmployerAuth;
+            } else if (text.includes('Explore')) {
+                btn.onclick = showExploreMode;
+            }
+        });
+    }
+});
   // ============================================
 // WELCOME SCREEN BUTTONS - COMPLETE FIX
 // ============================================
