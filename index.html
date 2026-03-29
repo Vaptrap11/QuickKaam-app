@@ -483,6 +483,128 @@ h4 { font-size: 1rem; }
 </div>
 
 <script>
+  // ============================================
+// WELCOME SCREEN BUTTONS - COMPLETE FIX
+// ============================================
+
+// Function for Job Seeker button
+function showJobSeekerAuth() {
+    console.log("Job Seeker button clicked");
+    
+    // Hide welcome screen
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    if (welcomeScreen) {
+        welcomeScreen.classList.remove('active');
+    }
+    
+    // Show job seeker setup screen
+    const jobSeekerScreen = document.getElementById('jobSeekerSetupScreen');
+    if (jobSeekerScreen) {
+        jobSeekerScreen.classList.add('active');
+    } else {
+        console.error("Job seeker setup screen not found");
+        // Fallback: create a simple form
+        alert("Please complete your profile setup");
+    }
+}
+
+// Function for Employer button
+function showEmployerAuth() {
+    console.log("Employer button clicked");
+    
+    // Hide welcome screen
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    if (welcomeScreen) {
+        welcomeScreen.classList.remove('active');
+    }
+    
+    // Show employer setup screen
+    const employerScreen = document.getElementById('employerSetupScreen');
+    if (employerScreen) {
+        employerScreen.classList.add('active');
+    } else {
+        console.error("Employer setup screen not found");
+        alert("Please complete your company profile");
+    }
+}
+
+// Function for Explore button
+function showExploreMode() {
+    console.log("Explore button clicked");
+    
+    // Hide welcome screen
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    if (welcomeScreen) {
+        welcomeScreen.classList.remove('active');
+    }
+    
+    // Show explore screen
+    const exploreScreen = document.getElementById('exploreScreen');
+    if (exploreScreen) {
+        exploreScreen.classList.add('active');
+    } else {
+        console.error("Explore screen not found");
+        // Fallback: go to home screen as guest
+        const homeScreen = document.getElementById('homeScreen');
+        if (homeScreen) {
+            homeScreen.classList.add('active');
+        }
+    }
+}
+
+// Make sure buttons are connected when page loads
+function fixWelcomeButtons() {
+    // Method 1: Find buttons by their text content
+    const allButtons = document.querySelectorAll('.btn-gold, .btn-premium, .btn-primary, .btn-secondary, .btn-outline-gold');
+    
+    allButtons.forEach(button => {
+        const buttonText = button.innerText || button.textContent;
+        
+        if (buttonText.includes('Job Seeker') || buttonText.includes('Find Work')) {
+            button.onclick = function(e) {
+                e.preventDefault();
+                showJobSeekerAuth();
+            };
+        }
+        else if (buttonText.includes('Employer') || buttonText.includes('Hire')) {
+            button.onclick = function(e) {
+                e.preventDefault();
+                showEmployerAuth();
+            };
+        }
+        else if (buttonText.includes('Explore') || buttonText.includes('Just Explore')) {
+            button.onclick = function(e) {
+                e.preventDefault();
+                showExploreMode();
+            };
+        }
+    });
+    
+    // Method 2: Find by ID if they exist
+    const jobSeekerBtn = document.getElementById('roleJobSeekerBtn');
+    if (jobSeekerBtn) {
+        jobSeekerBtn.onclick = showJobSeekerAuth;
+    }
+    
+    const employerBtn = document.getElementById('roleEmployerBtn');
+    if (employerBtn) {
+        employerBtn.onclick = showEmployerAuth;
+    }
+    
+    const exploreBtn = document.getElementById('roleExploreBtn');
+    if (exploreBtn) {
+        exploreBtn.onclick = showExploreMode;
+    }
+}
+
+// Run when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    fixWelcomeButtons();
+    console.log("Welcome buttons fixed!");
+});
+
+// Also run after a short delay to ensure everything is loaded
+setTimeout(fixWelcomeButtons, 500);
 // ============================================
 // ALL 150+ PROFESSIONS - COMPLETE LIST
 // ============================================
@@ -4242,6 +4364,42 @@ document.addEventListener('DOMContentLoaded', fixAllButtons);
   console.log("🎬 QuickKaam TV - Full Video System Loaded!");
   console.log("✅ Parts 56-70 Complete: Video Upload, YouTube-like Feed, Shorts, Banners, Comments, Likes, Shares");
 </script>
-
+<script>
+// EMERGENCY FIX - Direct button connection
+(function() {
+    // Wait for page to load
+    window.addEventListener('load', function() {
+        
+        // Find all buttons
+        const buttons = document.querySelectorAll('button');
+        
+        buttons.forEach(button => {
+            const text = button.innerText;
+            
+            if (text.includes('Job Seeker')) {
+                button.onclick = function() {
+                    document.getElementById('welcomeScreen').style.display = 'none';
+                    document.getElementById('jobSeekerSetupScreen').style.display = 'block';
+                };
+            }
+            else if (text.includes('Employer')) {
+                button.onclick = function() {
+                    document.getElementById('welcomeScreen').style.display = 'none';
+                    document.getElementById('employerSetupScreen').style.display = 'block';
+                };
+            }
+            else if (text.includes('Explore')) {
+                button.onclick = function() {
+                    document.getElementById('welcomeScreen').style.display = 'none';
+                    document.getElementById('exploreScreen').style.display = 'block';
+                };
+            }
+        });
+        
+        console.log("Emergency fix applied - buttons should work now");
+    });
+})();
+</script>
+  
   </body>
 </html>
