@@ -643,36 +643,12 @@
 
   console.log('QuickKaam PRO – fully functional, no fake data, premium design');
 </script>
-<script>
-  // ============================================
-  // SERVICE WORKER REGISTRATION
-  // ============================================
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(registration => {
-          console.log('✅ Service Worker registered successfully:', registration.scope);
-        })
-        .catch(error => {
-          console.error('❌ Service Worker registration failed:', error);
-        });
-    });
-  } else {
-    console.log('⚠️ Service Worker not supported in this browser');
-  }
-</script>
   <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js');
-}
-</script>
-  <script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function () {
-    navigator.serviceWorker
-      .register("./service-worker.js")
-      .then(() => console.log("Service Worker Registered"))
-      .catch(err => console.log("SW failed:", err));
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(() => console.log("✅ Service Worker Registered"))
+      .catch(err => console.log("❌ SW failed:", err));
   });
 }
 </script>
