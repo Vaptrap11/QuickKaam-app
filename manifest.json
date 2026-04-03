@@ -1,7 +1,7 @@
 {
   "name": "QuickKaam",
   "short_name": "QuickKaam",
-  "description": "QuickKaam helps people find and offer private jobs quickly.",
+  "description": "QuickKaam helps people find jobs and employers hire workers easily.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
