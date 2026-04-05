@@ -13,6 +13,152 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* ============================================ */
+/* LOGIN & SIGNUP SCREENS                       */
+/* ============================================ */
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.auth-card {
+  max-width: 400px;
+  width: 100%;
+  background: var(--gray-800);
+  border-radius: var(--border-radius-xl);
+  padding: 32px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.auth-card h2 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--gray-700);
+  border: 1px solid var(--gray-600);
+  border-radius: 12px;
+  color: var(--white);
+  font-size: 1rem;
+  margin-bottom: 16px;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 20px;
+  color: var(--gray-500);
+}
+
+.auth-switch span {
+  color: var(--gold);
+  cursor: pointer;
+}
+
+.error-message {
+  color: #ff4444;
+  font-size: 0.8rem;
+  margin-top: -12px;
+  margin-bottom: 12px;
+}
+
+.success-message {
+  color: #00c851;
+  font-size: 0.8rem;
+  margin-top: -12px;
+  margin-bottom: 12px;
+}
+
+/* Edit Profile Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  max-width: 500px;
+  width: 90%;
+  background: var(--gray-800);
+  border-radius: 28px;
+  padding: 24px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--gray-600);
+}
+
+.profile-edit-section {
+  margin-bottom: 24px;
+}
+
+.profile-edit-section h4 {
+  margin-bottom: 12px;
+  color: var(--gold);
+}
+
+.avatar-preview {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: var(--gray-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  overflow: hidden;
+}
+
+.avatar-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner-preview {
+  width: 100%;
+  height: 120px;
+  background: var(--gray-700);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.banner-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+    /* ============================================ */
     /* ROYAL DARK THEME – PREMIUM DESIGN SYSTEM     */
     /* ============================================ */
     * {
@@ -221,6 +367,128 @@
 </head>
 <body>
 
+  <!-- ============================================ -->
+<!-- LOGIN / SIGNUP SCREENS                       -->
+<!-- ============================================ -->
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="app-screen active">
+  <div class="auth-container">
+    <div class="auth-card">
+      <h2><i class="fas fa-crown" style="color: var(--gold);"></i> QuickKaam</h2>
+      <h3 style="text-align: center; margin-bottom: 24px;">Welcome Back</h3>
+      <input type="email" id="loginEmail" class="auth-input" placeholder="Email address">
+      <input type="password" id="loginPassword" class="auth-input" placeholder="Password">
+      <div id="loginError" class="error-message"></div>
+      <button class="btn-gold" id="loginBtn">Sign In</button>
+      <div class="auth-switch">
+        Don't have an account? <span id="switchToSignup">Create one</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGNUP SCREEN -->
+<div id="signupScreen" class="app-screen">
+  <div class="auth-container">
+    <div class="auth-card">
+      <h2><i class="fas fa-crown" style="color: var(--gold);"></i> QuickKaam</h2>
+      <h3 style="text-align: center; margin-bottom: 24px;">Create Account</h3>
+      <input type="text" id="signupName" class="auth-input" placeholder="Full Name">
+      <input type="email" id="signupEmail" class="auth-input" placeholder="Email address">
+      <input type="password" id="signupPassword" class="auth-input" placeholder="Password (min 6 characters)">
+      <select id="signupRole" class="auth-input">
+        <option value="jobseeker">Job Seeker - I want to find work</option>
+        <option value="employer">Employer - I want to hire people</option>
+        <option value="explore">Explorer - Just browsing</option>
+      </select>
+      <div id="signupError" class="error-message"></div>
+      <button class="btn-gold" id="signupBtn">Sign Up</button>
+      <div class="auth-switch">
+        Already have an account? <span id="switchToLogin">Sign In</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- EDIT PROFILE MODAL (YouTube-style)           -->
+<!-- ============================================ -->
+<div id="editProfileModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-edit"></i> Edit Profile</h3>
+      <button id="closeEditModal" style="background: none; border: none; color: var(--gold); font-size: 24px; cursor: pointer;">&times;</button>
+    </div>
+    
+    <!-- Banner Section -->
+    <div class="profile-edit-section">
+      <h4>Channel Banner</h4>
+      <div class="banner-preview" id="bannerPreview">
+        <img id="bannerImage" src="" alt="Banner">
+      </div>
+      <input type="file" id="bannerUpload" accept="image/*" style="display: none;">
+      <button class="btn-outline-gold" id="uploadBannerBtn" style="width: auto; padding: 8px 16px;">Upload Banner</button>
+    </div>
+    
+    <!-- Avatar Section -->
+    <div class="profile-edit-section">
+      <h4>Profile Picture</h4>
+      <div class="avatar-preview" id="avatarPreview">
+        <img id="avatarImage" src="" alt="Avatar">
+      </div>
+      <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+      <button class="btn-outline-gold" id="uploadAvatarBtn" style="width: auto; padding: 8px 16px;">Upload Photo</button>
+    </div>
+    
+    <!-- Basic Info -->
+    <div class="profile-edit-section">
+      <h4>Basic Information</h4>
+      <input type="text" id="editDisplayName" class="auth-input" placeholder="Display Name">
+      <input type="text" id="editHandle" class="auth-input" placeholder="Username (e.g., @john_doe)">
+      <textarea id="editBio" class="auth-input" rows="3" placeholder="Bio - Tell us about yourself..."></textarea>
+    </div>
+    
+    <!-- Professional Details -->
+    <div class="profile-edit-section">
+      <h4>Professional Details</h4>
+      <input type="text" id="editProfession" class="auth-input" placeholder="Profession (e.g., Private Chef)">
+      <input type="text" id="editLocation" class="auth-input" placeholder="Location (City, Country)">
+      <input type="number" id="editExperience" class="auth-input" placeholder="Years of Experience">
+    </div>
+    
+    <!-- Skills -->
+    <div class="profile-edit-section">
+      <h4>Skills & Expertise</h4>
+      <div id="editSkillsContainer" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;"></div>
+      <div style="display: flex; gap: 8px;">
+        <input type="text" id="newSkillInput" class="auth-input" placeholder="Add a skill" style="flex: 1;">
+        <button id="addSkillEditBtn" class="btn-outline-gold" style="width: auto;">Add</button>
+      </div>
+    </div>
+    
+    <!-- Social Links -->
+    <div class="profile-edit-section">
+      <h4>Social Links</h4>
+      <input type="url" id="editLinkedin" class="auth-input" placeholder="LinkedIn URL">
+      <input type="url" id="editGithub" class="auth-input" placeholder="GitHub URL">
+      <input type="url" id="editPortfolio" class="auth-input" placeholder="Portfolio Website">
+    </div>
+    
+    <!-- Preferences -->
+    <div class="profile-edit-section">
+      <h4>Preferences</h4>
+      <select id="editAvailability" class="auth-input">
+        <option value="available">🟢 Available for work</option>
+        <option value="busy">🔴 Currently busy</option>
+        <option value="unavailable">🟠 Temporarily unavailable</option>
+      </select>
+      <input type="text" id="editLanguages" class="auth-input" placeholder="Languages (e.g., English, Hindi, Spanish)">
+    </div>
+    
+    <button class="btn-gold" id="saveProfileBtn">Save Changes</button>
+  </div>
+</div>
 <!-- ========== ALL APP SCREENS (ONLY ONE ACTIVE AT A TIME) ========== -->
 
 <!-- HOME SCREEN -->
@@ -411,6 +679,395 @@
 </div>
 
 <script>
+  // ============================================
+  // USER AUTHENTICATION SYSTEM
+  // ============================================
+  
+  let currentLoggedInUser = JSON.parse(localStorage.getItem('quickkaam_current_user')) || null;
+  
+  // User database
+  let users = JSON.parse(localStorage.getItem('quickkaam_users')) || [];
+  
+  // Save initial demo user if none exists (for testing)
+  if (users.length === 0) {
+    users.push({
+      id: 1,
+      name: "Demo User",
+      email: "demo@quickkaam.com",
+      password: "demo123",
+      role: "jobseeker",
+      createdAt: new Date().toISOString()
+    });
+    localStorage.setItem('quickkaam_users', JSON.stringify(users));
+  }
+  
+  // Helper: Save current user session
+  function saveUserSession(user) {
+    currentLoggedInUser = user;
+    localStorage.setItem('quickkaam_current_user', JSON.stringify(user));
+  }
+  
+  // Helper: Clear user session (logout)
+  function clearUserSession() {
+    currentLoggedInUser = null;
+    localStorage.removeItem('quickkaam_current_user');
+  }
+  
+  // Login function
+  function loginUser(email, password) {
+    const user = users.find(u => u.email === email && u.password === password);
+    if (user) {
+      saveUserSession(user);
+      return { success: true, user };
+    }
+    return { success: false, error: "Invalid email or password" };
+  }
+  
+  // Signup function
+  function signupUser(name, email, password, role) {
+    // Check if user already exists
+    if (users.find(u => u.email === email)) {
+      return { success: false, error: "Email already registered" };
+    }
+    if (password.length < 6) {
+      return { success: false, error: "Password must be at least 6 characters" };
+    }
+    
+    const newUser = {
+      id: Date.now(),
+      name: name,
+      email: email,
+      password: password,
+      role: role,
+      profile: {
+        banner: "",
+        avatar: "",
+        handle: "",
+        bio: "",
+        profession: "",
+        location: "",
+        experience: 0,
+        skills: [],
+        linkedin: "",
+        github: "",
+        portfolio: "",
+        availability: "available",
+        languages: ""
+      },
+      createdAt: new Date().toISOString()
+    };
+    
+    users.push(newUser);
+    localStorage.setItem('quickkaam_users', JSON.stringify(users));
+    saveUserSession(newUser);
+    return { success: true, user: newUser };
+  }
+  
+  // Logout function
+  function logoutUser() {
+    clearUserSession();
+    showLoginScreen();
+  }
+  
+  // Show login screen
+  function showLoginScreen() {
+    document.querySelectorAll('.app-screen').forEach(screen => {
+      screen.classList.remove('active');
+    });
+    document.getElementById('loginScreen').classList.add('active');
+  }
+  
+  // Show main app after login
+  function showMainApp() {
+    document.querySelectorAll('.app-screen').forEach(screen => {
+      screen.classList.remove('active');
+    });
+    document.getElementById('homeScreen').classList.add('active');
+    updateNavActiveState('homeScreen');
+    loadUserProfileData();
+  }
+  
+  // Update navigation active state
+  function updateNavActiveState(screenId) {
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-screen') === screenId) {
+        btn.classList.add('active');
+      }
+    });
+  }
+  
+  // Load user profile data into UI
+  function loadUserProfileData() {
+    if (!currentLoggedInUser) return;
+    
+    const profile = currentLoggedInUser.profile || {};
+    
+    document.getElementById('profileName').innerText = currentLoggedInUser.name || 'User';
+    document.getElementById('profileRole').innerText = currentLoggedInUser.role || 'Job Seeker';
+    document.getElementById('profileRating').innerText = "4.8";
+    document.getElementById('profileJobsApplied').innerText = "0";
+    document.getElementById('profileExp').innerText = profile.experience || "0";
+    document.getElementById('userNameDisplay').innerText = currentLoggedInUser.name || 'Guest';
+    
+    // Load skills
+    const skillsContainer = document.getElementById('profileSkills');
+    if (skillsContainer && profile.skills) {
+      skillsContainer.innerHTML = profile.skills.map(skill => 
+        `<span class="chip">${skill}</span>`
+      ).join('');
+    }
+  }
+  
+  // Save full profile from edit modal
+  function saveUserProfile() {
+    if (!currentLoggedInUser) return;
+    
+    const profile = currentLoggedInUser.profile || {};
+    
+    profile.displayName = document.getElementById('editDisplayName').value;
+    profile.handle = document.getElementById('editHandle').value;
+    profile.bio = document.getElementById('editBio').value;
+    profile.profession = document.getElementById('editProfession').value;
+    profile.location = document.getElementById('editLocation').value;
+    profile.experience = parseInt(document.getElementById('editExperience').value) || 0;
+    profile.linkedin = document.getElementById('editLinkedin').value;
+    profile.github = document.getElementById('editGithub').value;
+    profile.portfolio = document.getElementById('editPortfolio').value;
+    profile.availability = document.getElementById('editAvailability').value;
+    profile.languages = document.getElementById('editLanguages').value;
+    
+    // Update name if changed
+    if (profile.displayName) {
+      currentLoggedInUser.name = profile.displayName;
+    }
+    
+    currentLoggedInUser.profile = profile;
+    
+    // Update in users array
+    const userIndex = users.findIndex(u => u.id === currentLoggedInUser.id);
+    if (userIndex !== -1) {
+      users[userIndex] = currentLoggedInUser;
+      localStorage.setItem('quickkaam_users', JSON.stringify(users));
+    }
+    
+    saveUserSession(currentLoggedInUser);
+    loadUserProfileData();
+    
+    // Close modal
+    document.getElementById('editProfileModal').classList.remove('active');
+    vibrate('medium');
+    alert('Profile saved successfully!');
+  }
+  
+  // Load profile data into edit modal
+  function loadProfileToEditModal() {
+    if (!currentLoggedInUser) return;
+    
+    const profile = currentLoggedInUser.profile || {};
+    
+    document.getElementById('editDisplayName').value = currentLoggedInUser.name || '';
+    document.getElementById('editHandle').value = profile.handle || '';
+    document.getElementById('editBio').value = profile.bio || '';
+    document.getElementById('editProfession').value = profile.profession || '';
+    document.getElementById('editLocation').value = profile.location || '';
+    document.getElementById('editExperience').value = profile.experience || 0;
+    document.getElementById('editLinkedin').value = profile.linkedin || '';
+    document.getElementById('editGithub').value = profile.github || '';
+    document.getElementById('editPortfolio').value = profile.portfolio || '';
+    document.getElementById('editAvailability').value = profile.availability || 'available';
+    document.getElementById('editLanguages').value = profile.languages || '';
+    
+    // Load skills
+    const skillsContainer = document.getElementById('editSkillsContainer');
+    if (skillsContainer && profile.skills) {
+      skillsContainer.innerHTML = profile.skills.map(skill => 
+        `<span class="chip">${skill} <i class="fas fa-times" style="cursor:pointer; margin-left:6px;" onclick="removeEditSkill('${skill}')"></i></span>`
+      ).join('');
+    }
+    
+    // Load avatar preview
+    const avatarImg = document.getElementById('avatarImage');
+    if (avatarImg && profile.avatar) {
+      avatarImg.src = profile.avatar;
+    } else {
+      avatarImg.src = 'https://via.placeholder.com/100?text=User';
+    }
+    
+    // Load banner preview
+    const bannerImg = document.getElementById('bannerImage');
+    if (bannerImg && profile.banner) {
+      bannerImg.src = profile.banner;
+    }
+  }
+  
+  // Add skill in edit modal
+  window.addEditSkill = function() {
+    const input = document.getElementById('newSkillInput');
+    const skill = input.value.trim();
+    if (skill && currentLoggedInUser) {
+      if (!currentLoggedInUser.profile.skills) currentLoggedInUser.profile.skills = [];
+      if (!currentLoggedInUser.profile.skills.includes(skill)) {
+        currentLoggedInUser.profile.skills.push(skill);
+        loadProfileToEditModal();
+        input.value = '';
+      }
+    }
+  };
+  
+  // Remove skill
+  window.removeEditSkill = function(skill) {
+    if (currentLoggedInUser && currentLoggedInUser.profile.skills) {
+      currentLoggedInUser.profile.skills = currentLoggedInUser.profile.skills.filter(s => s !== skill);
+      loadProfileToEditModal();
+    }
+  };
+  
+  // Image upload handlers
+  function setupImageUploads() {
+    // Avatar upload
+    const avatarUpload = document.getElementById('avatarUpload');
+    const uploadAvatarBtn = document.getElementById('uploadAvatarBtn');
+    
+    uploadAvatarBtn?.addEventListener('click', () => avatarUpload.click());
+    avatarUpload?.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const avatarImg = document.getElementById('avatarImage');
+          avatarImg.src = event.target.result;
+          if (currentLoggedInUser) {
+            if (!currentLoggedInUser.profile) currentLoggedInUser.profile = {};
+            currentLoggedInUser.profile.avatar = event.target.result;
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    // Banner upload
+    const bannerUpload = document.getElementById('bannerUpload');
+    const uploadBannerBtn = document.getElementById('uploadBannerBtn');
+    
+    uploadBannerBtn?.addEventListener('click', () => bannerUpload.click());
+    bannerUpload?.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const bannerImg = document.getElementById('bannerImage');
+          bannerImg.src = event.target.result;
+          if (currentLoggedInUser) {
+            if (!currentLoggedInUser.profile) currentLoggedInUser.profile = {};
+            currentLoggedInUser.profile.banner = event.target.result;
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+  
+  // ============================================
+  // AUTH BUTTON EVENT LISTENERS
+  // ============================================
+  
+  // Login button
+  document.getElementById('loginBtn')?.addEventListener('click', () => {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const result = loginUser(email, password);
+    
+    if (result.success) {
+      showMainApp();
+      vibrate('medium');
+    } else {
+      document.getElementById('loginError').innerText = result.error;
+      vibrate('light');
+    }
+  });
+  
+  // Signup button
+  document.getElementById('signupBtn')?.addEventListener('click', () => {
+    const name = document.getElementById('signupName').value;
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+    const role = document.getElementById('signupRole').value;
+    const result = signupUser(name, email, password, role);
+    
+    if (result.success) {
+      showMainApp();
+      vibrate('medium');
+    } else {
+      document.getElementById('signupError').innerText = result.error;
+      vibrate('light');
+    }
+  });
+  
+  // Switch between login and signup
+  document.getElementById('switchToSignup')?.addEventListener('click', () => {
+    document.getElementById('loginScreen').classList.remove('active');
+    document.getElementById('signupScreen').classList.add('active');
+  });
+  
+  document.getElementById('switchToLogin')?.addEventListener('click', () => {
+    document.getElementById('signupScreen').classList.remove('active');
+    document.getElementById('loginScreen').classList.add('active');
+  });
+  
+  // Edit profile button
+  document.getElementById('editProfileBtn')?.addEventListener('click', () => {
+    if (!currentLoggedInUser) {
+      alert('Please login first');
+      showLoginScreen();
+      return;
+    }
+    loadProfileToEditModal();
+    document.getElementById('editProfileModal').classList.add('active');
+  });
+  
+  // Close edit modal
+  document.getElementById('closeEditModal')?.addEventListener('click', () => {
+    document.getElementById('editProfileModal').classList.remove('active');
+  });
+  
+  // Save profile
+  document.getElementById('saveProfileBtn')?.addEventListener('click', saveUserProfile);
+  
+  // Add skill button in edit modal
+  document.getElementById('addSkillEditBtn')?.addEventListener('click', addEditSkill);
+  
+  // Logout (add to profile screen)
+  function addLogoutButton() {
+    const profileContainer = document.querySelector('#profileScreen .container');
+    if (profileContainer && !document.getElementById('logoutBtn')) {
+      const logoutBtn = document.createElement('button');
+      logoutBtn.id = 'logoutBtn';
+      logoutBtn.className = 'btn-outline-gold';
+      logoutBtn.style.marginTop = '16px';
+      logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+      logoutBtn.onclick = () => {
+        if (confirm('Are you sure you want to logout?')) {
+          logoutUser();
+          vibrate('light');
+        }
+      };
+      profileContainer.appendChild(logoutBtn);
+    }
+  }
+  
+  // Initialize image uploads
+  setupImageUploads();
+  
+  // Check if user is already logged in on page load
+  if (currentLoggedInUser) {
+    showMainApp();
+  } else {
+    showLoginScreen();
+  }
+  
+  // Add logout button after profile loads
+  setTimeout(addLogoutButton, 500);
   // ========== GLOBAL NAVIGATION CONTROLLER ==========
   function navigateToScreen(screenId) {
     // Hide all screens
@@ -425,31 +1082,39 @@
       btn.classList.remove('active');
       if (btn.getAttribute('data-screen') === screenId) btn.classList.add('active');
     });
-    // Vibration feedback (light)
+// Updated navigation with auth check
+  function navigateToScreen(screenId) {
+    // Check if user is logged in for protected screens
+    const protectedScreens = ['homeScreen', 'jobsScreen', 'postJobScreen', 'messagesScreen', 'profileScreen', 
+                               'savedJobsScreen', 'myApplicationsScreen', 'mySkillsScreen', 'earningsScreen',
+                               'employerFeaturesScreen', 'settingsScreen', 'notificationsScreen'];
+    
+    if (protectedScreens.includes(screenId) && !currentLoggedInUser) {
+      alert('Please login to access this feature');
+      showLoginScreen();
+      return;
+    }
+    
+    // Hide all screens
+    document.querySelectorAll('.app-screen').forEach(screen => {
+      screen.classList.remove('active');
+    });
+    
+    // Show target screen
+    const target = document.getElementById(screenId);
+    if (target) target.classList.add('active');
+    
+    // Update active nav item
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-screen') === screenId) btn.classList.add('active');
+    });
+    
+    // Vibration feedback
     if (navigator.vibrate && localStorage.getItem('vibrationEnabled') !== 'false') navigator.vibrate(20);
-    // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-  window.navigateToScreen = navigateToScreen;
-
-  // Attach navigation listeners
-  document.querySelectorAll('.nav-item').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const screenId = btn.getAttribute('data-screen');
-      if (screenId) navigateToScreen(screenId);
-    });
-  });
-
-  // ========== VIBRATION SYSTEM (with user toggle) ==========
-  function vibrate(type) {
-    if (!navigator.vibrate) return;
-    const enabled = localStorage.getItem('vibrationEnabled') !== 'false';
-    if (!enabled) return;
-    if (type === 'light') navigator.vibrate(20);
-    else if (type === 'medium') navigator.vibrate(40);
-    else if (type === 'strong') navigator.vibrate(70);
-  }
-  window.vibrate = vibrate;
+  iwindow.vibrate = vibrate;
 
   // Toggle in settings
   const vibrationToggle = document.getElementById('vibrationToggle');
