@@ -222,14 +222,14 @@
 
     /* App screens – only one visible at a time */
     .app-screen {
-      display: none;
-      min-height: 100vh;
-      width: 100%;
-      animation: fadeSlideUp 0.3s ease-out;
-    }
-    .app-screen.active {
-      display: block;
-    }
+  display: none !important;
+  min-height: 100vh;
+  width: 100%;
+  animation: fadeSlideUp 0.3s ease-out;
+}
+.app-screen.active {
+  display: block !important;
+}
     @keyframes fadeSlideUp {
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
@@ -771,22 +771,51 @@
   
   // Show login screen
   function showLoginScreen() {
-    document.querySelectorAll('.app-screen').forEach(screen => {
-      screen.classList.remove('active');
+    // Hide ALL screens
+    const allScreens = document.querySelectorAll('.app-screen');
+    allScreens.forEach(screen => {
+        screen.classList.remove('active');
+        screen.style.display = 'none';
     });
-    document.getElementById('loginScreen').classList.add('active');
-  }
-  
+    
+    // Show only login screen
+    const loginScreen = document.getElementById('loginScreen');
+    if (loginScreen) {
+        loginScreen.classList.add('active');
+        loginScreen.style.display = 'block';
+    }
+    
+    console.log("Login screen shown");
+}
   // Show main app after login
   function showMainApp() {
-    document.querySelectorAll('.app-screen').forEach(screen => {
-      screen.classList.remove('active');
+    // Hide ALL screens including login
+    const allScreens = document.querySelectorAll('.app-screen');
+    allScreens.forEach(screen => {
+        screen.classList.remove('active');
+        screen.style.display = 'none';
     });
-    document.getElementById('homeScreen').classList.add('active');
+    
+    // Show home screen
+    const homeScreen = document.getElementById('homeScreen');
+    if (homeScreen) {
+        homeScreen.classList.add('active');
+        homeScreen.style.display = 'block';
+    }
+    
+    // Hide login screen if visible
+    const loginScreen = document.getElementById('loginScreen');
+    if (loginScreen) {
+        loginScreen.classList.remove('active');
+        loginScreen.style.display = 'none';
+    }
+    
+    // Update navigation
     updateNavActiveState('homeScreen');
     loadUserProfileData();
-  }
-  
+    
+    console.log("Main app shown, login hidden");
+}
   // Update navigation active state
   function updateNavActiveState(screenId) {
     document.querySelectorAll('.nav-item').forEach(btn => {
@@ -973,20 +1002,33 @@
   // ============================================
   
   // Login button
-  document.getElementById('loginBtn')?.addEventListener('click', () => {
+  document.getElementById('loginBtn')?.addEventListener('click', function(e) {
+    e.preventDefault();
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
+    
+    if (!email || !password) {
+        document.getElementById('loginError').innerText = 'Please enter email and password';
+        return;
+    }
+    
     const result = loginUser(email, password);
     
     if (result.success) {
-      showMainApp();
-      vibrate('medium');
+        // Hide login screen first
+        const loginScreen = document.getElementById('loginScreen');
+        if (loginScreen) {
+            loginScreen.classList.remove('active');
+            loginScreen.style.display = 'none';
+        }
+        // Show main app
+        showMainApp();
+        vibrate('medium');
     } else {
-      document.getElementById('loginError').innerText = result.error;
-      vibrate('light');
+        document.getElementById('loginError').innerText = result.error;
+        vibrate('light');
     }
-  });
-  
+});
   // Signup button
   document.getElementById('signupBtn')?.addEventListener('click', () => {
     const name = document.getElementById('signupName').value;
@@ -1082,38 +1124,40 @@
       btn.classList.remove('active');
       if (btn.getAttribute('data-screen') === screenId) btn.classList.add('active');
     });
-// Updated navigation with auth check
-  function navigateToScreen(screenId) {
-    // Check if user is logged in for protected screens
-    const protectedScreens = ['homeScreen', 'jobsScreen', 'postJobScreen', 'messagesScreen', 'profileScreen', 
-                               'savedJobsScreen', 'myApplicationsScreen', 'mySkillsScreen', 'earningsScreen',
-                               'employerFeaturesScreen', 'settingsScreen', 'notificationsScreen'];
+function navigateToScreen(screenId) {
+    console.log("Navigating to:", screenId);
     
-    if (protectedScreens.includes(screenId) && !currentLoggedInUser) {
-      alert('Please login to access this feature');
-      showLoginScreen();
-      return;
-    }
-    
-    // Hide all screens
-    document.querySelectorAll('.app-screen').forEach(screen => {
-      screen.classList.remove('active');
+    // Hide ALL screens forcefully
+    const allScreens = document.querySelectorAll('.app-screen');
+    allScreens.forEach(screen => {
+        screen.classList.remove('active');
+        screen.style.display = 'none';
     });
     
-    // Show target screen
-    const target = document.getElementById(screenId);
-    if (target) target.classList.add('active');
+    // Show ONLY the target screen
+    const targetScreen = document.getElementById(screenId);
+    if (targetScreen) {
+        targetScreen.classList.add('active');
+        targetScreen.style.display = 'block';
+        console.log("Screen activated:", screenId);
+    } else {
+        console.error("Screen not found:", screenId);
+    }
     
     // Update active nav item
     document.querySelectorAll('.nav-item').forEach(btn => {
-      btn.classList.remove('active');
-      if (btn.getAttribute('data-screen') === screenId) btn.classList.add('active');
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-screen') === screenId) {
+            btn.classList.add('active');
+        }
     });
     
     // Vibration feedback
-    if (navigator.vibrate && localStorage.getItem('vibrationEnabled') !== 'false') navigator.vibrate(20);
+    if (navigator.vibrate && localStorage.getItem('vibrationEnabled') !== 'false') {
+        navigator.vibrate(20);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+}
   iwindow.vibrate = vibrate;
 
   // Toggle in settings
@@ -1316,6 +1360,31 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.log("❌ SW failed:", err));
   });
 }
+    // ============================================
+// INITIALIZE – SHOW ONLY LOGIN SCREEN FIRST
+// ============================================
+(function() {
+    // Hide all screens first
+    const allScreens = document.querySelectorAll('.app-screen');
+    allScreens.forEach(screen => {
+        screen.classList.remove('active');
+        screen.style.display = 'none';
+    });
+    
+    // Check if user is logged in
+    const savedUser = localStorage.getItem('quickkaam_current_user');
+    if (savedUser) {
+        currentLoggedInUser = JSON.parse(savedUser);
+        showMainApp();
+    } else {
+        // Show login screen
+        const loginScreen = document.getElementById('loginScreen');
+        if (loginScreen) {
+            loginScreen.classList.add('active');
+            loginScreen.style.display = 'block';
+        }
+    }
+})();
 </script>
   
 </body>
