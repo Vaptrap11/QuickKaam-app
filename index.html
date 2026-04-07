@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>QuickKaam — Royal Private Job Marketplace</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ============================================ */
+    /* ROYAL BLACK & GOLD THEME                     */
+    /* ============================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --black: #0a0a0a;
+      --black-light: #141414;
+      --gold: #D4AF37;
+      --gold-dark: #B8960C;
+      --gold-light: #F5E7B2;
+      --gray-100: #1a1a1a;
+      --gray-200: #2a2a2a;
+      --gray-300: #3a3a3a;
+      --gray-400: #6b6b6b;
+      --white: #ffffff;
+      --white-dim: #e0e0e0;
+      --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.2);
+      --border-radius-sm: 12px;
+      --border-radius-md: 20px;
+      --border-radius-lg: 28px;
+      --border-radius-xl: 40px;
+      --transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--black);
+      color: var(--white-dim);
+      overflow-x: hidden;
+      padding-bottom: 76px;
+    }
+
+    /* Screens - ONLY ONE VISIBLE AT A TIME */
+    .screen {
+      display: none;
+      min-height: 100vh;
+      width: 100%;
+    }
+    .screen.active {
+      display: block;
+    }
+
+    /* Typography */
+    h1, h2, h3 {
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--white);
+    }
+    h1 { font-size: 2rem; letter-spacing: -0.02em; }
+    h2 { font-size: 1.5rem; letter-spacing: -0.01em; }
+    h3 { font-size: 1.25rem; }
+    .gold-text { color: var(--gold); }
+    .text-muted { color: var(--gray-400); }
+
+    /* Container */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px 20px 100px 20px;
+    }
+
+    /* Cards */
+    .gold-card {
+      background: var(--gray-100);
+      border-radius: var(--border-radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      transition: var(--transition);
+    }
+    .gold-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-gold);
+    }
+
+    /* Buttons */
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      border: none;
+      color: var(--black);
+      font-weight: 700;
+      padding: 14px 24px;
+      border-radius: 60px;
+      font-size: 1rem;
+      width: 100%;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: var(--shadow-gold); }
+    
+    .btn-outline-gold {
+      background: transparent;
+      border: 1.5px solid var(--gold);
+      color: var(--gold);
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+    .btn-outline-gold:hover { background: var(--gold); color: var(--black); }
+
+    /* Auth Screens */
+    .auth-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .auth-card {
+      max-width: 400px;
+      width: 100%;
+      background: var(--gray-100);
+      border-radius: var(--border-radius-xl);
+      padding: 32px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    .auth-card h2 {
+      text-align: center;
+      margin-bottom: 24px;
+      color: var(--gold);
+    }
+    .auth-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--gray-200);
+      border: 1px solid var(--gray-300);
+      border-radius: 12px;
+      color: var(--white);
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+    .auth-input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+    .auth-switch {
+      text-align: center;
+      margin-top: 20px;
+      color: var(--gray-400);
+    }
+    .auth-switch span {
+      color: var(--gold);
+      cursor: pointer;
+    }
+    .error-message {
+      color: #ff4444;
+      font-size: 0.8rem;
+      margin-top: -12px;
+      margin-bottom: 12px;
+    }
+
+    /* Job Cards */
+    .job-card {
+      background: var(--gray-100);
+      border-radius: var(--border-radius-md);
+      padding: 18px;
+      margin-bottom: 16px;
+      border: 1px solid var(--gray-200);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .job-card:hover {
+      border-color: var(--gold);
+      transform: translateX(4px);
+    }
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chip {
+      background: var(--gray-200);
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .chip.active, .chip:hover {
+      background: var(--gold);
+      color: var(--black);
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(10, 10, 10, 0.98);
+      backdrop-filter: blur(20px);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 20px 20px;
+      border-top: 1px solid rgba(212, 175, 55, 0.2);
+      z-index: 1000;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--gray-400);
+      font-size: 11px;
+      transition: var(--transition);
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    .nav-item i { font-size: 22px; }
+    .nav-item.active {
+      color: var(--gold);
+      transform: translateY(-3px);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      background: var(--gray-100);
+      border-radius: var(--border-radius-lg);
+      border: 1px dashed var(--gray-300);
+    }
+    .empty-state i {
+      font-size: 56px;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    /* Edit Profile Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-content {
+      max-width: 500px;
+      width: 90%;
+      background: var(--gray-100);
+      border-radius: 28px;
+      padding: 24px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--gray-300);
+    }
+    .profile-edit-section {
+      margin-bottom: 24px;
+    }
+    .profile-edit-section h4 {
+      margin-bottom: 12px;
+      color: var(--gold);
+    }
+    .avatar-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      overflow: hidden;
+    }
+    .avatar-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .container { padding: 16px 16px 100px 16px; }
+      .gold-card { padding: 18px; }
+      h1 { font-size: 1.75rem; }
+      h2 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- LOGIN SCREEN                                 -->
+<!-- ============================================ -->
+<div id="loginScreen" class="screen active">
+  <div class="auth-container">
+    <div class="auth-card">
+      <h2><i class="fas fa-crown"></i> QuickKaam</h2>
+      <h3 style="text-align: center; margin-bottom: 24px;">Welcome Back</h3>
+      <input type="email" id="loginEmail" class="auth-input" placeholder="Email address">
+      <input type="password" id="loginPassword" class="auth-input" placeholder="Password">
+      <div id="loginError" class="error-message"></div>
+      <button class="btn-gold" id="loginBtn">Sign In</button>
+      <div class="auth-switch">
+        Don't have an account? <span id="switchToSignup">Create one</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- SIGNUP SCREEN                                -->
+<!-- ============================================ -->
+<div id="signupScreen" class="screen">
+  <div class="auth-container">
+    <div class="auth-card">
+      <h2><i class="fas fa-crown"></i> QuickKaam</h2>
+      <h3 style="text-align: center; margin-bottom: 24px;">Create Account</h3>
+      <input type="text" id="signupName" class="auth-input" placeholder="Full Name">
+      <input type="email" id="signupEmail" class="auth-input" placeholder="Email address">
+      <input type="password" id="signupPassword" class="auth-input" placeholder="Password (min 6 characters)">
+      <select id="signupRole" class="auth-input">
+        <option value="jobseeker">👨‍💼 Job Seeker - I want to find work</option>
+        <option value="employer">🏢 Employer - I want to hire people</option>
+      </select>
+      <div id="signupError" class="error-message"></div>
+      <button class="btn-gold" id="signupBtn">Sign Up</button>
+      <div class="auth-switch">
+        Already have an account? <span id="switchToLogin">Sign In</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- HOME SCREEN                                  -->
+<!-- ============================================ -->
+<div id="homeScreen" class="screen">
+  <div class="container">
+    <div class="flex-between" style="margin-bottom: 20px;">
+      <h1>Welcome, <span id="userNameDisplay" class="gold-text">Guest</span></h1>
+    </div>
+    
+    <!-- Premium Card -->
+    <div class="gold-card" style="background: linear-gradient(135deg, var(--gray-100), var(--black));">
+      <div class="flex-between">
+        <div><i class="fas fa-crown" style="color: var(--gold); font-size: 28px;"></i></div>
+        <span class="chip" style="background: var(--gold); color: black;">Premium 🔥</span>
+      </div>
+      <h3 style="margin-top: 12px;">Get 3 months for ₹100</h3>
+      <p class="text-muted">Unlock unlimited messages, priority matching, and verified badge.</p>
+      <button class="btn-outline-gold" id="goToSubscriptionBtn" style="margin-top: 16px;">Upgrade Now</button>
+    </div>
+    
+    <!-- Stats -->
+    <div class="flex-between" style="margin: 24px 0 12px;">
+      <h3>🔥 Recommended for you</h3>
+      <span class="chip" onclick="switchToScreen('jobsScreen')">See all</span>
+    </div>
+    <div id="homeJobsList"></div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- JOBS SCREEN                                  -->
+<!-- ============================================ -->
+<div id="jobsScreen" class="screen">
+  <div class="container">
+    <h2>Browse Jobs</h2>
+    <input type="text" id="jobSearchInput" class="auth-input" placeholder="🔍 Search jobs...">
+    <div id="jobsListContainer"></div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- POST JOB SCREEN                              -->
+<!-- ============================================ -->
+<div id="postJobScreen" class="screen">
+  <div class="container">
+    <h2>Post a New Job</h2>
+    <div class="gold-card">
+      <input type="text" id="jobTitle" class="auth-input" placeholder="Job Title *">
+      <input type="text" id="jobSalary" class="auth-input" placeholder="Salary (e.g., ₹30,000/month)">
+      <input type="text" id="jobLocation" class="auth-input" placeholder="Location">
+      <textarea id="jobDesc" class="auth-input" rows="3" placeholder="Job description..."></textarea>
+      <button class="btn-gold" id="postJobBtn">Post Job</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- MESSAGES SCREEN                              -->
+<!-- ============================================ -->
+<div id="messagesScreen" class="screen">
+  <div class="container">
+    <h2>Messages</h2>
+    <div id="chatThreadsList" class="empty-state">
+      <i class="fas fa-comments"></i>
+      <p>No messages yet</p>
+      <p class="text-muted">Apply to jobs to start chatting!</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- PROFILE SCREEN                               -->
+<!-- ============================================ -->
+<div id="profileScreen" class="screen">
+  <div class="container">
+    <div class="gold-card" style="text-align: center;">
+      <i class="fas fa-user-circle" style="font-size: 72px; color: var(--gold);"></i>
+      <h2 id="profileName">User</h2>
+      <p id="profileRole">Job Seeker</p>
+      <div class="flex-between" style="margin-top: 12px;">
+        <span>⭐ <span id="profileRating">0</span></span>
+        <span>📋 <span id="profileJobsApplied">0</span> applied</span>
+        <span>🎓 <span id="profileExp">0</span> years</span>
+      </div>
+      <button class="btn-outline-gold" id="editProfileBtn" style="margin-top: 16px;">Edit Profile</button>
+      <button class="btn-outline-gold" id="logoutBtn" style="margin-top: 12px;">Logout</button>
+    </div>
+    
+    <div class="gold-card">
+      <h3>My Skills</h3>
+      <div id="profileSkills" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+    </div>
+    
+    <div class="gold-card">
+      <h3>Subscription Status</h3>
+      <p id="subscriptionStatus">Free Plan</p>
+      <button class="btn-outline-gold" id="upgradeFromProfileBtn">Upgrade to Premium</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- SUBSCRIPTION SCREEN                          -->
+<!-- ============================================ -->
+<div id="subscriptionScreen" class="screen">
+  <div class="container">
+    <div class="gold-card" style="text-align: center;">
+      <i class="fas fa-crown" style="font-size: 48px; color: var(--gold);"></i>
+      <h2>Royal Premium</h2>
+      <p class="gold-text" style="font-size: 2rem; font-weight: 800;">₹100</p>
+      <p>for 3 months</p>
+      <div style="text-align: left; margin: 24px 0;">
+        <p>✅ Unlimited Messages</p>
+        <p>✅ Priority Job Matching</p>
+        <p>✅ Verified Premium Badge</p>
+        <p>✅ Unlimited Applications</p>
+      </div>
+      <button class="btn-gold" id="subscribeNowBtn">Subscribe Now</button>
+      <p class="text-muted" style="margin-top: 16px; font-size: 12px;">UPI: 9873765511@ybl</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- EDIT PROFILE MODAL                           -->
+<!-- ============================================ -->
+<div id="editProfileModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-edit"></i> Edit Profile</h3>
+      <button id="closeEditModal" style="background: none; border: none; color: var(--gold); font-size: 24px; cursor: pointer;">&times;</button>
+    </div>
+    
+    <div class="profile-edit-section">
+      <h4>Profile Picture</h4>
+      <div class="avatar-preview">
+        <img id="avatarImage" src="https://via.placeholder.com/100?text=User" alt="Avatar">
+      </div>
+      <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+      <button class="btn-outline-gold" id="uploadAvatarBtn" style="width: auto; padding: 8px 16px;">Upload Photo</button>
+    </div>
+    
+    <div class="profile-edit-section">
+      <h4>Basic Information</h4>
+      <input type="text" id="editDisplayName" class="auth-input" placeholder="Display Name">
+      <textarea id="editBio" class="auth-input" rows="3" placeholder="Bio - Tell us about yourself..."></textarea>
+      <input type="text" id="editProfession" class="auth-input" placeholder="Profession">
+      <input type="text" id="editLocation" class="auth-input" placeholder="Location">
+      <input type="number" id="editExperience" class="auth-input" placeholder="Years of Experience">
+    </div>
+    
+    <div class="profile-edit-section">
+      <h4>Skills & Expertise</h4>
+      <div id="editSkillsContainer" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;"></div>
+      <div style="display: flex; gap: 8px;">
+        <input type="text" id="newSkillInput" class="auth-input" placeholder="Add a skill" style="flex: 1;">
+        <button id="addSkillEditBtn" class="btn-outline-gold" style="width: auto;">Add</button>
+      </div>
+    </div>
+    
+    <div class="profile-edit-section">
+      <h4>Social Links</h4>
+      <input type="url" id="editLinkedin" class="auth-input" placeholder="LinkedIn URL">
+      <input type="url" id="editPortfolio" class="auth-input" placeholder="Portfolio Website">
+    </div>
+    
+    <div class="profile-edit-section">
+      <h4>Preferences</h4>
+      <select id="editAvailability" class="auth-input">
+        <option value="available">🟢 Available for work</option>
+        <option value="busy">🔴 Currently busy</option>
+      </select>
+      <input type="text" id="editLanguages" class="auth-input" placeholder="Languages (e.g., English, Hindi)">
+    </div>
+    
+    <button class="btn-gold" id="saveProfileBtn">Save Changes</button>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- BOTTOM NAVIGATION                            -->
+<!-- ============================================ -->
+<div class="bottom-nav">
+  <button class="nav-item" data-screen="homeScreen"><i class="fas fa-home"></i><span>Home</span></button>
+  <button class="nav-item" data-screen="jobsScreen"><i class="fas fa-briefcase"></i><span>Jobs</span></button>
+  <button class="nav-item" data-screen="postJobScreen"><i class="fas fa-plus-circle"></i><span>Post</span></button>
+  <button class="nav-item" data-screen="messagesScreen"><i class="fas fa-comment"></i><span>Chat</span></button>
+  <button class="nav-item" data-screen="profileScreen"><i class="fas fa-user"></i><span>Profile</span></button>
+</div>
+
+<script>
+  // ============================================
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCE4M1QoGcV-tMm5rsY0UfRxvEMHbPTgR4",
+  authDomain: "quickkaam-app.firebaseapp.com",
+  projectId: "quickkaam-app",
+  storageBucket: "quickkaam-app.firebasestorage.app",
+  messagingSenderId: "228497916448",
+  appId: "1:228497916448:web:996ac18fc852829206f245",
+  measurementId: "G-JCZD40R5HJ"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+// ============================================
+const firebaseConfig = {
+    apiKey: "AIzaSyCE4M1QoGcV-tMm5rsY0UfRxvEMHbPTgR4",
+    authDomain: "quickkaam-app.firebaseapp.com",
+    projectId: "quickkaam-app",
+    storageBucket: "quickkaam-app.firebasestorage.app",
+    messagingSenderId: "228497916448",
+    appId: "1:228497916448:web:996ac18fc852829206f245"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+// ============================================
+// COMPLETE QUICKKAAM APPLICATION
+// ============================================
+
+// ---------- USER AUTHENTICATION ----------
+let currentLoggedInUser = JSON.parse(localStorage.getItem('quickkaam_current_user')) || null;
+let users = JSON.parse(localStorage.getItem('quickkaam_users')) || [];
+let jobs = JSON.parse(localStorage.getItem('quickkaam_jobs')) || [];
+let applications = JSON.parse(localStorage.getItem('quickkaam_applications')) || [];
+
+// Create demo employer if no users
+if (users.length === 0) {
+  users.push({
+    id: 1,
+    name: "Demo Employer",
+    email: "employer@quickkaam.com",
+    password: "demo123",
+    role: "employer",
+    profile: { skills: [], bio: "", location: "", profession: "", experience: 0, languages: "", availability: "available" }
+  });
+  users.push({
+    id: 2,
+    name: "Demo Job Seeker",
+    email: "seeker@quickkaam.com",
+    password: "demo123",
+    role: "jobseeker",
+    profile: { skills: ["Cooking", "Cleaning"], bio: "Experienced professional", location: "Delhi", profession: "Private Chef", experience: 5, languages: "Hindi, English", availability: "available" }
+  });
+  localStorage.setItem('quickkaam_users', JSON.stringify(users));
+}
+
+// Sample jobs
+if (jobs.length === 0) {
+  jobs.push({ id: 1, title: "Private Chef Needed", salary: "₹35,000/month", location: "Delhi", employer: "Taj Hotel", postedBy: 1 });
+  jobs.push({ id: 2, title: "House Maid Required", salary: "₹15,000/month", location: "Gurgaon", employer: "DLF Ltd", postedBy: 1 });
+  jobs.push({ id: 3, title: "Experienced Driver", salary: "₹25,000/month", location: "Noida", employer: "ABC Corp", postedBy: 1 });
+  localStorage.setItem('quickkaam_jobs', JSON.stringify(jobs));
+}
+
+// Helper Functions
+function saveUserSession(user) {
+  currentLoggedInUser = user;
+  localStorage.setItem('quickkaam_current_user', JSON.stringify(user));
+}
+
+function clearUserSession() {
+  currentLoggedInUser = null;
+  localStorage.removeItem('quickkaam_current_user');
+}
+
+function loginUser(email, password) {
+  const user = users.find(u => u.email === email && u.password === password);
+  if (user) {
+    saveUserSession(user);
+    return { success: true, user };
+  }
+  return { success: false, error: "Invalid email or password" };
+}
+
+function signupUser(name, email, password, role) {
+  if (users.find(u => u.email === email)) {
+    return { success: false, error: "Email already registered" };
+  }
+  if (password.length < 6) {
+    return { success: false, error: "Password must be at least 6 characters" };
+  }
+  const newUser = {
+    id: Date.now(),
+    name: name,
+    email: email,
+    password: password,
+    role: role,
+    profile: { skills: [], bio: "", location: "", profession: "", experience: 0, languages: "", availability: "available" },
+    subscription: { active: false, expiry: null }
+  };
+  users.push(newUser);
+  localStorage.setItem('quickkaam_users', JSON.stringify(users));
+  saveUserSession(newUser);
+  return { success: true, user: newUser };
+}
+
+// ---------- SCREEN NAVIGATION ----------
+function switchToScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(screen => {
+    screen.classList.remove('active');
+  });
+  const target = document.getElementById(screenId);
+  if (target) target.classList.add('active');
+  
+  document.querySelectorAll('.nav-item').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.getAttribute('data-screen') === screenId) {
+      btn.classList.add('active');
+    }
+  });
+  
+  if (screenId === 'homeScreen') loadHomeScreen();
+  if (screenId === 'jobsScreen') loadJobsScreen();
+  if (screenId === 'profileScreen') loadProfileScreen();
+}
+
+// ---------- LOAD HOME SCREEN ----------
+function loadHomeScreen() {
+  const container = document.getElementById('homeJobsList');
+  if (container) {
+    const recommendedJobs = jobs.slice(0, 3);
+    if (recommendedJobs.length === 0) {
+      container.innerHTML = `<div class="empty-state"><i class="fas fa-briefcase"></i><p>No jobs yet. Be the first to post!</p></div>`;
+    } else {
+      container.innerHTML = recommendedJobs.map(job => `
+        <div class="job-card" onclick="applyForJob(${job.id})">
+          <div class="flex-between">
+            <strong>${job.title}</strong>
+            <span class="gold-text">${job.salary}</span>
+          </div>
+          <div class="text-muted">${job.location} • ${job.employer}</div>
+          <button class="btn-outline-gold" style="margin-top: 8px;">Apply Now</button>
+        </div>
+      `).join('');
+    }
+  }
+}
+
+// ---------- LOAD JOBS SCREEN ----------
+function loadJobsScreen() {
+  const container = document.getElementById('jobsListContainer');
+  if (container) {
+    if (jobs.length === 0) {
+      container.innerHTML = `<div class="empty-state"><i class="fas fa-briefcase"></i><p>No jobs available. Check back later!</p></div>`;
+    } else {
+      container.innerHTML = jobs.map(job => `
+        <div class="job-card" onclick="applyForJob(${job.id})">
+          <div class="flex-between">
+            <strong>${job.title}</strong>
+            <span class="gold-text">${job.salary}</span>
+          </div>
+          <div class="text-muted">${job.location} • ${job.employer}</div>
+          <button class="btn-outline-gold" style="margin-top: 8px;">Apply Now</button>
+        </div>
+      `).join('');
+    }
+  }
+}
+
+// ---------- APPLY FOR JOB ----------
+window.applyForJob = function(jobId) {
+  if (!currentLoggedInUser) {
+    alert('Please login to apply for jobs');
+    switchToScreen('loginScreen');
+    return;
+  }
+  
+  const job = jobs.find(j => j.id === jobId);
+  if (job) {
+    if (!applications.find(a => a.jobId === jobId && a.userId === currentLoggedInUser.id)) {
+      applications.push({
+        id: Date.now(),
+        jobId: jobId,
+        jobTitle: job.title,
+        userId: currentLoggedInUser.id,
+        userName: currentLoggedInUser.name,
+        status: 'pending',
+        appliedAt: new Date().toISOString()
+      });
+      localStorage.setItem('quickkaam_applications', JSON.stringify(applications));
+      alert(`✅ Applied to ${job.title}!`);
+    } else {
+      alert('You have already applied to this job');
+    }
+  }
+}
+
+// ---------- LOAD PROFILE SCREEN ----------
+function loadProfileScreen() {
+  if (!currentLoggedInUser) return;
+  
+  document.getElementById('profileName').innerText = currentLoggedInUser.name;
+  document.getElementById('profileRole').innerText = currentLoggedInUser.role === 'jobseeker' ? 'Job Seeker' : 'Employer';
+  document.getElementById('profileRating').innerText = "4.8";
+  document.getElementById('profileJobsApplied').innerText = applications.filter(a => a.userId === currentLoggedInUser.id).length;
+  document.getElementById('profileExp').innerText = currentLoggedInUser.profile?.experience || 0;
+  document.getElementById('userNameDisplay').innerText = currentLoggedInUser.name;
+  
+  // Skills
+  const skillsContainer = document.getElementById('profileSkills');
+  const skills = currentLoggedInUser.profile?.skills || [];
+  if (skills.length === 0) {
+    skillsContainer.innerHTML = '<span class="text-muted">No skills added yet</span>';
+  } else {
+    skillsContainer.innerHTML = skills.map(skill => `<span class="chip">${skill}</span>`).join('');
+  }
+  
+  // Subscription status
+  const isPremium = currentLoggedInUser.subscription?.active === true;
+  document.getElementById('subscriptionStatus').innerHTML = isPremium ? '<span class="gold-text">👑 Premium Active</span>' : 'Free Plan';
+}
+
+// ---------- EDIT PROFILE MODAL ----------
+function openEditProfileModal() {
+  if (!currentLoggedInUser) return;
+  
+  const profile = currentLoggedInUser.profile || {};
+  document.getElementById('editDisplayName').value = currentLoggedInUser.name || '';
+  document.getElementById('editBio').value = profile.bio || '';
+  document.getElementById('editProfession').value = profile.profession || '';
+  document.getElementById('editLocation').value = profile.location || '';
+  document.getElementById('editExperience').value = profile.experience || 0;
+  document.getElementById('editLinkedin').value = profile.linkedin || '';
+  document.getElementById('editPortfolio').value = profile.portfolio || '';
+  document.getElementById('editAvailability').value = profile.availability || 'available';
+  document.getElementById('editLanguages').value = profile.languages || '';
+  
+  // Skills
+  const skillsContainer = document.getElementById('editSkillsContainer');
+  const skills = profile.skills || [];
+  skillsContainer.innerHTML = skills.map(skill => 
+    `<span class="chip">${skill} <i class="fas fa-times" style="cursor:pointer; margin-left:6px;" onclick="removeEditSkill('${skill}')"></i></span>`
+  ).join('');
+  
+  document.getElementById('editProfileModal').classList.add('active');
+}
+
+function saveProfileChanges() {
+  if (!currentLoggedInUser) return;
+  
+  if (!currentLoggedInUser.profile) currentLoggedInUser.profile = {};
+  
+  currentLoggedInUser.name = document.getElementById('editDisplayName').value;
+  currentLoggedInUser.profile.bio = document.getElementById('editBio').value;
+  currentLoggedInUser.profile.profession = document.getElementById('editProfession').value;
+  currentLoggedInUser.profile.location = document.getElementById('editLocation').value;
+  currentLoggedInUser.profile.experience = parseInt(document.getElementById('editExperience').value) || 0;
+  currentLoggedInUser.profile.linkedin = document.getElementById('editLinkedin').value;
+  currentLoggedInUser.profile.portfolio = document.getElementById('editPortfolio').value;
+  currentLoggedInUser.profile.availability = document.getElementById('editAvailability').value;
+  currentLoggedInUser.profile.languages = document.getElementById('editLanguages').value;
+  
+  // Update in users array
+  const userIndex = users.findIndex(u => u.id === currentLoggedInUser.id);
+  if (userIndex !== -1) {
+    users[userIndex] = currentLoggedInUser;
+    localStorage.setItem('quickkaam_users', JSON.stringify(users));
+  }
+  
+  saveUserSession(currentLoggedInUser);
+  document.getElementById('editProfileModal').classList.remove('active');
+  loadProfileScreen();
+  alert('Profile saved successfully!');
+}
+
+function addEditSkill() {
+  const input = document.getElementById('newSkillInput');
+  const skill = input.value.trim();
+  if (skill && currentLoggedInUser) {
+    if (!currentLoggedInUser.profile.skills) currentLoggedInUser.profile.skills = [];
+    if (!currentLoggedInUser.profile.skills.includes(skill)) {
+      currentLoggedInUser.profile.skills.push(skill);
+      openEditProfileModal();
+      input.value = '';
+    }
+  }
+}
+
+window.removeEditSkill = function(skill) {
+  if (currentLoggedInUser && currentLoggedInUser.profile.skills) {
+    currentLoggedInUser.profile.skills = currentLoggedInUser.profile.skills.filter(s => s !== skill);
+    openEditProfileModal();
+  }
+}
+
+// ---------- SUBSCRIPTION ----------
+function activatePremium() {
+  if (!currentLoggedInUser) {
+    alert('Please login first');
+    return;
+  }
+  
+  if (confirm('Pay ₹100 via UPI: 9873765511@ybl\n\nAfter payment, click OK to activate premium.')) {
+    if (!currentLoggedInUser.subscription) currentLoggedInUser.subscription = {};
+    currentLoggedInUser.subscription.active = true;
+    currentLoggedInUser.subscription.expiry = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString();
+    
+    const userIndex = users.findIndex(u => u.id === currentLoggedInUser.id);
+    if (userIndex !== -1) {
+      users[userIndex] = currentLoggedInUser;
+      localStorage.setItem('quickkaam_users', JSON.stringify(users));
+    }
+    saveUserSession(currentLoggedInUser);
+    alert('👑 Premium Activated! Enjoy unlimited features.');
+    loadProfileScreen();
+    switchToScreen('profileScreen');
+  }
+}
+
+// ---------- POST JOB ----------
+function postNewJob() {
+  if (!currentLoggedInUser) {
+    alert('Please login to post a job');
+    return;
+  }
+  
+  const title = document.getElementById('jobTitle').value;
+  const salary = document.getElementById('jobSalary').value;
+  const location = document.getElementById('jobLocation').value;
+  
+  if (!title) {
+    alert('Please enter job title');
+    return;
+  }
+  
+  const newJob = {
+    id: Date.now(),
+    title: title,
+    salary: salary || 'Negotiable',
+    location: location || 'Not specified',
+    employer: currentLoggedInUser.name,
+    postedBy: currentLoggedInUser.id
+  };
+  
+  jobs.push(newJob);
+  localStorage.setItem('quickkaam_jobs', JSON.stringify(jobs));
+  
+  document.getElementById('jobTitle').value = '';
+  document.getElementById('jobSalary').value = '';
+  document.getElementById('jobLocation').value = '';
+  document.getElementById('jobDesc').value = '';
+  
+  alert('✅ Job posted successfully!');
+  switchToScreen('jobsScreen');
+  loadJobsScreen();
+}
+
+// ---------- SHOW MAIN APP AFTER LOGIN ----------
+function showMainApp() {
+  switchToScreen('homeScreen');
+  loadHomeScreen();
+  loadProfileScreen();
+}
+
+function showLoginScreen() {
+  switchToScreen('loginScreen');
+}
+
+function logoutUser() {
+  clearUserSession();
+  showLoginScreen();
+}
+
+// ---------- EVENT LISTENERS ----------
+document.getElementById('loginBtn')?.addEventListener('click', () => {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const result = loginUser(email, password);
+  if (result.success) {
+    showMainApp();
+  } else {
+    document.getElementById('loginError').innerText = result.error;
+  }
+});
+
+document.getElementById('signupBtn')?.addEventListener('click', () => {
+  const name = document.getElementById('signupName').value;
+  const email = document.getElementById('signupEmail').value;
+  const password = document.getElementById('signupPassword').value;
+  const role = document.getElementById('signupRole').value;
+  const result = signupUser(name, email, password, role);
+  if (result.success) {
+    showMainApp();
+  } else {
+    document.getElementById('signupError').innerText = result.error;
+  }
+});
+
+document.getElementById('switchToSignup')?.addEventListener('click', () => {
+  switchToScreen('signupScreen');
+});
+
+document.getElementById('switchToLogin')?.addEventListener('click', () => {
+  switchToScreen('loginScreen');
+});
+
+document.getElementById('postJobBtn')?.addEventListener('click', postNewJob);
+document.getElementById('logoutBtn')?.addEventListener('click', logoutUser);
+document.getElementById('editProfileBtn')?.addEventListener('click', openEditProfileModal);
+document.getElementById('closeEditModal')?.addEventListener('click', () => {
+  document.getElementById('editProfileModal').classList.remove('active');
+});
+document.getElementById('saveProfileBtn')?.addEventListener('click', saveProfileChanges);
+document.getElementById('addSkillEditBtn')?.addEventListener('click', addEditSkill);
+document.getElementById('uploadAvatarBtn')?.addEventListener('click', () => {
+  document.getElementById('avatarUpload').click();
+});
+document.getElementById('subscribeNowBtn')?.addEventListener('click', activatePremium);
+document.getElementById('goToSubscriptionBtn')?.addEventListener('click', () => {
+  switchToScreen('subscriptionScreen');
+});
+document.getElementById('upgradeFromProfileBtn')?.addEventListener('click', () => {
+  switchToScreen('subscriptionScreen');
+});
+
+// Avatar upload
+document.getElementById('avatarUpload')?.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      document.getElementById('avatarImage').src = event.target.result;
+      if (currentLoggedInUser) {
+        if (!currentLoggedInUser.profile) currentLoggedInUser.profile = {};
+        currentLoggedInUser.profile.avatar = event.target.result;
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// Navigation buttons
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const screenId = btn.getAttribute('data-screen');
+    if (screenId) switchToScreen(screenId);
+  });
+});
+
+// Search functionality
+document.getElementById('jobSearchInput')?.addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase();
+  const filtered = jobs.filter(job => job.title.toLowerCase().includes(query));
+  const container = document.getElementById('jobsListContainer');
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><p>No jobs found</p></div>`;
+  } else {
+    container.innerHTML = filtered.map(job => `
+      <div class="job-card" onclick="applyForJob(${job.id})">
+        <div class="flex-between">
+          <strong>${job.title}</strong>
+          <span class="gold-text">${job.salary}</span>
+        </div>
+        <div class="text-muted">${job.location} • ${job.employer}</div>
+        <button class="btn-outline-gold" style="margin-top: 8px;">Apply Now</button>
+      </div>
+    `).join('');
+  }
+});
+
+// Initialize
+if (currentLoggedInUser) {
+  showMainApp();
+} else {
+  showLoginScreen();
+}
+</script>
+
+</body>
+</html>
