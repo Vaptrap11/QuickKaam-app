@@ -362,6 +362,11 @@
     <div id="allJobsList"></div>
   </div>
 </div>
+  <!-- Add this after the filter chips in jobsScreen -->
+<div class="flex-between" style="margin: 20px 0 12px;">
+  <h3><i class="fas fa-users gold-text"></i> Available Workers</h3>
+</div>
+<div id="workersList"></div>
 
 <!-- ============================================ -->
 <!-- POST JOB SCREEN (Employers only)             -->
@@ -712,6 +717,36 @@ function showMainApp() {
   checkInactivityAndLogout();
 }
 
+  function loadWorkersList() {
+  const container = document.getElementById('workersList');
+  if (!container) return;
+  
+  // Get all job seekers (workers)
+  const workers = users.filter(u => u.role === 'jobseeker');
+  
+  if (workers.length === 0) {
+    container.innerHTML = `<div class="empty-state"><i class="fas fa-user-slash"></i><p>No workers signed up yet</p></div>`;
+    return;
+  }
+  
+  container.innerHTML = workers.map(worker => `
+    <div class="worker-card" onclick="viewUserProfile(${worker.id})">
+      <div class="flex-between">
+        <div>
+          <strong>${worker.name}</strong>
+          <div class="text-muted">${worker.profile?.profession || 'Professional'}</div>
+        </div>
+        <span class="chip">⭐ ${worker.rating || '4.5'}</span>
+      </div>
+      <div class="text-muted" style="margin-top: 8px;">📍 ${worker.profile?.location || 'Location not set'}</div>
+      <div class="flex-between" style="margin-top: 12px;">
+        <span>🎓 ${worker.profile?.experience || 0} years exp</span>
+        <button class="btn-outline-gold" style="width: auto; padding: 6px 16px;" onclick="event.stopPropagation(); viewUserProfile(${worker.id})">View Profile</button>
+      </div>
+    </div>
+  `).join('');
+}
+  
 function showLoginScreen() {
   document.querySelectorAll('.app-screen').forEach(screen => {
     screen.classList.remove('active');
@@ -767,7 +802,6 @@ function loadHomeJobs() {
     </div>
   `).join('');
 }
-
 function loadAllJobs() {
   const container = document.getElementById('allJobsList');
   if (!container) return;
@@ -777,19 +811,29 @@ function loadAllJobs() {
     return;
   }
   
-  container.innerHTML = jobs.map(job => `
-    <div class="job-card" onclick="applyForJob(${job.id})">
-      <div class="flex-between">
-        <strong>${job.title}</strong>
-        <span class="gold-text">${job.salary}</span>
+  container.innerHTML = jobs.map(job => {
+    // Find the employer who posted this job
+    const employer = users.find(u => u.name === job.employer || u.id == job.employerId);
+    
+    return `
+      <div class="job-card">
+        <div class="flex-between">
+          <strong>${job.title}</strong>
+          <span class="gold-text">${job.salary}</span>
+        </div>
+        <div class="text-muted">📍 ${job.location}</div>
+        <div class="flex-between" style="margin-top: 8px;">
+          <span class="text-muted">👔 Posted by: <span style="color: var(--gold); cursor: pointer;" onclick="viewUserProfile(${employer?.id || job.employerId})">${job.employer}</span></span>
+          ${job.urgent ? '<span class="chip" style="background: #ff4444; color: white;">Urgent</span>' : ''}
+        </div>
+        <div class="flex-between" style="margin-top: 12px;">
+          <button class="btn-outline-gold" style="width: 48%;" onclick="applyForJob(${job.id})">Apply</button>
+          <button class="btn-outline-gold" style="width: 48%;" onclick="viewUserProfile(${employer?.id || job.employerId})">View Employer</button>
+        </div>
       </div>
-      <div class="text-muted">📍 ${job.location} | 👔 ${job.employer}</div>
-      ${job.urgent ? '<span class="chip" style="background: #ff4444; color: white;">Urgent</span>' : ''}
-      <button class="btn-outline-gold" style="margin-top: 8px;">Apply Now</button>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
-
 function updateStats() {
   document.getElementById('statJobs').innerText = jobs.length;
   document.getElementById('statWorkers').innerText = users.filter(u => u.role === 'jobseeker').length;
@@ -1110,7 +1154,105 @@ if (currentLoggedInUser && !checkInactivityAndLogout()) {
 } else {
   showLoginScreen();
 }
-</script>
+  // ============================================
+// VIEW OTHER USER PROFILES
+// ============================================
 
+// Store the currently viewed user
+let currentlyViewedUser = null;
+
+// Function to view any user's profile by ID
+function viewUserProfile(userId) {
+  // Find the user in the users array
+  const user = users.find(u => u.id == userId);
+  
+  if (!user) {
+    alert("User not found");
+    return;
+  }
+  
+  currentlyViewedUser = user;
+  
+  // Populate modal with user data
+  document.getElementById('viewProfileDisplayName').innerText = user.name;
+  document.getElementById('viewProfileName').innerText = user.name;
+  document.getElementById('viewProfileRole').innerText = user.role === 'jobseeker' ? 'Job Seeker' : 'Employer';
+  document.getElementById('viewProfileRating').innerText = user.rating || "4.5";
+  document.getElementById('viewProfileJobsApplied').innerText = user.applicationsCount || "0";
+  document.getElementById('viewProfileExp').innerText = user.profile?.experience || "0";
+  document.getElementById('viewProfileBio').innerText = user.profile?.bio || "No bio added yet";
+  document.getElementById('viewProfileLocation').innerText = user.profile?.location || "Not specified";
+  
+  // Load skills
+  const skillsContainer = document.getElementById('viewProfileSkills');
+  if (user.profile?.skills && user.profile.skills.length > 0) {
+    skillsContainer.innerHTML = user.profile.skills.map(skill => `<span class="chip">${skill}</span>`).join('');
+  } else {
+    skillsContainer.innerHTML = '<span class="text-muted">No skills added</span>';
+  }
+  
+  // Show modal
+  document.getElementById('viewProfileModal').classList.add('active');
+}
+
+// Close modal
+document.getElementById('closeViewProfileModal')?.addEventListener('click', () => {
+  document.getElementById('viewProfileModal').classList.remove('active');
+});
+
+// Send message from profile view
+document.getElementById('messageFromProfileBtn')?.addEventListener('click', () => {
+  if (!currentlyViewedUser) return;
+  
+  if (!currentLoggedInUser) {
+    alert("Please login to send messages");
+    showLoginScreen();
+    return;
+  }
+  
+  alert(`💬 Message feature coming soon!\n\nYou can message ${currentlyViewedUser.name} after applying to their jobs or hiring them.`);
+  document.getElementById('viewProfileModal').classList.remove('active');
+});
+</script>
+<!-- ============================================ -->
+<!-- VIEW OTHER USER PROFILE MODAL                -->
+<!-- ============================================ -->
+<div id="viewProfileModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-circle"></i> <span id="viewProfileName">User Profile</span></h3>
+      <button id="closeViewProfileModal" style="background: none; border: none; color: var(--gold); font-size: 24px; cursor: pointer;">&times;</button>
+    </div>
+    
+    <div style="text-align: center;">
+      <i class="fas fa-user-circle" style="font-size: 72px; color: var(--gold);"></i>
+      <h2 id="viewProfileDisplayName">User Name</h2>
+      <p id="viewProfileRole">Job Seeker</p>
+      <div class="flex-between" style="margin-top: 12px;">
+        <span>⭐ <span id="viewProfileRating">4.5</span></span>
+        <span>📋 <span id="viewProfileJobsApplied">0</span> jobs</span>
+        <span>🎓 <span id="viewProfileExp">0</span> years</span>
+      </div>
+    </div>
+    
+    <div class="gold-card" style="margin-top: 16px;">
+      <h4>About</h4>
+      <p id="viewProfileBio" class="text-muted">No bio added yet</p>
+    </div>
+    
+    <div class="gold-card">
+      <h4>Skills</h4>
+      <div id="viewProfileSkills" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+    </div>
+    
+    <div class="gold-card">
+      <h4>Location</h4>
+      <p id="viewProfileLocation" class="text-muted">Not specified</p>
+    </div>
+    
+    <button class="btn-gold" id="messageFromProfileBtn">Send Message</button>
+  </div>
+</div>
+  
 </body>
 </html>
