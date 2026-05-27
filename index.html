@@ -7,18 +7,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>QuickKaam — Royal Private Job Marketplace</title>
-  
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="manifest.json">
-  
-  <!-- Fonts & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
-  
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* ---------- ROYAL DARK THEME (MODERN, SCALABLE) ---------- */
     * {
@@ -257,6 +251,21 @@
 </head>
 <body>
 
+<!-- FIREBASE CONFIGURATION (YOURS) -->
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCE4M1QoGcV-tMm5rsY0UfRxvEMHbPTgR4",
+    authDomain: "quickkaam-app.firebaseapp.com",
+    projectId: "quickkaam-app",
+    storageBucket: "quickkaam-app.firebasestorage.app",
+    messagingSenderId: "228497916448",
+    appId: "1:228497916448:web:996ac18fc852829206f245",
+    measurementId: "G-JCZD40R5HJ"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+</script>
+
 <!-- LOGIN SCREEN -->
 <div id="loginScreen" class="app-screen active">
   <div class="auth-container">
@@ -268,12 +277,6 @@
       <div id="loginError" class="error-message"></div>
       <button class="btn-gold" id="loginBtn">Sign In</button>
       <div class="auth-switch">Don't have an account? <span id="switchToSignup">Create one</span></div>
-      <div class="auth-switch" style="margin-top: 12px;">
-        <i class="fab fa-youtube" style="color: #ff0000;"></i> 
-        <a href="https://www.youtube.com/@VaptrapMemesAndEdits" target="_blank" style="color: var(--gold); text-decoration: none;">
-          Subscribe on YouTube for ₹10 discount
-        </a>
-      </div>
     </div>
   </div>
 </div>
@@ -306,7 +309,7 @@
       <i class="fas fa-bell" style="font-size: 24px; color: var(--gold); cursor: pointer;" onclick="alert('No new notifications')"></i>
     </div>
     <div class="gold-card" style="background: linear-gradient(135deg, var(--gray-800), var(--black));">
-      <div class="flex-between"><span><i class="fas fa-crown" style="color: var(--gold);"></i> Royal Premium</span><span class="chip" style="background: var(--gold); color: black;" id="premiumPriceChip">₹100 for 3 months</span></div>
+      <div class="flex-between"><span><i class="fas fa-crown" style="color: var(--gold);"></i> Royal Premium</span><span class="chip" style="background: var(--gold); color: black;">₹100 for 3 months</span></div>
       <p class="text-muted" style="margin-top: 12px;">✨ Unlimited messages • Priority matching • Verified badge</p>
       <button class="btn-outline-gold" style="margin-top: 16px;" onclick="navigateToScreen('subscriptionScreen')">Upgrade Now</button>
     </div>
@@ -367,21 +370,25 @@
     </div>
     <div class="gold-card"><h3>My Skills</h3><div id="profileSkills" style="display: flex; flex-wrap: wrap; gap: 8px;"></div></div>
     <div class="gold-card"><h3>Subscription Status</h3><p id="subscriptionStatus" class="gold-text">Free Plan</p><button class="btn-outline-gold" onclick="navigateToScreen('subscriptionScreen')">Upgrade to Premium</button></div>
-    <div class="gold-card"><h3><i class="fab fa-youtube" style="color: #ff0000;"></i> YouTube Discount</h3><p id="youtubeStatus" class="text-muted">Not subscribed</p><button id="checkYoutubeBtn" class="btn-outline-gold">Verify Subscription & Get ₹10 Off</button></div>
   </div>
 </div>
 
-<!-- SUBSCRIPTION SCREEN -->
+<!-- SUBSCRIPTION SCREEN (with YouTube discount & unsubscribe detection) -->
 <div id="subscriptionScreen" class="app-screen">
   <div class="container">
     <h2>Royal Premium</h2>
     <div class="gold-card" style="text-align: center; background: linear-gradient(135deg, #1a1a2e, #0a0a0a);">
       <i class="fas fa-crown" style="font-size: 48px; color: var(--gold);"></i>
-      <h3 class="gold-text" style="font-size: 2rem;" id="displayPrice">₹100</h3><p>for 3 months</p>
-      <div style="margin: 20px 0; text-align: left;"><p>✅ Unlimited Messages</p><p>✅ Priority Job Matching</p><p>✅ Verified Premium Badge</p><p>✅ Unlimited Applications</p><p>✅ Priority Support</p></div>
-      <button class="btn-gold" id="subscribeNowBtn">Subscribe Now – <span id="btnPrice">₹100</span></button>
+      <h3 class="gold-text" style="font-size: 2rem;">₹100</h3><p>for 3 months</p>
+      <div style="margin: 20px 0; text-align: left;">
+        <p>✅ Unlimited Messages</p><p>✅ Priority Job Matching</p><p>✅ Verified Premium Badge</p>
+        <p>✅ Unlimited Applications</p><p>✅ Priority Support</p>
+      </div>
+      <!-- YouTube discount link -->
+      <p class="text-muted" style="margin-bottom: 8px;">🎁 Get ₹10 discount – <a href="https://www.youtube.com/@VaptrapMemesAndEdits" target="_blank" id="youtubeDiscountLink">Subscribe to Vaptrap Shorts on YouTube!</a></p>
+      <button class="btn-gold" id="subscribeNowBtn">Subscribe Now – ₹100</button>
       <p class="text-muted" style="margin-top: 16px;">🔒 Secure UPI Payment: 9873765511@ybl</p>
-      <p class="text-muted"><i class="fab fa-youtube"></i> <a href="https://www.youtube.com/@VaptrapMemesAndEdits" target="_blank" style="color: var(--gold);">Subscribe on YouTube</a> for ₹10 discount</p>
+      <p class="text-muted" id="subscriptionNote"></p>
     </div>
   </div>
 </div>
@@ -407,117 +414,80 @@
 </div>
 
 <script>
-  // ========== FIREBASE CONFIGURATION (YOUR CONFIG) ==========
-  const firebaseConfig = {
-    apiKey: "AIzaSyCE4M1QoGcV-tMm5rsY0UfRxvEMHbPTgR4",
-    authDomain: "quickkaam-app.firebaseapp.com",
-    projectId: "quickkaam-app",
-    storageBucket: "quickkaam-app.firebasestorage.app",
-    messagingSenderId: "228497916448",
-    appId: "1:228497916448:web:996ac18fc852829206f245",
-    measurementId: "G-JCZD40R5HJ"
-  };
-
-  // Initialize Firebase
-  const app = firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  console.log("Firebase initialized");
-
-  // ========== GLOBAL DATA ==========
+  // ---------- DATA & AUTH ----------
   let currentLoggedInUser = JSON.parse(localStorage.getItem('quickkaam_current_user')) || null;
   let users = JSON.parse(localStorage.getItem('quickkaam_users')) || [];
   let jobs = JSON.parse(localStorage.getItem('quickkaam_jobs')) || [];
   let applications = JSON.parse(localStorage.getItem('quickkaam_applications')) || [];
-  
-  // YouTube subscription status (simulated, but user can manually verify)
-  let userYoutubeSubscribed = localStorage.getItem('quickkaam_youtube_subscribed') === 'true';
 
-  if (users.length === 0) users.push({ id: 1, name: "Demo User", email: "demo@quickkaam.com", password: "demo123", role: "jobseeker", profile: { bio: "", profession: "", location: "", experience: 0, skills: [], availability: "available", languages: "" }, lastActive: new Date().toISOString(), youtubeSubscribed: false });
+  if (users.length === 0) users.push({ id: 1, name: "Demo User", email: "demo@quickkaam.com", password: "demo123", role: "jobseeker", profile: { bio: "", profession: "", location: "", experience: 0, skills: [], availability: "available", languages: "" }, lastActive: new Date().toISOString() });
   if (jobs.length === 0) jobs = [{ id: 1, title: "Private Chef Needed", salary: "₹35,000/month", location: "Delhi", employer: "Taj Hotel", urgent: true, premium: false }, { id: 2, title: "Experienced Driver", salary: "₹25,000/month", location: "Gurgaon", employer: "ABC Corp", urgent: false, premium: false }, { id: 3, title: "Math Tutor", salary: "₹500/hour", location: "Noida", employer: "Elite Academy", urgent: true, premium: true }];
-  
   localStorage.setItem('quickkaam_users', JSON.stringify(users));
   localStorage.setItem('quickkaam_jobs', JSON.stringify(jobs));
 
-  // ========== DISCOUNT & SUBSCRIPTION LOGIC ==========
-  function getDiscountPrice() { return userYoutubeSubscribed ? 90 : 100; }
-  function updatePriceDisplays() {
-    const price = getDiscountPrice();
-    const priceEls = document.querySelectorAll('#displayPrice, #btnPrice');
-    priceEls.forEach(el => { if (el) el.innerText = `₹${price}`; });
-    const chip = document.getElementById('premiumPriceChip');
-    if (chip) chip.innerText = `₹${price} for 3 months`;
-  }
-
-  // Check if user has valid premium (not expired, youtube still subscribed if discount used)
-  function isPremiumActive() {
-    const sub = JSON.parse(localStorage.getItem('quickkaam_subscription') || '{}');
-    if (!sub.active) return false;
-    const expiry = new Date(sub.expiryDate);
-    if (expiry < new Date()) return false;
-    // If this subscription used the YouTube discount, verify YouTube still subscribed
-    if (sub.usedYoutubeDiscount && !userYoutubeSubscribed) return false;
-    return true;
-  }
-
-  function activatePremium(usedYoutubeDiscount = false) {
-    const expiryDate = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000);
-    localStorage.setItem('quickkaam_subscription', JSON.stringify({
-      active: true, startDate: new Date().toISOString(), expiryDate: expiryDate.toISOString(),
-      usedYoutubeDiscount: usedYoutubeDiscount
-    }));
-    if (usedYoutubeDiscount && currentLoggedInUser) {
-      currentLoggedInUser.youtubeSubscribed = true;
-      localStorage.setItem('quickkaam_current_user', JSON.stringify(currentLoggedInUser));
-    }
-    updateSubscriptionUI();
-    alert("🎉 Premium activated! Enjoy unlimited features.");
-  }
-
-  function deactivatePremium() {
-    localStorage.setItem('quickkaam_subscription', JSON.stringify({ active: false }));
-    updateSubscriptionUI();
-    alert("⚠️ Premium paused because YouTube subscription was cancelled. Subscribe again to restore benefits.");
-  }
-
-  function updateSubscriptionUI() {
-    const statusEl = document.getElementById('subscriptionStatus');
-    if (!statusEl) return;
-    if (isPremiumActive()) statusEl.innerHTML = '<span class="gold-text">✅ Premium Active (expires in 3 months)</span>';
-    else statusEl.innerHTML = '<span class="gold-text">Free Plan</span>';
-  }
-
-  // Simulate YouTube subscription check (user clicks to verify)
-  function verifyYoutubeSubscription() {
-    window.open('https://www.youtube.com/@VaptrapMemesAndEdits', '_blank');
-    // In a real app, you'd use YouTube API. Here we ask user to confirm.
-    if (confirm("Have you subscribed to the Vaptrap YouTube channel?\nIf yes, you will get ₹10 discount on premium.")) {
-      userYoutubeSubscribed = true;
-      localStorage.setItem('quickkaam_youtube_subscribed', 'true');
-      if (currentLoggedInUser) currentLoggedInUser.youtubeSubscribed = true;
-      updatePriceDisplays();
-      document.getElementById('youtubeStatus').innerHTML = '<span class="gold-text">✅ Subscribed! ₹10 discount applied.</span>';
-      alert("Thank you for subscribing! Your ₹10 discount is now active.");
-    } else {
-      userYoutubeSubscribed = false;
-      localStorage.setItem('quickkaam_youtube_subscribed', 'false');
-      if (currentLoggedInUser) currentLoggedInUser.youtubeSubscribed = false;
-      updatePriceDisplays();
-      document.getElementById('youtubeStatus').innerHTML = '<span class="text-muted">Not subscribed – no discount</span>';
-      // If current premium used discount and user unsubscribed, pause premium
-      const sub = JSON.parse(localStorage.getItem('quickkaam_subscription') || '{}');
-      if (sub.active && sub.usedYoutubeDiscount && !userYoutubeSubscribed) {
-        deactivatePremium();
-      }
-    }
-  }
-
-  // ========== AUTH FUNCTIONS ==========
   function saveUserSession(user) { currentLoggedInUser = user; localStorage.setItem('quickkaam_current_user', JSON.stringify(user)); }
   function clearUserSession() { currentLoggedInUser = null; localStorage.removeItem('quickkaam_current_user'); }
   function loginUser(email, password) { const user = users.find(u => u.email === email && u.password === password); return user ? { success: true, user } : { success: false, error: "Invalid email or password" }; }
-  function signupUser(name, email, password, role) { if (users.find(u => u.email === email)) return { success: false, error: "Email already registered" }; if (password.length < 6) return { success: false, error: "Password must be at least 6 characters" }; const newUser = { id: Date.now(), name, email, password, role, profile: { bio: "", profession: "", location: "", experience: 0, skills: [], availability: "available", languages: "" }, lastActive: new Date().toISOString(), youtubeSubscribed: false }; users.push(newUser); localStorage.setItem('quickkaam_users', JSON.stringify(users)); saveUserSession(newUser); return { success: true, user: newUser }; }
+  function signupUser(name, email, password, role) { if (users.find(u => u.email === email)) return { success: false, error: "Email already registered" }; if (password.length < 6) return { success: false, error: "Password must be at least 6 characters" }; const newUser = { id: Date.now(), name, email, password, role, profile: { bio: "", profession: "", location: "", experience: 0, skills: [], availability: "available", languages: "" }, lastActive: new Date().toISOString() }; users.push(newUser); localStorage.setItem('quickkaam_users', JSON.stringify(users)); saveUserSession(newUser); return { success: true, user: newUser }; }
 
-  // ========== NAVIGATION ==========
+  // ---------- SUBSCRIPTION WITH YOUTUBE VERIFICATION ----------
+  let subscription = JSON.parse(localStorage.getItem('quickkaam_subscription')) || { active: false, startDate: null, expiryDate: null, youtubeSubscribed: false };
+  function checkYouTubeSubscription() {
+    // We cannot directly verify YouTube subscription status via API without OAuth.
+    // Instead, we store a flag that the user clicked the discount link and confirmed subscription.
+    // The user can also click a "Verify Subscription" button.
+    const subscribedFlag = localStorage.getItem('youtube_subscribed') === 'true';
+    if (subscription.active && subscription.youtubeSubscribed !== subscribedFlag) {
+      // If subscription was active but user unsubscribed (flag removed), pause premium.
+      if (!subscribedFlag) {
+        subscription.active = false;
+        localStorage.setItem('quickkaam_subscription', JSON.stringify(subscription));
+        alert("Your YouTube subscription could not be verified. Premium features have been paused.");
+      }
+    }
+    return subscribedFlag;
+  }
+  function activateSubscription(discounted = false) {
+    const start = new Date();
+    const expiryDate = new Date(start.getTime() + 90 * 24 * 60 * 60 * 1000);
+    subscription = { active: true, startDate: start.toISOString(), expiryDate: expiryDate.toISOString(), youtubeSubscribed: discounted };
+    localStorage.setItem('quickkaam_subscription', JSON.stringify(subscription));
+    if (discounted) localStorage.setItem('youtube_subscribed', 'true');
+    document.getElementById('subscriptionStatus').innerHTML = '<span class="gold-text">✅ Premium Active (expires in 3 months)</span>';
+    updatePremiumUI();
+    alert("🎉 Premium activated!" + (discounted ? " ₹10 discount applied." : ""));
+  }
+  function updateSubscriptionDisplay() {
+    const sub = JSON.parse(localStorage.getItem('quickkaam_subscription')) || { active: false };
+    if (sub.active && sub.expiryDate) {
+      const daysLeft = Math.ceil((new Date(sub.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+      document.getElementById('subscriptionStatus').innerHTML = `<span class="gold-text">✅ Premium Active (${daysLeft} days left)</span>`;
+    } else {
+      document.getElementById('subscriptionStatus').innerHTML = '<span class="gold-text">Free Plan</span>';
+    }
+  }
+  function updatePremiumUI() { updateSubscriptionDisplay(); }
+
+  document.getElementById('youtubeDiscountLink')?.addEventListener('click', (e) => {
+    // Mark that user clicked the discount link
+    localStorage.setItem('youtube_clicked_discount', 'true');
+    // Optionally, we can ask the user to confirm subscription after visiting.
+    setTimeout(() => {
+      if (confirm("Have you subscribed to Vaptrap Shorts on YouTube? Click OK to get ₹10 discount.")) {
+        localStorage.setItem('youtube_subscribed', 'true');
+        alert("₹10 discount applied! You can now subscribe for ₹90.");
+      }
+    }, 2000);
+  });
+
+  document.getElementById('subscribeNowBtn')?.addEventListener('click', () => {
+    const youtubeSubscribed = localStorage.getItem('youtube_subscribed') === 'true';
+    const price = youtubeSubscribed ? 90 : 100;
+    alert(`UPI Payment: 9873765511@ybl\nAmount: ₹${price}\n\nAfter payment, premium will be activated.`);
+    activateSubscription(youtubeSubscribed);
+  });
+
+  // ---------- NAVIGATION (FIXED) ----------
   function navigateToScreen(screenId) {
     document.querySelectorAll('.app-screen').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; });
     const target = document.getElementById(screenId);
@@ -537,15 +507,12 @@
       document.getElementById('profileJobsApplied').innerText = applications.length;
       const skillsContainer = document.getElementById('profileSkills');
       if (skillsContainer && currentLoggedInUser.profile?.skills) skillsContainer.innerHTML = currentLoggedInUser.profile.skills.map(s => `<span class="chip">${s}</span>`).join('');
-      document.getElementById('youtubeStatus').innerHTML = currentLoggedInUser.youtubeSubscribed ? '<span class="gold-text">✅ Subscribed! ₹10 discount applied.</span>' : '<span class="text-muted">Not subscribed – no discount</span>';
     }
-    updatePriceDisplays();
-    updateSubscriptionUI();
-    loadHomeJobs(); loadAllJobs(); loadWorkersList(); updateStats();
+    loadHomeJobs(); loadAllJobs(); loadWorkersList(); updateStats(); updateSubscriptionDisplay();
   }
   function showLoginScreen() { document.querySelectorAll('.app-screen').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; }); document.getElementById('loginScreen').classList.add('active'); document.getElementById('loginScreen').style.display = 'block'; }
 
-  // ========== RENDERERS ==========
+  // ---------- RENDERERS ----------
   function loadHomeJobs() {
     const container = document.getElementById('homeJobsList');
     if (!container) return;
@@ -570,7 +537,7 @@
   function updateStats() { document.getElementById('statJobs').innerText = jobs.length; document.getElementById('statWorkers').innerText = users.filter(u => u.role === 'jobseeker').length; }
   function applyForJob(jobId) { if (!currentLoggedInUser) { alert("Please login first"); showLoginScreen(); return; } const job = jobs.find(j => j.id === jobId); if (job) { applications.push({ jobId, jobTitle: job.title, userId: currentLoggedInUser.id, status: "pending", appliedAt: new Date().toISOString() }); localStorage.setItem('quickkaam_applications', JSON.stringify(applications)); alert(`✅ Applied to ${job.title}!`); } }
 
-  // ========== POST JOB ==========
+  // ---------- POST JOB ----------
   document.getElementById('postJobBtn')?.addEventListener('click', () => {
     if (!currentLoggedInUser) { alert("Please login to post a job"); showLoginScreen(); return; }
     if (currentLoggedInUser.role !== 'employer') { alert("Only employers can post jobs"); return; }
@@ -581,22 +548,13 @@
     alert("✅ Job posted successfully!"); navigateToScreen('jobsScreen'); loadAllJobs(); loadHomeJobs(); updateStats();
   });
 
-  // ========== SUBSCRIPTION WITH DISCOUNT ==========
-  document.getElementById('subscribeNowBtn')?.addEventListener('click', () => {
-    if (!currentLoggedInUser) { alert("Please login first"); showLoginScreen(); return; }
-    const price = getDiscountPrice();
-    const usedDiscount = userYoutubeSubscribed;
-    alert(`UPI Payment: 9873765511@ybl\nAmount: ₹${price}\n\nAfter payment, premium will be activated.`);
-    activatePremium(usedDiscount);
-  });
-
-  // ========== PROFILE EDITING ==========
+  // ---------- PROFILE EDITING ----------
   function loadProfileToEditModal() { if (!currentLoggedInUser) return; const profile = currentLoggedInUser.profile || {}; document.getElementById('editDisplayName').value = currentLoggedInUser.name; document.getElementById('editBio').value = profile.bio || ''; document.getElementById('editProfession').value = profile.profession || ''; document.getElementById('editLocation').value = profile.location || ''; document.getElementById('editExperience').value = profile.experience || 0; document.getElementById('editAvailability').value = profile.availability || 'available'; document.getElementById('editLanguages').value = profile.languages || ''; const skillsContainer = document.getElementById('editSkillsContainer'); if (skillsContainer && profile.skills) skillsContainer.innerHTML = profile.skills.map(skill => `<span class="chip">${skill} <i class="fas fa-times" style="cursor:pointer; margin-left:6px;" onclick="removeEditSkill('${skill}')"></i></span>`).join(''); }
   window.removeEditSkill = function(skill) { if (currentLoggedInUser && currentLoggedInUser.profile && currentLoggedInUser.profile.skills) { currentLoggedInUser.profile.skills = currentLoggedInUser.profile.skills.filter(s => s !== skill); loadProfileToEditModal(); } };
   document.getElementById('addSkillEditBtn')?.addEventListener('click', () => { const input = document.getElementById('newSkillInput'); const skill = input.value.trim(); if (skill && currentLoggedInUser) { if (!currentLoggedInUser.profile) currentLoggedInUser.profile = {}; if (!currentLoggedInUser.profile.skills) currentLoggedInUser.profile.skills = []; if (!currentLoggedInUser.profile.skills.includes(skill)) { currentLoggedInUser.profile.skills.push(skill); loadProfileToEditModal(); input.value = ''; } } });
   function saveUserProfile() { if (!currentLoggedInUser) return; if (!currentLoggedInUser.profile) currentLoggedInUser.profile = {}; const profile = currentLoggedInUser.profile; profile.bio = document.getElementById('editBio').value; profile.profession = document.getElementById('editProfession').value; profile.location = document.getElementById('editLocation').value; profile.experience = parseInt(document.getElementById('editExperience').value) || 0; profile.availability = document.getElementById('editAvailability').value; profile.languages = document.getElementById('editLanguages').value; if (document.getElementById('editDisplayName').value) currentLoggedInUser.name = document.getElementById('editDisplayName').value; const userIndex = users.findIndex(u => u.id === currentLoggedInUser.id); if (userIndex !== -1) users[userIndex] = currentLoggedInUser; localStorage.setItem('quickkaam_users', JSON.stringify(users)); saveUserSession(currentLoggedInUser); loadProfileToEditModal(); document.getElementById('editProfileModal').classList.remove('active'); showMainApp(); alert("Profile saved!"); }
 
-  // ========== EVENT LISTENERS ==========
+  // ---------- EVENT LISTENERS ----------
   document.getElementById('loginBtn')?.addEventListener('click', () => { const res = loginUser(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); if (res.success) showMainApp(); else document.getElementById('loginError').innerText = res.error; });
   document.getElementById('signupBtn')?.addEventListener('click', () => { const res = signupUser(document.getElementById('signupName').value, document.getElementById('signupEmail').value, document.getElementById('signupPassword').value, document.getElementById('signupRole').value); if (res.success) showMainApp(); else document.getElementById('signupError').innerText = res.error; });
   document.getElementById('switchToSignup')?.addEventListener('click', () => { document.getElementById('loginScreen').classList.remove('active'); document.getElementById('signupScreen').classList.add('active'); });
@@ -605,11 +563,9 @@
   document.getElementById('editProfileBtn')?.addEventListener('click', () => { loadProfileToEditModal(); document.getElementById('editProfileModal').classList.add('active'); });
   document.getElementById('closeEditModal')?.addEventListener('click', () => { document.getElementById('editProfileModal').classList.remove('active'); });
   document.getElementById('saveProfileBtn')?.addEventListener('click', saveUserProfile);
-  document.getElementById('checkYoutubeBtn')?.addEventListener('click', verifyYoutubeSubscription);
   document.querySelectorAll('.nav-item').forEach(btn => { btn.addEventListener('click', () => { const screenId = btn.getAttribute('data-screen'); if (screenId) navigateToScreen(screenId); }); });
   document.getElementById('jobSearchInput')?.addEventListener('input', (e) => { const query = e.target.value.toLowerCase(); const filtered = jobs.filter(j => j.title.toLowerCase().includes(query) || j.location.toLowerCase().includes(query)); const container = document.getElementById('allJobsList'); if (filtered.length === 0) container.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><p>No jobs found</p></div>`; else container.innerHTML = filtered.map(job => `<div class="job-card" onclick="applyForJob(${job.id})"><div class="flex-between"><strong>${job.title}</strong><span class="gold-text">${job.salary}</span></div><div class="text-muted">📍 ${job.location}</div><button class="btn-outline-gold" style="margin-top: 8px;">Apply Now</button></div>`).join(''); });
 
-  // ========== INITIALIZE ==========
   if (currentLoggedInUser) showMainApp(); else showLoginScreen();
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js').catch(e => console.log("SW error", e));
 </script>
