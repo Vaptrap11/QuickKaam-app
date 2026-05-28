@@ -373,7 +373,7 @@
   </div>
 </div>
 
-<!-- SUBSCRIPTION SCREEN (with YouTube discount & unsubscribe detection) -->
+<!-- SUBSCRIPTION SCREEN (with YouTube discount) -->
 <div id="subscriptionScreen" class="app-screen">
   <div class="container">
     <h2>Royal Premium</h2>
@@ -384,11 +384,9 @@
         <p>✅ Unlimited Messages</p><p>✅ Priority Job Matching</p><p>✅ Verified Premium Badge</p>
         <p>✅ Unlimited Applications</p><p>✅ Priority Support</p>
       </div>
-      <!-- YouTube discount link -->
       <p class="text-muted" style="margin-bottom: 8px;">🎁 Get ₹10 discount – <a href="https://www.youtube.com/@VaptrapMemesAndEdits" target="_blank" id="youtubeDiscountLink">Subscribe to Vaptrap Shorts on YouTube!</a></p>
       <button class="btn-gold" id="subscribeNowBtn">Subscribe Now – ₹100</button>
       <p class="text-muted" style="margin-top: 16px;">🔒 Secure UPI Payment: 9873765511@ybl</p>
-      <p class="text-muted" id="subscriptionNote"></p>
     </div>
   </div>
 </div>
@@ -430,31 +428,14 @@
   function loginUser(email, password) { const user = users.find(u => u.email === email && u.password === password); return user ? { success: true, user } : { success: false, error: "Invalid email or password" }; }
   function signupUser(name, email, password, role) { if (users.find(u => u.email === email)) return { success: false, error: "Email already registered" }; if (password.length < 6) return { success: false, error: "Password must be at least 6 characters" }; const newUser = { id: Date.now(), name, email, password, role, profile: { bio: "", profession: "", location: "", experience: 0, skills: [], availability: "available", languages: "" }, lastActive: new Date().toISOString() }; users.push(newUser); localStorage.setItem('quickkaam_users', JSON.stringify(users)); saveUserSession(newUser); return { success: true, user: newUser }; }
 
-  // ---------- SUBSCRIPTION WITH YOUTUBE VERIFICATION ----------
-  let subscription = JSON.parse(localStorage.getItem('quickkaam_subscription')) || { active: false, startDate: null, expiryDate: null, youtubeSubscribed: false };
-  function checkYouTubeSubscription() {
-    // We cannot directly verify YouTube subscription status via API without OAuth.
-    // Instead, we store a flag that the user clicked the discount link and confirmed subscription.
-    // The user can also click a "Verify Subscription" button.
-    const subscribedFlag = localStorage.getItem('youtube_subscribed') === 'true';
-    if (subscription.active && subscription.youtubeSubscribed !== subscribedFlag) {
-      // If subscription was active but user unsubscribed (flag removed), pause premium.
-      if (!subscribedFlag) {
-        subscription.active = false;
-        localStorage.setItem('quickkaam_subscription', JSON.stringify(subscription));
-        alert("Your YouTube subscription could not be verified. Premium features have been paused.");
-      }
-    }
-    return subscribedFlag;
-  }
+  // ---------- SUBSCRIPTION WITH YOUTUBE DISCOUNT ----------
+  let subscription = JSON.parse(localStorage.getItem('quickkaam_subscription')) || { active: false, startDate: null, expiryDate: null };
   function activateSubscription(discounted = false) {
     const start = new Date();
     const expiryDate = new Date(start.getTime() + 90 * 24 * 60 * 60 * 1000);
-    subscription = { active: true, startDate: start.toISOString(), expiryDate: expiryDate.toISOString(), youtubeSubscribed: discounted };
+    subscription = { active: true, startDate: start.toISOString(), expiryDate: expiryDate.toISOString() };
     localStorage.setItem('quickkaam_subscription', JSON.stringify(subscription));
-    if (discounted) localStorage.setItem('youtube_subscribed', 'true');
     document.getElementById('subscriptionStatus').innerHTML = '<span class="gold-text">✅ Premium Active (expires in 3 months)</span>';
-    updatePremiumUI();
     alert("🎉 Premium activated!" + (discounted ? " ₹10 discount applied." : ""));
   }
   function updateSubscriptionDisplay() {
@@ -466,12 +447,9 @@
       document.getElementById('subscriptionStatus').innerHTML = '<span class="gold-text">Free Plan</span>';
     }
   }
-  function updatePremiumUI() { updateSubscriptionDisplay(); }
 
   document.getElementById('youtubeDiscountLink')?.addEventListener('click', (e) => {
-    // Mark that user clicked the discount link
     localStorage.setItem('youtube_clicked_discount', 'true');
-    // Optionally, we can ask the user to confirm subscription after visiting.
     setTimeout(() => {
       if (confirm("Have you subscribed to Vaptrap Shorts on YouTube? Click OK to get ₹10 discount.")) {
         localStorage.setItem('youtube_subscribed', 'true');
@@ -554,7 +532,7 @@
   document.getElementById('addSkillEditBtn')?.addEventListener('click', () => { const input = document.getElementById('newSkillInput'); const skill = input.value.trim(); if (skill && currentLoggedInUser) { if (!currentLoggedInUser.profile) currentLoggedInUser.profile = {}; if (!currentLoggedInUser.profile.skills) currentLoggedInUser.profile.skills = []; if (!currentLoggedInUser.profile.skills.includes(skill)) { currentLoggedInUser.profile.skills.push(skill); loadProfileToEditModal(); input.value = ''; } } });
   function saveUserProfile() { if (!currentLoggedInUser) return; if (!currentLoggedInUser.profile) currentLoggedInUser.profile = {}; const profile = currentLoggedInUser.profile; profile.bio = document.getElementById('editBio').value; profile.profession = document.getElementById('editProfession').value; profile.location = document.getElementById('editLocation').value; profile.experience = parseInt(document.getElementById('editExperience').value) || 0; profile.availability = document.getElementById('editAvailability').value; profile.languages = document.getElementById('editLanguages').value; if (document.getElementById('editDisplayName').value) currentLoggedInUser.name = document.getElementById('editDisplayName').value; const userIndex = users.findIndex(u => u.id === currentLoggedInUser.id); if (userIndex !== -1) users[userIndex] = currentLoggedInUser; localStorage.setItem('quickkaam_users', JSON.stringify(users)); saveUserSession(currentLoggedInUser); loadProfileToEditModal(); document.getElementById('editProfileModal').classList.remove('active'); showMainApp(); alert("Profile saved!"); }
 
-  // ---------- EVENT LISTENERS ----------
+  // ---------- EVENT LISTENERS (FIXED "CREATE ONE" BUTTON) ----------
   document.getElementById('loginBtn')?.addEventListener('click', () => { const res = loginUser(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); if (res.success) showMainApp(); else document.getElementById('loginError').innerText = res.error; });
   document.getElementById('signupBtn')?.addEventListener('click', () => { const res = signupUser(document.getElementById('signupName').value, document.getElementById('signupEmail').value, document.getElementById('signupPassword').value, document.getElementById('signupRole').value); if (res.success) showMainApp(); else document.getElementById('signupError').innerText = res.error; });
   document.getElementById('switchToSignup')?.addEventListener('click', () => { document.getElementById('loginScreen').classList.remove('active'); document.getElementById('signupScreen').classList.add('active'); });
